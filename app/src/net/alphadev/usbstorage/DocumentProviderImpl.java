@@ -22,13 +22,7 @@ import java.util.HashMap;
 public class DocumentProviderImpl extends DocumentsProvider {
 
 	private static final String AUTHORITY = "net.alphadev.usbstorage.documents";
-    BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            context.getContentResolver()
-                    .notifyChange(DocumentsContract
-                            .buildRootsUri(AUTHORITY), null);
-        }
-    };
+
     private static final String[] DEFAULT_ROOT_PROJECTION = new String[] {
 		Root.COLUMN_ROOT_ID, Root.COLUMN_FLAGS, Root.COLUMN_ICON, Root.COLUMN_TITLE,
 		Root.COLUMN_DOCUMENT_ID, Root.COLUMN_AVAILABLE_BYTES, Root.COLUMN_SUMMARY
@@ -51,7 +45,14 @@ public class DocumentProviderImpl extends DocumentsProvider {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 		filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-		getContext().registerReceiver(mUsbReceiver, filter);
+		getContext().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                context.getContentResolver()
+                        .notifyChange(DocumentsContract
+                                .buildRootsUri(AUTHORITY), null);
+            }
+        }, filter);
 		return true;
 	}
 
