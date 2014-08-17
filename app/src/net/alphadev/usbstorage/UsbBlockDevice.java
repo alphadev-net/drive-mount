@@ -35,6 +35,11 @@ public class UsbBlockDevice implements BlockDevice {
     }
 
     private void open(UsbDevice device, UsbManager manager) {
+
+        if(!manager.hasPermission(device)) {
+            throw new IllegalStateException("You dont have the permission to access this device!");
+        }
+
         for(int i = 0; i <= device.getInterfaceCount(); i++) {
             UsbInterface interfaceProbe = device.getInterface(i);
             if(interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
@@ -83,6 +88,7 @@ public class UsbBlockDevice implements BlockDevice {
 
             int readAmt = (int)Math.min(getSize(), (long)byteBuffer.remaining());
             int timeoutMillis = 250;
+
             numBytesRead = mConnection.bulkTransfer(mReadEndpoint, byteBuffer.array(), readAmt, timeoutMillis);
 
             if (numBytesRead < 0) {
