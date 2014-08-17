@@ -7,6 +7,7 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.hardware.usb.UsbRequest;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -37,7 +38,7 @@ public class UsbBlockDevice implements BlockDevice {
     private void open(UsbDevice device, UsbManager manager) {
 
         if(!manager.hasPermission(device)) {
-            throw new IllegalStateException("You dont have the permission to access this device!");
+            throw new IllegalStateException("You don't have the permission to access this device!");
         }
 
         for(int i = 0; i <= device.getInterfaceCount(); i++) {
@@ -79,30 +80,19 @@ public class UsbBlockDevice implements BlockDevice {
     public void read(long offset, ByteBuffer byteBuffer) throws IOException {
         checkClosed();
 
-        final int numBytesRead;
-
-        synchronized (mReadBufferLock) {
-            if(!byteBuffer.hasArray()) {
-                throw new InvalidParameterException("Your Buffer isn't Array-backed!");
+        final UsbRequest request = new UsbRequest();
+        try {
+            request.initialize(mConnection, mReadEndpoint);
+            if (!request.queue(byteBuffer, byteBuffer.remaining())) {
+                throw new IOException("Error queueing request.");
             }
 
-            int readAmt = (int)Math.min(getSize(), (long)byteBuffer.remaining());
-            int timeoutMillis = 250;
-
-            numBytesRead = mConnection.bulkTransfer(mReadEndpoint, byteBuffer.array(), readAmt, timeoutMillis);
-
-            if (numBytesRead < 0) {
-                // This sucks: we get -1 on timeout, not 0 as preferred.
-                // We *should* use UsbRequest, except it has a bug/api oversight
-                // where there is no way to determine the number of bytes read
-                // in response :\ -- http://b.android.com/28023
-                if (timeoutMillis == Integer.MAX_VALUE) {
-                    // Hack: Special case "~infinite timeout" as an error.
-                    throw new IllegalStateException("Unknown usb timing error occured!");
-                }
-                throw new IllegalStateException("Unknown error occured!");
+            final UsbRequest response = mConnection.requestWait();
+            if (mConnection.requestWait() != request) {
+                throw new IOException("Null response");
             }
-            //System.arraycopy(mReadBuffer, 0, dest, 0, numBytesRead);
+        } finally {
+            request.close();
         }
     }
 
