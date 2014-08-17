@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class StorageManager {
                 }
             };
         } catch (Exception ex) {
-            //
+            Log.d("asdf", "error while mounting", ex);
         }
 
         return null;
