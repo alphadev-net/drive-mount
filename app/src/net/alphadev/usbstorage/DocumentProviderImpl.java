@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
@@ -17,7 +16,6 @@ import android.provider.DocumentsProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 
 public class DocumentProviderImpl extends DocumentsProvider {
 
@@ -40,40 +38,43 @@ public class DocumentProviderImpl extends DocumentsProvider {
         return projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION;
     }
 
+    private StorageManager mStorageManager;
+
 	@Override
 	public boolean onCreate() {
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-		filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+		IntentFilter attachmentFilter = new IntentFilter();
+		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
 		getContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                context.getContentResolver()
-                        .notifyChange(DocumentsContract
-                                .buildRootsUri(AUTHORITY), null);
+                refreshDocumentRoots();
             }
-        }, filter);
+        }, attachmentFilter);
+
+        mStorageManager = new StorageManager(getContext());
 		return true;
 	}
 
-	@Override
+    private void refreshDocumentRoots() {
+        getContext().getContentResolver()
+                .notifyChange(DocumentsContract
+                        .buildRootsUri(AUTHORITY), null);
+    }
+
+    @Override
 	public Cursor queryRoots(String[] projection) throws FileNotFoundException {
 		final MatrixCursor roots =
             new MatrixCursor(resolveRootProjection(projection));
 
-		for (UsbDevice drive: enumerateDrives().values()) {
-			final MatrixCursor.RowBuilder row = roots.newRow();
-			row.add(Root.COLUMN_ROOT_ID, drive.getDeviceName());
+        for (StorageDevice device : mStorageManager.enumerateDevices()) {
+            final MatrixCursor.RowBuilder row = roots.newRow();
+            row.add(Root.COLUMN_ROOT_ID, device.getDeviceName());
             row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
-            //row.add(Root.COLUMN_SUMMARY, drive.getStorageDetails());
-		}
+            row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
+        }
 
 		return roots;
-	}
-
-	private HashMap<String, UsbDevice> enumerateDrives() {
-		UsbManager manager = (UsbManager) getContext().getSystemService(Context.USB_SERVICE);
-		return manager.getDeviceList();
 	}
 
 	@Override
