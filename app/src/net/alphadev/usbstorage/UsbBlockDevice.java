@@ -1,23 +1,15 @@
 package net.alphadev.usbstorage;
 
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.hardware.usb.UsbRequest;
-import android.util.Log;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.security.InvalidParameterException;
 
 import de.waldheinz.fs.BlockDevice;
@@ -32,8 +24,8 @@ public class UsbBlockDevice implements BlockDevice {
     private UsbInterface mDataInterface;
     private UsbDeviceConnection mConnection;
 
-    private Object mReadBufferLock;
-    private Object mWriteBufferLock;
+    private final Object mReadBufferLock = new Object();
+    private final Object mWriteBufferLock = new Object();
 
     private boolean readOnly;
     private boolean closed;
