@@ -22,8 +22,14 @@ import java.util.HashMap;
 public class DocumentProviderImpl extends DocumentsProvider {
 
 	private static final String AUTHORITY = "net.alphadev.usbstorage.documents";
-
-	private static final String[] DEFAULT_ROOT_PROJECTION = new String[] {
+    BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            context.getContentResolver()
+                    .notifyChange(DocumentsContract
+                            .buildRootsUri(AUTHORITY), null);
+        }
+    };
+    private static final String[] DEFAULT_ROOT_PROJECTION = new String[] {
 		Root.COLUMN_ROOT_ID, Root.COLUMN_FLAGS, Root.COLUMN_ICON, Root.COLUMN_TITLE,
 		Root.COLUMN_DOCUMENT_ID, Root.COLUMN_AVAILABLE_BYTES, Root.COLUMN_SUMMARY
     };
@@ -31,20 +37,14 @@ public class DocumentProviderImpl extends DocumentsProvider {
 		Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE, Document.COLUMN_DISPLAY_NAME,
 		Document.COLUMN_LAST_MODIFIED, Document.COLUMN_FLAGS, Document.COLUMN_SIZE,
     };
+
     private static String[] resolveRootProjection(String[] projection) {
         return projection != null ? projection : DEFAULT_ROOT_PROJECTION;
     }
+
     private static String[] resolveDocumentProjection(String[] projection) {
         return projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION;
     }
-
-	BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-		public void onReceive(Context context, Intent intent) {
-			context.getContentResolver()
-				.notifyChange(DocumentsContract
-							  .buildRootsUri(AUTHORITY), null);
-		}
-	};
 
 	@Override
 	public boolean onCreate() {
@@ -63,7 +63,8 @@ public class DocumentProviderImpl extends DocumentsProvider {
 		for (UsbDevice drive: enumerateDrives().values()) {
 			final MatrixCursor.RowBuilder row = roots.newRow();
 			row.add(Root.COLUMN_ROOT_ID, drive.getDeviceName());
-			//row.add(Root.COLUMN_SUMMARY, drive.getStorageDetails());
+            row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
+            //row.add(Root.COLUMN_SUMMARY, drive.getStorageDetails());
 		}
 
 		return roots;
