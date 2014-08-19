@@ -68,13 +68,16 @@ public class DocumentProviderImpl extends DocumentsProvider {
             new MatrixCursor(resolveRootProjection(projection));
 
         for (StorageDevice device : mStorageManager.enumerateDevices()) {
-            final MatrixCursor.RowBuilder row = roots.newRow();
-            row.add(Root.COLUMN_ROOT_ID, device.getDeviceName());
-            row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
-            row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
+            createDevice(roots.newRow(), device);
         }
 
 		return roots;
+	}
+
+	private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device) {
+		row.add(Root.COLUMN_ROOT_ID, device.getDeviceName());
+		row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
+		row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
 	}
 
 	@Override
