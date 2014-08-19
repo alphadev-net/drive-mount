@@ -42,25 +42,18 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
 	@Override
 	public boolean onCreate() {
-		IntentFilter attachmentFilter = new IntentFilter();
-		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-		getContext().registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                refreshDocumentRoots();
-            }
-        }, attachmentFilter);
-
         mStorageManager = new StorageManager(getContext());
+		mStorageManager.enumerateDevices();
+		mStorageManager.setOnStorageChangedListener(new StorageManager.OnStorageChangedListener() {
+				@Override
+				public void onStorageChange() {
+					getContext().getContentResolver()
+						.notifyChange(DocumentsContract
+									  .buildRootsUri(AUTHORITY), null);
+				}
+			});
 		return true;
 	}
-
-    private void refreshDocumentRoots() {
-        getContext().getContentResolver()
-                .notifyChange(DocumentsContract
-                        .buildRootsUri(AUTHORITY), null);
-    }
 
     @Override
 	public Cursor queryRoots(String[] projection) throws FileNotFoundException {
@@ -68,7 +61,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
             new MatrixCursor(resolveRootProjection(projection));
 
 		mStorageManager.enumerateDevices();
-        for (StorageDevice device : mStorageManager.getDevices()) {
+        for (StorageDevice device : mStorageManager.getStorageDevices()) {
             createDevice(roots.newRow(), device);
         }
 

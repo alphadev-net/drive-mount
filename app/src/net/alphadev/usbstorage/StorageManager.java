@@ -9,29 +9,39 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
+import de.waldheinz.fs.fat.FatFileSystem;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import de.waldheinz.fs.fat.FatFileSystem;
 import java.util.Iterator;
+import java.util.HashMap;
+
 
 public class StorageManager {
 
 	public static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
 
+	private final Set<UsbDevice> mDeviceCache = new HashSet<>();
+	private final HashMap<UsbDevice, StorageDevice> mMountedDevices = new HashMap<>();
+
     private UsbManager mUsbManager;
     private Context mContext;
-	private final Set<UsbDevice> mDeviceCache = new HashSet<>();
+	private OnStorageChangedListener mStorageChangedListener;
 
     public StorageManager(Context context) {
         mUsbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
         mContext = context;
 		
-		IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-		context.registerReceiver(mUsbReceiver, filter);
+		IntentFilter permissionFilter = new IntentFilter(ACTION_USB_PERMISSION);
+		context.registerReceiver(mPermissionReceiver, permissionFilter);
+
+		IntentFilter attachmentFilter = new IntentFilter();
+		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+		context.registerReceiver(mAttachmentReceiver, attachmentFilter);
     }
 
-	private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+	private final BroadcastReceiver mPermissionReceiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
 			UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 			if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
@@ -40,6 +50,17 @@ public class StorageManager {
 		}
 	};
 
+	private final BroadcastReceiver mAttachmentReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			enumerateDevices();
+		}
+	};
+
+	public void setOnStorageChangedListener(OnStorageChangedListener listener) {
+		mStorageChangedListener = listener;
+	}
+	
     public void enumerateDevices() {
 		mDeviceCache.clear();
 	
@@ -53,11 +74,10 @@ public class StorageManager {
 				mUsbManager.requestPermission(usbDevice, intent);
 			}
         }
-		
     }
 
-	public Set<StorageDevice> getDevices() {
-		HashSet<StorageDevice> validDevices = new HashSet<>();
+	public Set<StorageDevice> getStorageDevices() {
+		Set<StorageDevice> validDevices = new HashSet<>();
 		
 		for(UsbDevice device: mDeviceCache) {
 			StorageDevice temp = mountAsFatFS(device);
@@ -67,6 +87,7 @@ public class StorageManager {
 		}
 		return validDevices;
 	}
+
     private StorageDevice mountAsFatFS(UsbDevice usbDevice) {
         try {
             UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice, true);
@@ -104,4 +125,8 @@ public class StorageManager {
 
         return null;
     }
+
+	public static interface OnStorageChangedListener {
+		public void onStorageChange();
+	}
 }
