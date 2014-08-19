@@ -41,7 +41,7 @@ public class UsbBlockDevice implements BlockDevice {
             throw new IllegalStateException("You don't have the permission to access this device!");
         }
 
-        for(int i = 0; i <= device.getInterfaceCount(); i++) {
+        for(int i = 0; i < device.getInterfaceCount(); i++) {
             UsbInterface interfaceProbe = device.getInterface(i);
             if(interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
                 mDataInterface = device.getInterface(i);
@@ -49,7 +49,7 @@ public class UsbBlockDevice implements BlockDevice {
         }
 
         this.readOnly = false;
-        for(int i = 0; i <= mDataInterface.getEndpointCount(); i++) {
+        for(int i = 0; i < mDataInterface.getEndpointCount(); i++) {
             UsbEndpoint endpointProbe = mDataInterface.getEndpoint(i);
             if(endpointProbe.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
                 if(endpointProbe.getDirection() == UsbConstants.USB_DIR_IN) {
