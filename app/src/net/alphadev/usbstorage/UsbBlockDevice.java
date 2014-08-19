@@ -33,6 +33,7 @@ public class UsbBlockDevice implements BlockDevice {
 
     public UsbBlockDevice(Context ctx, UsbDevice device, final boolean readOnly) {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
+		open(device, manager);
     }
 
     private void open(UsbDevice device, UsbManager manager) {
