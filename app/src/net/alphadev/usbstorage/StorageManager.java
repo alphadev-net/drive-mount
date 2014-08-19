@@ -15,13 +15,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.HashMap;
+import net.alphadev.usbstorage.impl.FatStorage;
 
 
 public class StorageManager {
 
 	public static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
 
-	private final Set<UsbDevice> mDeviceCache = new HashSet<>();
 	private final HashMap<UsbDevice, StorageDevice> mMountedDevices = new HashMap<>();
 
     private UsbManager mUsbManager;
@@ -45,7 +45,7 @@ public class StorageManager {
 		public void onReceive(Context context, Intent intent) {
 			UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 			if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-				mDeviceCache.add(device);
+				method(device);
 			}
 		}
 	};
@@ -57,21 +57,29 @@ public class StorageManager {
 		}
 	};
 
+	private void method(UsbDevice device) {
+		mMountedDevices.put(device, null);
+
+		if (mStorageChangedListener != null) {
+			mStorageChangedListener.onStorageChange();
+		}
+	}
+
 	public void setOnStorageChangedListener(OnStorageChangedListener listener) {
 		mStorageChangedListener = listener;
 	}
 	
     public void enumerateDevices() {
-		mDeviceCache.clear();
-	
-        for(UsbDevice usbDevice: mUsbManager.getDeviceList().values()) {
-			if(mUsbManager.hasPermission(usbDevice)) {
+		mMountedDevices.clear();
+
+        for(UsbDevice device: mUsbManager.getDeviceList().values()) {
+			if(mUsbManager.hasPermission(device)) {
 				Log.d("Drive Mount", "App already has access to USB device");
-				mDeviceCache.add(usbDevice);
+				method(device);
 			} else {
 				Log.d("Drive Mount", "Requesting access to USB device");
 				PendingIntent intent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-				mUsbManager.requestPermission(usbDevice, intent);
+				mUsbManager.requestPermission(device, intent);
 			}
         }
     }
@@ -79,10 +87,9 @@ public class StorageManager {
 	public Set<StorageDevice> getStorageDevices() {
 		Set<StorageDevice> validDevices = new HashSet<>();
 		
-		for(UsbDevice device: mDeviceCache) {
-			StorageDevice temp = mountAsFatFS(device);
-			if(temp != null) {
-				validDevices.add(temp);
+		for(StorageDevice device: mMountedDevices.values()) {
+			if(device != null) {
+				validDevices.add(device);
 			}
 		}
 		return validDevices;
@@ -91,36 +98,9 @@ public class StorageManager {
     private StorageDevice mountAsFatFS(UsbDevice usbDevice) {
         try {
             UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice, true);
-            final FatFileSystem fs = FatFileSystem.read(blockDevice, true);
-
-            return new StorageDevice() {
-                @Override
-                public String getDeviceName() {
-                    return fs.getVolumeLabel();
-                }
-
-                @Override
-                public StorageDetails getStorageDetails() {
-                    return new StorageDetails() {
-                        @Override
-                        public long getTotalSpace() {
-                            return fs.getTotalSpace();
-                        }
-
-                        @Override
-                        public long getFreeSpace() {
-                            return fs.getFreeSpace();
-                        }
-                    };
-                }
-
-                @Override
-                public FsType getFsType() {
-                    return FsType.FAT;
-                }
-            };
+			return new FatStorage(blockDevice);
         } catch (Exception ex) {
-            Log.d("asdf", "error while mounting", ex);
+            Log.d("asdf", "error while trying to mount fat volume", ex);
         }
 
         return null;
