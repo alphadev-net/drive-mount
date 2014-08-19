@@ -67,7 +67,8 @@ public class DocumentProviderImpl extends DocumentsProvider {
 		final MatrixCursor roots =
             new MatrixCursor(resolveRootProjection(projection));
 
-        for (StorageDevice device : mStorageManager.enumerateDevices()) {
+		mStorageManager.enumerateDevices();
+        for (StorageDevice device : mStorageManager.getDevices()) {
             createDevice(roots.newRow(), device);
         }
 

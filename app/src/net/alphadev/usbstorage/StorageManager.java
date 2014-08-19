@@ -13,30 +13,60 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.waldheinz.fs.fat.FatFileSystem;
+import java.util.Iterator;
 
 public class StorageManager {
 
+	public static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
+
     private UsbManager mUsbManager;
     private Context mContext;
+	private final Set<UsbDevice> mDeviceCache = new HashSet<>();
 
     public StorageManager(Context context) {
         mUsbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
         mContext = context;
+		
+		IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+		context.registerReceiver(mUsbReceiver, filter);
     }
 
-    public Set<StorageDevice> enumerateDevices() {
-        HashSet<StorageDevice> validDevices = new HashSet<>();
+	private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+		public void onReceive(Context context, Intent intent) {
+			UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+			if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+				mDeviceCache.add(device);
+			}
+		}
+	};
 
+    public void enumerateDevices() {
+		mDeviceCache.clear();
+	
         for(UsbDevice usbDevice: mUsbManager.getDeviceList().values()) {
-            StorageDevice temp = mountAsFatFS(usbDevice);
-            if(temp != null) {
-                validDevices.add(temp);
-            }
+			if(mUsbManager.hasPermission(usbDevice)) {
+				Log.d("Drive Mount", "App already has access to USB device");
+				mDeviceCache.add(usbDevice);
+			} else {
+				Log.d("Drive Mount", "Requesting access to USB device");
+				PendingIntent intent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+				mUsbManager.requestPermission(usbDevice, intent);
+			}
         }
-
-        return validDevices;
+		
     }
 
+	public Set<StorageDevice> getDevices() {
+		HashSet<StorageDevice> validDevices = new HashSet<>();
+		
+		for(UsbDevice device: mDeviceCache) {
+			StorageDevice temp = mountAsFatFS(device);
+			if(temp != null) {
+				validDevices.add(temp);
+			}
+		}
+		return validDevices;
+	}
     private StorageDevice mountAsFatFS(UsbDevice usbDevice) {
         try {
             UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice, true);
