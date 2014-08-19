@@ -39,6 +39,8 @@ public class StorageManager {
 		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 		attachmentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
 		context.registerReceiver(mAttachmentReceiver, attachmentFilter);
+
+		enumerateDevices();
     }
 
 	private final BroadcastReceiver mPermissionReceiver = new BroadcastReceiver() {
@@ -69,7 +71,7 @@ public class StorageManager {
 		mStorageChangedListener = listener;
 	}
 	
-    public void enumerateDevices() {
+    private void enumerateDevices() {
 		mMountedDevices.clear();
 
         for(UsbDevice device: mUsbManager.getDeviceList().values()) {
