@@ -18,26 +18,11 @@ import de.waldheinz.fs.ReadOnlyException;
 public class UsbBlockDevice implements BlockDevice {
 
     public final static int DEFAULT_SECTOR_SIZE = 512;
-
-    /**
-     * Bulk-Only Mass Storage Class specifications
-     */
-    private static final class BOMS {
-        public static final int BOMS_RESET = 0xFF;
-        public static final int BOMS_GET_MAX_LUN = 0xFE;
-    }
-
-    private static final class GENERIC_USB {
-        public static final int READ_CAPACITY_LENGTH = 0x08;
-    }
-
     private static final String LOG_TAG = "Drive Mount";
-
     private UsbEndpoint mReadEndpoint;
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
     private UsbDeviceConnection mConnection;
-
     private boolean readOnly;
     private boolean closed;
 
@@ -82,7 +67,9 @@ public class UsbBlockDevice implements BlockDevice {
     public long getSize() throws IOException {
         checkClosed();
 
+        int retval = send_mass_storage_command(GENERIC_USB.READ_CAPACITY_LENGTH);
         // create a usb request and ask for the drives size.
+        // READ_CAPACITY_LENGTH
 
         return 0;
     }
@@ -105,6 +92,13 @@ public class UsbBlockDevice implements BlockDevice {
         } finally {
             request.close();
         }
+    }
+
+    private int send_mass_storage_command(int command) {
+        CommandBlockWrapper cbw = new CommandBlockWrapper();
+        cbw.setSignature((byte) 'U', (byte) 'S', (byte) 'B', (byte) 'C');
+
+        return -1;
     }
 
     @Override
@@ -146,9 +140,40 @@ public class UsbBlockDevice implements BlockDevice {
         if (closed) throw new IllegalStateException("device already closed");
     }
 
+    /**
+     * Bulk-Only Mass Storage Class specifications
+     */
+    private static final class BOMS {
+        public static final int BOMS_RESET = 0xFF;
+        public static final int BOMS_GET_MAX_LUN = 0xFE;
+    }
+
+    private static final class GENERIC_USB {
+        public static final int READ_CAPACITY_LENGTH = 0x08;
+        public static final int READ_STUFF = 0x10;
+    }
+
     private static class CommandBlockWrapper {
         private static int tagCounter = 0;
-
+        private static byte cdb_length[] = new byte[]{
+                //	 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+                06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06,  //  0
+                06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06,  //  1
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  2
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  3
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  4
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  5
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  6
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  7
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  //  8
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  //  9
+                12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  //  A
+                12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  //  B
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  C
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  D
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  E
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  F
+        };
         private byte[] signature;
         private int tag;
         private int dataTransferLength;
@@ -163,11 +188,11 @@ public class UsbBlockDevice implements BlockDevice {
         }
 
         public void setSignature(byte a, byte b, byte c, byte d) {
-            signature = new byte[]{ a, b, c, d};
+            signature = new byte[]{a, b, c, d};
         }
 
         public byte[] asBytes() {
-            return new byte[] {
+            return new byte[]{
                     signature[0],
                     signature[1],
                     signature[2],
@@ -193,25 +218,5 @@ public class UsbBlockDevice implements BlockDevice {
                     cmdBlock[12], cmdBlock[13], cmdBlock[14], cmdBlock[15]
             };
         }
-
-        private static byte cdb_length[] = new byte[]{
-                //	 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-                06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06,  //  0
-                06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06,  //  1
-                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  2
-                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  3
-                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  4
-                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  5
-                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  6
-                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  7
-                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  //  8
-                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  //  9
-                12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  //  A
-                12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  //  B
-                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  C
-                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  D
-                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  E
-                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  F
-        };
     }
 }
