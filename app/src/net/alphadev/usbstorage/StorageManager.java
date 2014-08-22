@@ -62,14 +62,16 @@ public class StorageManager {
     }
 
     private void tryMount(UsbDevice device) {
-		Object entry = mMountedDevices.get(device);
-		if(entry != null){
+		if(mMountedDevices.get(device) != null){
+            // device seems already mounted… do nothing.
 			return;
 		}
 
 		StorageDevice storage = null;
 
-        mMountedDevices.put(device, null);
+        storage = mountAsFatFS(device);
+
+        mMountedDevices.put(device, storage);
         if (mStorageChangedListener != null) {
             mStorageChangedListener.onStorageChange();
         }
