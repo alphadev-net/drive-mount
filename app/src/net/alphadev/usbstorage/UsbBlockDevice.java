@@ -11,7 +11,6 @@ import android.hardware.usb.UsbRequest;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.security.InvalidParameterException;
 
 import de.waldheinz.fs.BlockDevice;
 import de.waldheinz.fs.ReadOnlyException;
@@ -19,6 +18,20 @@ import de.waldheinz.fs.ReadOnlyException;
 public class UsbBlockDevice implements BlockDevice {
 
     public final static int DEFAULT_SECTOR_SIZE = 512;
+
+    /**
+     * Bulk-Only Mass Storage Class specifications
+     */
+    private static final class BOMS {
+        public static final int BOMS_RESET = 0xFF;
+        public static final int BOMS_GET_MAX_LUN = 0xFE;
+    }
+
+    private static final class GENERIC_USB {
+        public static final int READ_CAPACITY_LENGTH = 0x08;
+    }
+
+    private static final String LOG_TAG = "Drive Mount";
 
     private UsbEndpoint mReadEndpoint;
     private UsbEndpoint mWriteEndpoint;
