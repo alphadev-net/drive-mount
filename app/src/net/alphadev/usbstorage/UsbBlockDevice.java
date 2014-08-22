@@ -35,25 +35,25 @@ public class UsbBlockDevice implements BlockDevice {
 
     private void open(UsbDevice device, UsbManager manager) {
 
-        if(!manager.hasPermission(device)) {
+        if (!manager.hasPermission(device)) {
             throw new IllegalStateException("You don't have the permission to access this device!");
         }
 
-        for(int i = 0; i < device.getInterfaceCount(); i++) {
+        for (int i = 0; i < device.getInterfaceCount(); i++) {
             UsbInterface interfaceProbe = device.getInterface(i);
-            if(interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
+            if (interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
                 mDataInterface = device.getInterface(i);
             }
         }
 
         this.readOnly = false;
-        for(int i = 0; i < mDataInterface.getEndpointCount(); i++) {
+        for (int i = 0; i < mDataInterface.getEndpointCount(); i++) {
             UsbEndpoint endpointProbe = mDataInterface.getEndpoint(i);
-            if(endpointProbe.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
-                if(endpointProbe.getDirection() == UsbConstants.USB_DIR_IN) {
+            if (endpointProbe.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
+                if (endpointProbe.getDirection() == UsbConstants.USB_DIR_IN) {
                     mReadEndpoint = endpointProbe;
                 } else {
-                    if(!readOnly) {
+                    if (!readOnly) {
                         mWriteEndpoint = endpointProbe;
                         this.readOnly = false;
                     }
@@ -81,7 +81,7 @@ public class UsbBlockDevice implements BlockDevice {
         final UsbRequest request = new UsbRequest();
         try {
             request.initialize(mConnection, mReadEndpoint);
-            if (!request.queue(byteBuffer, byteBuffer.remaining())) {
+            if (!request.queue(byteBuffer, mReadEndpoint.getMaxPacketSize())) {
                 throw new IOException("Error queueing request.");
             }
 
