@@ -19,6 +19,7 @@ import java.util.Set;
 public class StorageManager {
 
     public static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
+    private static final String LOG_TAG = "Drive Mount";
 
     private final HashMap<UsbDevice, StorageDevice> mMountedDevices = new HashMap<>();
     private final BroadcastReceiver mPermissionReceiver = new BroadcastReceiver() {
@@ -86,13 +87,13 @@ public class StorageManager {
 
         for (UsbDevice device : mUsbManager.getDeviceList().values()) {
             if (!mUsbManager.hasPermission(device)) {
-                Log.d("Drive Mount", "Requesting access to USB device");
+                Log.d(LOG_TAG, "Requesting access to USB device");
                 PendingIntent intent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
                 mUsbManager.requestPermission(device, intent);
                 continue;
             }
 
-            Log.d("Drive Mount", "App already has access to USB device");
+            Log.d(LOG_TAG, "App already has access to USB device");
             tryMount(device);
         }
     }
@@ -114,7 +115,7 @@ public class StorageManager {
             UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice, true);
             return new FatStorage(blockDevice);
         } catch (Exception ex) {
-            Log.d("asdf", "error while trying to mount fat volume", ex);
+            Log.d(LOG_TAG, "error while trying to mount fat volume", ex);
         }
 
         return null;
