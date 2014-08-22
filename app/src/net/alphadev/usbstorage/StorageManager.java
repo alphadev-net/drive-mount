@@ -62,8 +62,14 @@ public class StorageManager {
     }
 
     private void tryMount(UsbDevice device) {
-        mMountedDevices.put(device, null);
+		Object entry = mMountedDevices.get(device);
+		if(entry != null){
+			return;
+		}
 
+		StorageDevice storage = null;
+
+        mMountedDevices.put(device, null);
         if (mStorageChangedListener != null) {
             mStorageChangedListener.onStorageChange();
         }
