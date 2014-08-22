@@ -132,4 +132,73 @@ public class UsbBlockDevice implements BlockDevice {
     private void checkClosed() {
         if (closed) throw new IllegalStateException("device already closed");
     }
+
+    private static class CommandBlockWrapper {
+        private static int tagCounter = 0;
+
+        private byte[] signature;
+        private int tag;
+        private int dataTransferLength;
+        private byte flags;
+        private byte LUN;
+        private byte cmdBlockLength;
+        private byte[] cmdBlock;
+
+        public CommandBlockWrapper() {
+            cmdBlock = new byte[16];
+            tag = tagCounter++;
+        }
+
+        public void setSignature(byte a, byte b, byte c, byte d) {
+            signature = new byte[]{ a, b, c, d};
+        }
+
+        public byte[] asBytes() {
+            return new byte[] {
+                    signature[0],
+                    signature[1],
+                    signature[2],
+                    signature[3],
+
+                    (byte) tag,                 // first 8 bit of tag
+                    (byte) (tag >>> 8),         // second 8 bit of tag
+                    (byte) (tag >>> 16),        // third 8 bit of tag
+                    (byte) (tag >>> 24),        // fourth 8 bit of tag
+
+                    (byte) dataTransferLength,
+                    (byte) (dataTransferLength >>> 8),
+                    (byte) (dataTransferLength >>> 16),
+                    (byte) (dataTransferLength >>> 24),
+
+                    flags,
+                    LUN,
+                    cmdBlockLength,
+
+                    cmdBlock[0], cmdBlock[1], cmdBlock[2], cmdBlock[3],
+                    cmdBlock[4], cmdBlock[5], cmdBlock[6], cmdBlock[7],
+                    cmdBlock[8], cmdBlock[9], cmdBlock[10], cmdBlock[11],
+                    cmdBlock[12], cmdBlock[13], cmdBlock[14], cmdBlock[15]
+            };
+        }
+
+        private static byte cdb_length[] = new byte[]{
+                //	 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+                06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06,  //  0
+                06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06, 06,  //  1
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  2
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  3
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  4
+                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  //  5
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  6
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  7
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  //  8
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  //  9
+                12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  //  A
+                12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  //  B
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  C
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  D
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  E
+                00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,  //  F
+        };
+    }
 }
