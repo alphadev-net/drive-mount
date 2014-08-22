@@ -89,6 +89,7 @@ public class StorageManager {
                 Log.d("Drive Mount", "Requesting access to USB device");
                 PendingIntent intent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
                 mUsbManager.requestPermission(device, intent);
+                continue;
             }
 
             Log.d("Drive Mount", "App already has access to USB device");
