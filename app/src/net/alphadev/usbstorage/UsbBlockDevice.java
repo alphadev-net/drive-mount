@@ -25,15 +25,12 @@ public class UsbBlockDevice implements BlockDevice {
     private UsbInterface mDataInterface;
     private UsbDeviceConnection mConnection;
 
-    private final Object mReadBufferLock = new Object();
-    private final Object mWriteBufferLock = new Object();
-
     private boolean readOnly;
     private boolean closed;
 
-    public UsbBlockDevice(Context ctx, UsbDevice device, final boolean readOnly) {
+    public UsbBlockDevice(Context ctx, UsbDevice device) {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
-		open(device, manager);
+        open(device, manager);
     }
 
     private void open(UsbDevice device, UsbManager manager) {

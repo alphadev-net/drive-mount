@@ -9,8 +9,8 @@ public class FatStorage implements StorageDevice {
 
 	private final FatFileSystem fs;
 
-	public FatStorage(UsbBlockDevice blockDevice) throws IOException {
-		fs = FatFileSystem.read(blockDevice, true);
+	public FatStorage(UsbBlockDevice blockDevice, boolean readOnly) throws IOException {
+		fs = FatFileSystem.read(blockDevice, readOnly);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.util.Set;
 public class StorageManager {
 
     public static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
+
     private static final String LOG_TAG = "Drive Mount";
 
     private final HashMap<UsbDevice, StorageDevice> mMountedDevices = new HashMap<>();
@@ -112,8 +113,8 @@ public class StorageManager {
 
     private StorageDevice mountAsFatFS(UsbDevice usbDevice) {
         try {
-            UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice, true);
-            return new FatStorage(blockDevice);
+            UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice);
+            return new FatStorage(blockDevice, true);
         } catch (Exception ex) {
             Log.d(LOG_TAG, "error while trying to mount fat volume", ex);
         }
