@@ -8,6 +8,7 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbRequest;
+import android.util.Log;
 
 import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
 
@@ -25,7 +26,6 @@ public class UsbBlockDevice implements BlockDevice {
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
     private UsbDeviceConnection mConnection;
-    private boolean readOnly;
     private boolean closed;
 
     public UsbBlockDevice(Context ctx, UsbDevice device) {
@@ -46,17 +46,13 @@ public class UsbBlockDevice implements BlockDevice {
             }
         }
 
-        this.readOnly = false;
         for (int i = 0; i < mDataInterface.getEndpointCount(); i++) {
             UsbEndpoint endpointProbe = mDataInterface.getEndpoint(i);
             if (endpointProbe.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
                 if (endpointProbe.getDirection() == UsbConstants.USB_DIR_IN) {
                     mReadEndpoint = endpointProbe;
                 } else {
-                    if (!readOnly) {
-                        mWriteEndpoint = endpointProbe;
-                        this.readOnly = false;
-                    }
+                    mWriteEndpoint = endpointProbe;
                 }
             }
         }
@@ -135,7 +131,7 @@ public class UsbBlockDevice implements BlockDevice {
 
     @Override
     public boolean isReadOnly() {
-        return readOnly;
+        return false;
     }
 
     private void checkClosed() {
