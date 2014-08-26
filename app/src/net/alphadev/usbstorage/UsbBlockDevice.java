@@ -7,7 +7,6 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.hardware.usb.UsbRequest;
 import android.util.Log;
 
 import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
@@ -84,29 +83,19 @@ public class UsbBlockDevice implements BlockDevice {
 
     @Override
     public void read(long offset, ByteBuffer byteBuffer) throws IOException {
-        checkClosed();
-
-        final UsbRequest request = new UsbRequest();
-        try {
-            request.initialize(mConnection, mReadEndpoint);
-            if (!request.queue(byteBuffer, mReadEndpoint.getMaxPacketSize())) {
-                throw new IOException("Error queueing request.");
-            }
-
-            final UsbRequest response = mConnection.requestWait();
-            if (mConnection.requestWait() != request) {
-                throw new IOException("Null response");
-            }
-        } finally {
-            request.close();
-        }
+        send_mass_storage_command(GENERIC_USB.READ_STUFF);
+        mConnection.bulkTransfer(mWriteEndpoint, byteBuffer.array(), byteBuffer.remaining(), 0);
     }
 
-    private int send_mass_storage_command(int command) {
+    private int send_mass_storage_command(int command) throws IOException {
+        checkClosed();
+        Log.d(LOG_TAG, "command: " + command);
+
         CommandBlockWrapper cbw = new CommandBlockWrapper();
         cbw.setSignature((byte) 'U', (byte) 'S', (byte) 'B', (byte) 'C');
 
-        return -1;
+        byte[] payload = cbw.asBytes();
+        return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, 0);
     }
 
     @Override
