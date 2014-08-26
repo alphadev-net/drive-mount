@@ -43,7 +43,7 @@ public class UsbBlockDevice implements BlockDevice {
             UsbInterface interfaceProbe = device.getInterface(i);
             if (interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
                 if (interfaceProbe.getInterfaceSubclass() == 0x6) {
-                    if (mDataInterface.getInterfaceProtocol() == 0x50) {
+                    if (interfaceProbe.getInterfaceProtocol() == 0x50) {
                         mDataInterface = device.getInterface(i);
                     } else {
                         throw new UnsupportedOperationException("Cannot talk to this USB device!");
