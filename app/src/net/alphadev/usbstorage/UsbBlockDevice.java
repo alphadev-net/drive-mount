@@ -20,8 +20,9 @@ import de.waldheinz.fs.ReadOnlyException;
 
 public class UsbBlockDevice implements BlockDevice {
 
-    public final static int DEFAULT_SECTOR_SIZE = 512;
+    public static final int DEFAULT_SECTOR_SIZE = 512;
     private static final String LOG_TAG = "Drive Mount";
+
     private UsbEndpoint mReadEndpoint;
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
@@ -34,7 +35,6 @@ public class UsbBlockDevice implements BlockDevice {
     }
 
     private void open(UsbDevice device, UsbManager manager) {
-
         if (!manager.hasPermission(device)) {
             throw new IllegalStateException("You don't have the permission to access this device!");
         }
@@ -42,7 +42,15 @@ public class UsbBlockDevice implements BlockDevice {
         for (int i = 0; i < device.getInterfaceCount(); i++) {
             UsbInterface interfaceProbe = device.getInterface(i);
             if (interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
-                mDataInterface = device.getInterface(i);
+                if (interfaceProbe.getInterfaceSubclass() == 0x6) {
+                    if (mDataInterface.getInterfaceProtocol() == 0x50) {
+                        mDataInterface = device.getInterface(i);
+                    } else {
+                        throw new UnsupportedOperationException("Cannot talk to this USB device!");
+                    }
+                } else {
+                    throw new UnsupportedOperationException("Cannot talk to this USB device!");
+                }
             }
         }
 
