@@ -66,7 +66,9 @@ public class UsbBlockDevice implements BlockDevice {
         }
 
         mConnection = manager.openDevice(device);
-        closed = false;
+        if(mConnection.claimInterface(mDataInterface, true)) {
+            closed = false;
+        }
     }
 
     @Override
@@ -127,6 +129,8 @@ public class UsbBlockDevice implements BlockDevice {
         if (mConnection == null) {
             throw new IOException("Already closed");
         }
+
+        mConnection.releaseInterface(mDataInterface);
         mConnection.close();
         mConnection = null;
         closed = true;
