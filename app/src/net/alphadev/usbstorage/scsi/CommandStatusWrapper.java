@@ -23,7 +23,7 @@ public class CommandStatusWrapper {
     }
 
     public String getSignature() {
-        return mSignature.toString();
+        return new String(mSignature);
     }
 
     public int getTag() {
