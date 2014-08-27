@@ -16,6 +16,7 @@ public class CommandStatusWrapper {
             throw new IllegalArgumentException("CSW always has a length of 13 bytes!");
         }
 
+        mSignature = new byte[4];
         mSignature[0x0] = data[0x0];
         mSignature[0x1] = data[0x1];
         mSignature[0x2] = data[0x2];
