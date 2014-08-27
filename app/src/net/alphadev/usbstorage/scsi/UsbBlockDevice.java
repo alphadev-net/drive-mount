@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage;
+package net.alphadev.usbstorage.scsi;
 
 import android.content.Context;
 import android.hardware.usb.UsbConstants;
@@ -70,6 +70,8 @@ public class UsbBlockDevice implements BlockDevice {
         if (mConnection.claimInterface(mDataInterface, true)) {
             closed = false;
         }
+
+        setup();
     }
 
     @Override
@@ -83,10 +85,14 @@ public class UsbBlockDevice implements BlockDevice {
         return 0;
     }
 
+    private void setup() {
+        //send_mass_storage_command(GENERIC_USB.SETUP);
+    }
+
     @Override
     public void read(long offset, ByteBuffer byteBuffer) throws IOException {
-        mConnection.bulkTransfer(mWriteEndpoint, byteBuffer.array(), byteBuffer.remaining(), 0);
         //send_mass_storage_command(GENERIC_USB.READ_STUFF);
+        mConnection.bulkTransfer(mReadEndpoint, byteBuffer.array(), byteBuffer.remaining(), 0);
     }
 
     private int send_mass_storage_command(byte... command) throws IOException {
@@ -164,5 +170,6 @@ public class UsbBlockDevice implements BlockDevice {
     private static final class GENERIC_USB {
         public static final int READ_CAPACITY_LENGTH = 0x08;
         public static final int READ_STUFF = 0x10;
+        public static final int SETUP = 00;
     }
 }

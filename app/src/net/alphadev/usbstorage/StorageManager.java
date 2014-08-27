@@ -9,7 +9,9 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import net.alphadev.usbstorage.impl.FatStorage;
+import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.filesystems.FatStorage;
+import net.alphadev.usbstorage.scsi.UsbBlockDevice;
 
 import java.util.HashMap;
 import java.util.HashSet;

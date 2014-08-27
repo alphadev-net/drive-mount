@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage;
+package net.alphadev.usbstorage.api;
 
 public interface StorageDevice {
 

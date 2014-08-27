@@ -1,18 +1,17 @@
-package net.alphadev.usbstorage;
+package net.alphadev.usbstorage.saf;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.hardware.usb.UsbManager;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
+
+import net.alphadev.usbstorage.R;
+import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.StorageManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
