@@ -19,7 +19,7 @@ import de.waldheinz.fs.ReadOnlyException;
 
 public class UsbBlockDevice implements BlockDevice {
 
-    public static final int DEFAULT_SECTOR_SIZE = 512;
+    public static final int DEFAULT_TRANSFER_SIZE = 512;
     private static final String LOG_TAG = "Drive Mount";
 
     private UsbEndpoint mReadEndpoint;
@@ -114,7 +114,7 @@ public class UsbBlockDevice implements BlockDevice {
 
     @Override
     public int getSectorSize() throws IOException {
-        return DEFAULT_SECTOR_SIZE;
+        return DEFAULT_TRANSFER_SIZE;
     }
 
     @Override
