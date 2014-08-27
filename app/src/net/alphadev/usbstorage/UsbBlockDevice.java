@@ -10,6 +10,7 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
+import net.alphadev.usbstorage.scsi.CommandStatusWrapper;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -90,7 +91,6 @@ public class UsbBlockDevice implements BlockDevice {
 
     private int send_mass_storage_command(byte... command) throws IOException {
         checkClosed();
-        Log.d(LOG_TAG, "command: " + command);
 
         CommandBlockWrapper cbw = new CommandBlockWrapper();
         cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
@@ -99,7 +99,17 @@ public class UsbBlockDevice implements BlockDevice {
         cbw.setCommand(command);
 
         byte[] payload = cbw.asBytes();
+        Log.d(LOG_TAG, "sending: " + payload);
         return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, 0);
+    }
+
+    private CommandStatusWrapper retrieve_mass_storage_answer() {
+        checkClosed();
+
+        byte[] buffer = new byte[13];
+        mConnection.bulkTransfer(mReadEndpoint, buffer, buffer.length, 0);
+        Log.d(LOG_TAG, "receiving: " + buffer);
+        return new CommandStatusWrapper(buffer);
     }
 
     @Override
