@@ -29,12 +29,12 @@ public class UsbBlockDevice implements BlockDevice {
     private boolean closed;
     private byte mLunToUse = 0;
 
-    public UsbBlockDevice(Context ctx, UsbDevice device) {
+    public UsbBlockDevice(Context ctx, UsbDevice device) throws IOException {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
         open(device, manager);
     }
 
-    private void open(UsbDevice device, UsbManager manager) {
+    private void open(UsbDevice device, UsbManager manager) throws IOException {
         if (!manager.hasPermission(device)) {
             throw new IllegalStateException("You don't have the permission to access this device!");
         }
@@ -84,8 +84,7 @@ public class UsbBlockDevice implements BlockDevice {
         return 0;
     }
 
-    private void setup() {
-        //send_mass_storage_command(GENERIC_USB.SETUP);
+    private void setup() throws IOException {
     }
 
     @Override
