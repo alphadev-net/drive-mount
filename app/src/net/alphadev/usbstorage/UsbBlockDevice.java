@@ -27,6 +27,7 @@ public class UsbBlockDevice implements BlockDevice {
     private UsbInterface mDataInterface;
     private UsbDeviceConnection mConnection;
     private boolean closed;
+    private byte mLunToUse = 0;
 
     public UsbBlockDevice(Context ctx, UsbDevice device) {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
@@ -65,7 +66,7 @@ public class UsbBlockDevice implements BlockDevice {
         }
 
         mConnection = manager.openDevice(device);
-        if(mConnection.claimInterface(mDataInterface, true)) {
+        if (mConnection.claimInterface(mDataInterface, true)) {
             closed = false;
         }
     }
@@ -74,7 +75,7 @@ public class UsbBlockDevice implements BlockDevice {
     public long getSize() throws IOException {
         checkClosed();
 
-        int retval = send_mass_storage_command(GENERIC_USB.READ_CAPACITY_LENGTH);
+        //int retval = send_mass_storage_command(GENERIC_USB.READ_CAPACITY_LENGTH);
         // create a usb request and ask for the drives size.
         // READ_CAPACITY_LENGTH
 
@@ -83,16 +84,19 @@ public class UsbBlockDevice implements BlockDevice {
 
     @Override
     public void read(long offset, ByteBuffer byteBuffer) throws IOException {
-        send_mass_storage_command(GENERIC_USB.READ_STUFF);
         mConnection.bulkTransfer(mWriteEndpoint, byteBuffer.array(), byteBuffer.remaining(), 0);
+        //send_mass_storage_command(GENERIC_USB.READ_STUFF);
     }
 
-    private int send_mass_storage_command(int command) throws IOException {
+    private int send_mass_storage_command(byte... command) throws IOException {
         checkClosed();
         Log.d(LOG_TAG, "command: " + command);
 
         CommandBlockWrapper cbw = new CommandBlockWrapper();
-        cbw.setSignature((byte) 'U', (byte) 'S', (byte) 'B', (byte) 'C');
+        cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
+        cbw.setLun(mLunToUse);
+        cbw.setTransferLength(DEFAULT_TRANSFER_SIZE);
+        cbw.setCommand(command);
 
         byte[] payload = cbw.asBytes();
         return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, 0);
