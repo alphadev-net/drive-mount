@@ -44,8 +44,9 @@ public class CommandBlockWrapper {
             throw new IllegalArgumentException("command has invalid size!");
         }
 
+        int cmdOffset = 0xf;
         for (int i = 0; i < cmdBlock.length; i++) {
-            cwbData[i] = cmdBlock[i];
+            cwbData[i+cmdOffset] = cmdBlock[i];
         }
 
         cwbData[0xe] = (byte) cmdBlock.length;
