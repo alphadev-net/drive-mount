@@ -1,6 +1,7 @@
 package net.alphadev.usbstorage.scsi;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Created by jan on 27.08.14.
@@ -22,8 +23,8 @@ public class CommandStatusWrapper {
         mSignature[0x2] = data[0x2];
         mSignature[0x3] = data[0x3];
 
-        mTag = ByteBuffer.wrap(data, 0x4, 4).getInt();
-        mDataResidue = ByteBuffer.wrap(data, 0x8, 4).getInt();
+        mTag = ByteBuffer.wrap(data, 0x4, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+        mDataResidue = mTag = ByteBuffer.wrap(data, 0x8, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
         mStatus = data[0xc];
     }
 
