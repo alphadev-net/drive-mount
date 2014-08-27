@@ -26,13 +26,11 @@ public class CommandStatusWrapperTest {
 
     @Test
     public void testSignature() {
-        String result = csw.getSignature();
-        Assert.assertEquals("USBS", result);
+        Assert.assertEquals("USBS", csw.getSignature());
     }
 
     @Test
     public void testTag() {
-        int result = csw.getTag();
-        Assert.assertEquals(1, result);
+        Assert.assertEquals(1, csw.getTag());
     }
 }

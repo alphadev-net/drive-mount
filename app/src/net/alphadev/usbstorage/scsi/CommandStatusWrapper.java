@@ -12,7 +12,7 @@ public class CommandStatusWrapper {
     private byte mStatus;
 
     public CommandStatusWrapper(byte[] data) {
-        if(data.length != 13) {
+        if (data.length != 13) {
             throw new IllegalArgumentException("CSW always has a length of 13 bytes!");
         }
 
