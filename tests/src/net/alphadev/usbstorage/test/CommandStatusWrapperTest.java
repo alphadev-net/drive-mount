@@ -2,7 +2,7 @@ package net.alphadev.usbstorage.test;
 
 import org.junit.Assert;
 
-import net.alphadev.usbstorage.scsi.CommandStatusWrapper;
+import net.alphadev.usbstorage.bbb.CommandStatusWrapper;
 
 import org.junit.Before;
 import org.junit.Test;

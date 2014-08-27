@@ -2,7 +2,7 @@ package net.alphadev.usbstorage.filesystems;
 
 import de.waldheinz.fs.fat.FatFileSystem;
 import net.alphadev.usbstorage.api.StorageDevice;
-import net.alphadev.usbstorage.scsi.UsbBlockDevice;
+import net.alphadev.usbstorage.bbb.UsbBlockDevice;
 import java.io.IOException;
 
 public class FatStorage implements StorageDevice {

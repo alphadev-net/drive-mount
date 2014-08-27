@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.scsi;
+package net.alphadev.usbstorage.bbb;
 
 /**
  * Created by jan on 27.08.14.

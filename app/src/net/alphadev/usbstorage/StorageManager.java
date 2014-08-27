@@ -11,7 +11,7 @@ import android.util.Log;
 
 import net.alphadev.usbstorage.api.StorageDevice;
 import net.alphadev.usbstorage.filesystems.FatStorage;
-import net.alphadev.usbstorage.scsi.UsbBlockDevice;
+import net.alphadev.usbstorage.bbb.UsbBlockDevice;
 
 import java.util.HashMap;
 import java.util.HashSet;

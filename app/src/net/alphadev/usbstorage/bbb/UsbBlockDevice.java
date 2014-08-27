@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.scsi;
+package net.alphadev.usbstorage.bbb;
 
 import android.content.Context;
 import android.hardware.usb.UsbConstants;
@@ -8,9 +8,6 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
-
-import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
-import net.alphadev.usbstorage.scsi.CommandStatusWrapper;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
