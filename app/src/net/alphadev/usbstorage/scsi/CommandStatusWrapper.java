@@ -52,4 +52,10 @@ public class CommandStatusWrapper {
     public byte getStatus() {
         return mStatus;
     }
+
+    public static final class Status {
+        public static final int COMMAND_PASSED = 0;
+        public static final int COMMAND_FAILED = 1;
+        public static final int PHASE_ERROR = 2;
+    }
 }

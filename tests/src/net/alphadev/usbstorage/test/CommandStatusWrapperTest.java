@@ -33,4 +33,14 @@ public class CommandStatusWrapperTest {
     public void testTag() {
         Assert.assertEquals(1, csw.getTag());
     }
+
+    @Test
+    public void testStatus() {
+        Assert.assertEquals(CommandStatusWrapper.Status.COMMAND_PASSED, csw.getStatus());
+    }
+
+    @Test
+    public void testDataResidue() {
+        Assert.assertEquals(0, csw.getDataResidue());
+    }
 }
