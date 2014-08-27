@@ -1,5 +1,6 @@
 package net.alphadev.usbstorage.test;
 
+import net.alphadev.usbstorage.api.Transmittable;
 import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 
 import org.junit.Assert;
@@ -18,7 +19,20 @@ public class CommandBlockWrapperTest {
         cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
         cbw.setLun((byte) 0);
         cbw.setTransferLength(512);
-        cbw.setCommand(new byte[]{1, 2, 3, 4, 5, 6});
+        cbw.setCommand(new TransmittableDummy(new byte[]{1, 2, 3, 4, 5, 6}));
+    }
+
+    private static class TransmittableDummy implements Transmittable{
+        private byte[] data;
+
+        private TransmittableDummy(byte[] data) {
+            this.data = data;
+        }
+
+        @Override
+        public byte[] asBytes() {
+            return data;
+        }
     }
 
     @Test

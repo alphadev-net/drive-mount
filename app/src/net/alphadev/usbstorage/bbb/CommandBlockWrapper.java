@@ -1,9 +1,11 @@
 package net.alphadev.usbstorage.bbb;
 
+import net.alphadev.usbstorage.api.Transmittable;
+
 /**
  * Created by jan on 26.08.14.
  */
-public class CommandBlockWrapper {
+public class CommandBlockWrapper implements Transmittable {
     private static int tagCounter = 0;
     private final byte[] cwbData;
 
@@ -39,7 +41,9 @@ public class CommandBlockWrapper {
         cwbData[0xd] = lun;
     }
 
-    public void setCommand(byte[] cmdBlock) {
+    public void setCommand(Transmittable command) {
+        byte[] cmdBlock = command.asBytes();
+
         if (cmdBlock.length > 16) {
             throw new IllegalArgumentException("command has invalid size!");
         }

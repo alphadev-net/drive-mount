@@ -9,6 +9,8 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
+import net.alphadev.usbstorage.api.Transmittable;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -92,7 +94,7 @@ public class UsbBlockDevice implements BlockDevice {
         mConnection.bulkTransfer(mReadEndpoint, byteBuffer.array(), byteBuffer.remaining(), 0);
     }
 
-    private int send_mass_storage_command(byte... command) throws IOException {
+    private int send_mass_storage_command(Transmittable command) throws IOException {
         checkClosed();
 
         CommandBlockWrapper cbw = new CommandBlockWrapper();
