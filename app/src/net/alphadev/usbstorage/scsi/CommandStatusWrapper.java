@@ -1,8 +1,5 @@
 package net.alphadev.usbstorage.scsi;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 /**
  * Created by jan on 27.08.14.
  */
@@ -23,9 +20,21 @@ public class CommandStatusWrapper {
         mSignature[0x2] = data[0x2];
         mSignature[0x3] = data[0x3];
 
-        mTag = ByteBuffer.wrap(data, 0x4, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
-        mDataResidue = mTag = ByteBuffer.wrap(data, 0x8, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+        mTag = convertToInt(data, 0x4);
+        mDataResidue = convertToInt(data, 0x8);
         mStatus = data[0xc];
+    }
+
+    private static int convertToInt(byte[] byteArray, int offset) {
+        byte c1 = byteArray[offset + 3];
+        byte c2 = byteArray[offset + 2];
+        byte c3 = byteArray[offset + 1];
+        byte c4 = byteArray[offset];
+
+        long temp =
+                ((0xFF & c1) << 24) | ((0xFF & c2) << 16) | ((0xFF & c3) << 8) | (0xFF & c4);
+
+        return (int) (temp & 0x0FFFFFFFFL);
     }
 
     public String getSignature() {
