@@ -17,7 +17,7 @@ public class CommandStatusWrapperTest {
     public void init() {
         byte[] statusData = new byte[]{
             0x55, 0x53, 0x42, 0x53, // signature
-             0x1,  0x0,  0x0,  0x1, // tag
+             0x1,  0x0,  0x0,  0x0, // tag
              0x0,  0x0,  0x0,  0x0, // data residue
              0x0 // status flag
         };
