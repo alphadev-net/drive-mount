@@ -5,4 +5,5 @@ package net.alphadev.usbstorage.api;
  */
 public interface Transmittable {
     byte[] asBytes();
+    int getExpectedAnswerLength();
 }

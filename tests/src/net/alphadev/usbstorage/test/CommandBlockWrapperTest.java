@@ -18,7 +18,6 @@ public class CommandBlockWrapperTest {
         cbw = new CommandBlockWrapper();
         cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
         cbw.setLun((byte) 0);
-        cbw.setTransferLength(512);
         cbw.setCommand(new TransmittableDummy(new byte[]{1, 2, 3, 4, 5, 6}));
     }
 
@@ -33,6 +32,11 @@ public class CommandBlockWrapperTest {
         public byte[] asBytes() {
             return data;
         }
+
+        @Override
+        public int getExpectedAnswerLength() {
+            return 36;
+        }
     }
 
     @Test
@@ -40,7 +44,7 @@ public class CommandBlockWrapperTest {
         byte[] expected = new byte[]{
                 0x55, 0x53, 0x42, 0x43, // signature
                 0x1, 0x0, 0x0, 0x0, // tag
-                0x0, 0x2, 0x0, 0x0, // transfer length
+                0x24, 0x0, 0x0, 0x0, // transfer length
                 0x0, // flags
                 0x0, // lun
                 0x6, // length

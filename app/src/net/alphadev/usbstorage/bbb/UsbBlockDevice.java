@@ -109,7 +109,6 @@ public class UsbBlockDevice implements BlockDevice {
         CommandBlockWrapper cbw = new CommandBlockWrapper();
         cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
         cbw.setLun(mLunToUse);
-        cbw.setTransferLength(DEFAULT_TRANSFER_SIZE);
         cbw.setCommand(command);
 
         byte[] payload = cbw.asBytes();

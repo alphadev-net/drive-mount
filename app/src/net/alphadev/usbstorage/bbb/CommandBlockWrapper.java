@@ -25,10 +25,6 @@ public class CommandBlockWrapper implements Transmittable {
         setBytesFromInt(tagCounter, cwbData, 0x4, 4);
     }
 
-    public void setTransferLength(int transferLength) {
-        setBytesFromInt(transferLength, cwbData, 0x8, 4);
-    }
-
     public void setFlags(Direction directionFlags) {
         cwbData[0xc] = (byte) (directionFlags == Direction.DEVICE_TO_HOST?128:0);
     }
@@ -50,10 +46,16 @@ public class CommandBlockWrapper implements Transmittable {
         }
 
         cwbData[0xe] = (byte) cmdBlock.length;
+        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, 4);
     }
 
     public byte[] asBytes() {
         return cwbData.clone();
+    }
+
+    @Override
+    public int getExpectedAnswerLength() {
+        return 0;
     }
 
     public enum Direction {

@@ -23,4 +23,9 @@ public class Inquiry extends ScsiCommand {
         buffer[4] = LENGTH;    // LENGTH
         return buffer;
     }
+
+    @Override
+    public int getExpectedAnswerLength() {
+        return LENGTH;
+    }
 }
