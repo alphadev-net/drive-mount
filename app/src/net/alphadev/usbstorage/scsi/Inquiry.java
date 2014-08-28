@@ -1,5 +1,7 @@
 package net.alphadev.usbstorage.scsi;
 
+import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
+
 /**
  * Created by jan on 28.08.14.
  */
@@ -27,5 +29,10 @@ public class Inquiry extends ScsiCommand {
     @Override
     public int getExpectedAnswerLength() {
         return LENGTH;
+    }
+
+    @Override
+    public CommandBlockWrapper.Direction getDirection() {
+        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
     }
 }

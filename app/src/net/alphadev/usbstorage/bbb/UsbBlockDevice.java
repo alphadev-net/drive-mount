@@ -103,11 +103,11 @@ public class UsbBlockDevice implements BlockDevice {
         mConnection.bulkTransfer(mReadEndpoint, byteBuffer.array(), byteBuffer.remaining(), 0);
     }
 
-    private int send_mass_storage_command(Transmittable command) throws IOException {
+    private int send_mass_storage_command(ScsiCommand command) throws IOException {
         checkClosed();
 
         CommandBlockWrapper cbw = new CommandBlockWrapper();
-        cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
+        cbw.setFlags(command.getDirection());
         cbw.setLun(mLunToUse);
         cbw.setCommand(command);
 
