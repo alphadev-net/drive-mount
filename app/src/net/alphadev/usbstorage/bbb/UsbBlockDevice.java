@@ -20,6 +20,8 @@ import java.nio.ByteBuffer;
 import de.waldheinz.fs.BlockDevice;
 import de.waldheinz.fs.ReadOnlyException;
 
+import static net.alphadev.usbstorage.util.BitStitching.bytesToHex;
+
 public class UsbBlockDevice implements BlockDevice {
 
     public static final int DEFAULT_TRANSFER_SIZE = 512;
@@ -36,13 +38,6 @@ public class UsbBlockDevice implements BlockDevice {
     public UsbBlockDevice(Context ctx, UsbDevice device) throws IOException {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
         open(device, manager);
-    }
-
-    private static String bytesToHex(byte[] a) {
-        StringBuilder sb = new StringBuilder(a.length * 2);
-        for (byte b : a)
-            sb.append(String.format("%02x ", b & 0xff));
-        return sb.toString();
     }
 
     private void open(UsbDevice device, UsbManager manager) throws IOException {

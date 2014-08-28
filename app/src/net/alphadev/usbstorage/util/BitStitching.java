@@ -20,7 +20,8 @@ public class BitStitching {
     }
 
     public static void setBytesFromInt(int integer, byte[] array, int offset, int length) {
-        ByteBuffer b = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer b = ByteBuffer.allocate(4);
+        b.order(ByteOrder.LITTLE_ENDIAN);
         b.putInt(integer);
         byte[] temp = b.array();
 
@@ -28,5 +29,12 @@ public class BitStitching {
             int index = offset + i;
             array[index] = temp[i];
         }
+    }
+
+    public static String bytesToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a)
+            sb.append(String.format("%02x ", b & 0xff));
+        return sb.toString();
     }
 }
