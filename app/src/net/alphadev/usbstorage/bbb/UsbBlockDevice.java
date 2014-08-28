@@ -24,6 +24,7 @@ public class UsbBlockDevice implements BlockDevice {
     public static final int DEFAULT_TRANSFER_SIZE = 512;
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final String LOG_TAG = "Drive Mount";
+    private static final int TIMEOUT = 20000;
     private UsbEndpoint mReadEndpoint;
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
@@ -115,16 +116,21 @@ public class UsbBlockDevice implements BlockDevice {
 
         byte[] payload = cbw.asBytes();
         Log.d(LOG_TAG, "sending: " + bytesToHex(payload));
-        return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, 0);
+        return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, TIMEOUT);
     }
 
     private CommandStatusWrapper retrieve_mass_storage_answer() {
+        byte[] buffer = retrieve_data_packet(13);
+        return new CommandStatusWrapper(buffer);
+    }
+
+    private byte[] retrieve_data_packet(int expected_length) {
         checkClosed();
 
-        byte[] buffer = new byte[13];
-        mConnection.bulkTransfer(mReadEndpoint, buffer, buffer.length, 0);
-        return new CommandStatusWrapper(buffer);
+        byte[] buffer = new byte[expected_length];
+        int result = mConnection.bulkTransfer(mReadEndpoint, buffer, buffer.length, TIMEOUT);
         Log.d(LOG_TAG, "receiving: " + bytesToHex(buffer));
+        return buffer;
     }
 
     @Override
