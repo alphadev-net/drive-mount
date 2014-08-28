@@ -2,6 +2,8 @@ package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.Transmittable;
 
+import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
+
 /**
  * Created by jan on 26.08.14.
  */
@@ -20,17 +22,11 @@ public class CommandBlockWrapper implements Transmittable {
 
         // increase and write tag counter
         tagCounter++;
-        cwbData[0x4] = (byte) tagCounter;                 // first 8 bit of tag
-        cwbData[0x5] = (byte) (tagCounter >>> 8);         // second 8 bit of tag
-        cwbData[0x6] = (byte) (tagCounter >>> 16);        // third 8 bit of tag
-        cwbData[0x7] = (byte) (tagCounter >>> 24);        // fourth 8 bit of tag
+        setBytesFromInt(tagCounter, cwbData, 0x4, 4);
     }
 
     public void setTransferLength(int transferLength) {
-        cwbData[0x8] = (byte) transferLength;
-        cwbData[0x9] = (byte) (transferLength >>> 8);
-        cwbData[0xa] = (byte) (transferLength >>> 16);
-        cwbData[0xb] = (byte) (transferLength >>> 24);
+        setBytesFromInt(transferLength, cwbData, 0x8, 4);
     }
 
     public void setFlags(Direction directionFlags) {
