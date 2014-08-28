@@ -37,4 +37,17 @@ public class BitStitching {
             sb.append(String.format("%02x ", b & 0xff));
         return sb.toString();
     }
+
+    public static short convertToShort(byte[] byteArray, int offset) {
+        byte c1 = byteArray[offset + 1];
+        byte c2 = byteArray[offset];
+        long temp = ((0xFF & c1) << 8) | (0xFF & c2);
+        return (short) (temp & 0x0FFFFFFFFL);
+    }
+
+    public static String bytesToString(byte[] answer, int offset, int length) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.put(answer, offset, length);
+        return new String(buffer.array());
+    }
 }
