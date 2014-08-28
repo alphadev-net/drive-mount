@@ -22,9 +22,9 @@ import de.waldheinz.fs.ReadOnlyException;
 public class UsbBlockDevice implements BlockDevice {
 
     public static final int DEFAULT_TRANSFER_SIZE = 512;
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final String LOG_TAG = "Drive Mount";
     private static final int TIMEOUT = 20000;
+
     private UsbEndpoint mReadEndpoint;
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
