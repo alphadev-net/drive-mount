@@ -12,6 +12,7 @@ import android.util.Log;
 import net.alphadev.usbstorage.api.Transmittable;
 import net.alphadev.usbstorage.scsi.Inquiry;
 import net.alphadev.usbstorage.scsi.ScsiCommand;
+import net.alphadev.usbstorage.scsi.StandardInquiryAnswer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -96,7 +97,9 @@ public class UsbBlockDevice implements BlockDevice {
 
     private void setup() throws IOException {
         ScsiCommand cmd = new Inquiry();
-        send_mass_storage_command(cmd);
+        int result = send_mass_storage_command(cmd);
+        byte[] answer = retrieve_data_packet(Inquiry.LENGTH);
+        StandardInquiryAnswer bla = new StandardInquiryAnswer(answer);
     }
 
     @Override
