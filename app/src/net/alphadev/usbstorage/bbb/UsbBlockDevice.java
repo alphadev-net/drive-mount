@@ -36,7 +36,7 @@ public class UsbBlockDevice implements BlockDevice {
         open(device, manager);
     }
 
-    public static String bytesToHex(byte[] a) {
+    private static String bytesToHex(byte[] a) {
         StringBuilder sb = new StringBuilder(a.length * 2);
         for (byte b : a)
             sb.append(String.format("%02x ", b & 0xff));
@@ -166,19 +166,5 @@ public class UsbBlockDevice implements BlockDevice {
 
     private void checkClosed() {
         if (closed) throw new IllegalStateException("device already closed");
-    }
-
-    /**
-     * Bulk-Only Mass Storage Class specifications
-     */
-    private static final class BOMS {
-        public static final int BOMS_RESET = 0xFF;
-        public static final int BOMS_GET_MAX_LUN = 0xFE;
-    }
-
-    private static final class GENERIC_USB {
-        public static final int READ_CAPACITY_LENGTH = 0x08;
-        public static final int READ_STUFF = 0x10;
-        public static final int SETUP = 00;
     }
 }
