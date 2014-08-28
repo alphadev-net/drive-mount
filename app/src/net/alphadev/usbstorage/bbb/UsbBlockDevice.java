@@ -22,8 +22,8 @@ import de.waldheinz.fs.ReadOnlyException;
 public class UsbBlockDevice implements BlockDevice {
 
     public static final int DEFAULT_TRANSFER_SIZE = 512;
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final String LOG_TAG = "Drive Mount";
-
     private UsbEndpoint mReadEndpoint;
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
@@ -34,6 +34,13 @@ public class UsbBlockDevice implements BlockDevice {
     public UsbBlockDevice(Context ctx, UsbDevice device) throws IOException {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
         open(device, manager);
+    }
+
+    public static String bytesToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a)
+            sb.append(String.format("%02x ", b & 0xff));
+        return sb.toString();
     }
 
     private void open(UsbDevice device, UsbManager manager) throws IOException {
@@ -107,7 +114,7 @@ public class UsbBlockDevice implements BlockDevice {
         cbw.setCommand(command);
 
         byte[] payload = cbw.asBytes();
-        Log.d(LOG_TAG, "sending: " + payload);
+        Log.d(LOG_TAG, "sending: " + bytesToHex(payload));
         return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, 0);
     }
 
@@ -116,8 +123,8 @@ public class UsbBlockDevice implements BlockDevice {
 
         byte[] buffer = new byte[13];
         mConnection.bulkTransfer(mReadEndpoint, buffer, buffer.length, 0);
-        Log.d(LOG_TAG, "receiving: " + buffer);
         return new CommandStatusWrapper(buffer);
+        Log.d(LOG_TAG, "receiving: " + bytesToHex(buffer));
     }
 
     @Override
