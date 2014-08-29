@@ -10,6 +10,8 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import net.alphadev.usbstorage.scsi.Inquiry;
+import net.alphadev.usbstorage.scsi.ReadFormatCapacities;
+import net.alphadev.usbstorage.scsi.ReadFormatCapacitiesData;
 import net.alphadev.usbstorage.scsi.ScsiCommand;
 import net.alphadev.usbstorage.scsi.StandardInquiryAnswer;
 
@@ -100,6 +102,8 @@ public class UsbBlockDevice implements BlockDevice {
             throw new IllegalStateException("device signaled error state!");
         }
 
+        send_mass_storage_command(new ReadFormatCapacities());
+        answer = retrieve_data_packet(ReadFormatCapacitiesData.LENGTH);
     }
 
     @Override
