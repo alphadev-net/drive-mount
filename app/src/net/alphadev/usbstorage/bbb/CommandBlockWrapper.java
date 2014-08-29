@@ -22,7 +22,7 @@ public class CommandBlockWrapper implements Transmittable {
 
         // increase and write tag counter
         tagCounter++;
-        setBytesFromInt(tagCounter, cwbData, 0x4, 4);
+        setBytesFromInt(tagCounter, cwbData, 0x4);
     }
 
     public void setFlags(Direction directionFlags) {
@@ -46,7 +46,7 @@ public class CommandBlockWrapper implements Transmittable {
         }
 
         cwbData[0xe] = (byte) cmdBlock.length;
-        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, 4);
+        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8);
     }
 
     public byte[] asBytes() {

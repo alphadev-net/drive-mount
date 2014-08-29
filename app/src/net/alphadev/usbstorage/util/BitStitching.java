@@ -19,16 +19,13 @@ public class BitStitching {
         return (int) (temp & 0x0FFFFFFFFL);
     }
 
-    public static void setBytesFromInt(int integer, byte[] array, int offset, int length) {
+    public static void setBytesFromInt(int integer, byte[] array, int offset) {
         ByteBuffer b = ByteBuffer.allocate(4);
         b.order(ByteOrder.LITTLE_ENDIAN);
         b.putInt(integer);
         byte[] temp = b.array();
 
-        for (int i = 0; i < temp.length; i++) {
-            int index = offset + i;
-            array[index] = temp[i];
-        }
+        setBytes(temp, array, offset, 4);
     }
 
     public static String bytesToHex(byte[] a) {
@@ -49,5 +46,21 @@ public class BitStitching {
         ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put(answer, offset, length);
         return new String(buffer.array());
+    }
+
+    public static void setBytesFromShort(short value, byte[] array, int offset) {
+        ByteBuffer b = ByteBuffer.allocate(2);
+        b.order(ByteOrder.LITTLE_ENDIAN);
+        b.putShort(value);
+        byte[] temp = b.array();
+
+        setBytes(temp, array, offset, 2);
+    }
+
+    private static void setBytes(byte[] a, byte[] array, int offset, int length) {
+        for (int i = 0; i < length; i++) {
+            int index = offset + i;
+            array[index] = a[i];
+        }
     }
 }
