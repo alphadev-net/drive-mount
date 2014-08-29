@@ -96,6 +96,10 @@ public class UsbBlockDevice implements BlockDevice {
         StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
 
         CommandStatusWrapper csw = retrieve_mass_storage_answer();
+        if(CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
+            throw new IllegalStateException("device signaled error state!");
+        }
+
     }
 
     @Override

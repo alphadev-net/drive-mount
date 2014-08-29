@@ -39,13 +39,20 @@ public class CommandStatusWrapper {
         return mDataResidue;
     }
 
-    public byte getStatus() {
-        return mStatus;
+    public Status getStatus() {
+        switch (mStatus) {
+            case 0:
+                return Status.COMMAND_PASSED;
+            case 2:
+                return Status.PHASE_ERROR;
+            default:
+                return Status.COMMAND_FAILED;
+        }
     }
 
-    public static final class Status {
-        public static final int COMMAND_PASSED = 0;
-        public static final int COMMAND_FAILED = 1;
-        public static final int PHASE_ERROR = 2;
+    public static enum Status {
+        COMMAND_PASSED,
+        COMMAND_FAILED,
+        PHASE_ERROR
     }
 }
