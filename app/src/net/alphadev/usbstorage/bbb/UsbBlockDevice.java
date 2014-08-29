@@ -94,6 +94,8 @@ public class UsbBlockDevice implements BlockDevice {
 
         byte[] answer = retrieve_data_packet(Inquiry.LENGTH);
         StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
+
+        CommandStatusWrapper csw = retrieve_mass_storage_answer();
     }
 
     @Override

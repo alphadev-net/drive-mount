@@ -11,7 +11,12 @@ public class StandardInquiryAnswer {
     private boolean mRemovable;
     private boolean mAerc;
     private boolean mNormAca;
+
+    /**
+     * Hierarchical Addressing Support
+     */
     private boolean mHiSup;
+
     private byte mResponseDataFormat;
     private byte mAdditionalLength;
     private boolean mSccs;
