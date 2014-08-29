@@ -92,7 +92,7 @@ public class UsbBlockDevice implements BlockDevice {
     private void setup() throws IOException {
         send_mass_storage_command(new Inquiry());
 
-        byte[] answer = retrieve_data_packet(Inquiry.LENGTH);
+        byte[] answer = retrieve_data_packet(StandardInquiryAnswer.LENGTH);
         StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
 
         CommandStatusWrapper csw = retrieve_mass_storage_answer();

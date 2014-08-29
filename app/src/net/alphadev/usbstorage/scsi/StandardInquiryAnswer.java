@@ -6,6 +6,8 @@ import static net.alphadev.usbstorage.util.BitStitching.bytesToString;
  * Created by jan on 28.08.14.
  */
 public class StandardInquiryAnswer {
+    public static final byte LENGTH = 0x24;
+
     private byte mPeripheralQualifier;
     private byte mPeripheralDeviceType;
     private boolean mRemovable;
@@ -33,7 +35,7 @@ public class StandardInquiryAnswer {
     private byte mVersion;
 
     public StandardInquiryAnswer(byte[] answer) {
-        if(answer.length != Inquiry.LENGTH) {
+        if(answer.length != LENGTH) {
             throw new IllegalArgumentException("Inquiry answer has invalid length!");
         }
 

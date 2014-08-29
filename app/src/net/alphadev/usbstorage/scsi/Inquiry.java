@@ -7,7 +7,6 @@ import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
  */
 public class Inquiry extends ScsiCommand {
     public static final byte INQUIRY = 0x12;
-    public static final byte LENGTH = 0x24;
 
     private boolean mCmdDt;
     private boolean mEvpd;
@@ -22,13 +21,13 @@ public class Inquiry extends ScsiCommand {
         buffer[0] = INQUIRY; // opcode
         if(mCmdDt) {buffer[1]+=2;}
         if(mEvpd) {buffer[1]+=1;}
-        buffer[4] = LENGTH;    // LENGTH
+        buffer[4] = StandardInquiryAnswer.LENGTH;    // LENGTH
         return buffer;
     }
 
     @Override
     public int getExpectedAnswerLength() {
-        return LENGTH;
+        return StandardInquiryAnswer.LENGTH;
     }
 
     @Override
