@@ -46,7 +46,7 @@ public class BitStitching {
     }
 
     public static String bytesToString(byte[] answer, int offset, int length) {
-        ByteBuffer buffer = ByteBuffer.allocate(8);
+        ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put(answer, offset, length);
         return new String(buffer.array());
     }
