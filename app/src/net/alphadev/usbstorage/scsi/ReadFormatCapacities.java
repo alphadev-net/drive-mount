@@ -22,12 +22,12 @@ public class ReadFormatCapacities extends ScsiCommand {
     public byte[] asBytes() {
         byte[] retval = new byte[10];
         retval[0] = READ_FORMAT_CAPACITIES; // opcode
-        setBytesFromShort((short)ReadFormatCapacitiesData.LENGTH, retval, 7);
+        setBytesFromShort((short)getExpectedAnswerLength(), retval, 7);
         return retval;
     }
 
     @Override
     public int getExpectedAnswerLength() {
-        return 0;
+        return 512;
     }
 }

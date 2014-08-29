@@ -84,11 +84,12 @@ public class UsbBlockDevice implements BlockDevice {
     public long getSize() throws IOException {
         checkClosed();
 
-        //int retval = send_mass_storage_command(GENERIC_USB.READ_CAPACITY_LENGTH);
-        // create a usb request and ask for the drives size.
-        // READ_CAPACITY_LENGTH
+        ReadFormatCapacities cmd = new ReadFormatCapacities();
+        send_mass_storage_command(cmd);
+        byte[] answer = retrieve_data_packet(cmd.getExpectedAnswerLength());
+        ReadFormatCapacitiesData capacity = new ReadFormatCapacitiesData(answer);
 
-        return 0;
+        return capacity.getCapacity(0);
     }
 
     private void setup() throws IOException {
@@ -101,9 +102,6 @@ public class UsbBlockDevice implements BlockDevice {
         if(CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
             throw new IllegalStateException("device signaled error state!");
         }
-
-        send_mass_storage_command(new ReadFormatCapacities());
-        answer = retrieve_data_packet(ReadFormatCapacitiesData.LENGTH);
     }
 
     @Override
