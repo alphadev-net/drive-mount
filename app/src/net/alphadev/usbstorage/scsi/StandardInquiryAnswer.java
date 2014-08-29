@@ -45,4 +45,8 @@ public class StandardInquiryAnswer {
         mProductId = bytesToString(answer, 16, 16);
         mRevisionId = bytesToString(answer, 32, 4);
     }
+
+    public byte getAdditionalLength() {
+        return mAdditionalLength;
+    }
 }

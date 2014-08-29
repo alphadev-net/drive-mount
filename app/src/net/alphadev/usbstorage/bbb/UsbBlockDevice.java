@@ -93,7 +93,7 @@ public class UsbBlockDevice implements BlockDevice {
         send_mass_storage_command(new Inquiry());
 
         byte[] answer = retrieve_data_packet(Inquiry.LENGTH);
-        StandardInquiryAnswer bla = new StandardInquiryAnswer(answer);
+        StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
     }
 
     @Override
