@@ -28,6 +28,6 @@ public class ReadFormatCapacities extends ScsiCommand {
 
     @Override
     public int getExpectedAnswerLength() {
-        return 512;
+        return 12;
     }
 }
