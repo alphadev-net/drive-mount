@@ -21,4 +21,11 @@ public class ReadFormatCapacitiesHeader {
     public int getCapacityEntryCount() {
         return mCapacityListLength;
     }
+
+    public static enum DescriptorTypes {
+        RESERVED,
+        UNFORMATTED_MEDIA,
+        FORMATTED_MEDIA,
+        NO_MEDIA_PRESENT
+    }
 }
