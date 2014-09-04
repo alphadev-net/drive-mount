@@ -89,36 +89,39 @@ public class UsbBlockDevice implements BlockDevice {
     }
 
     private void setup() throws IOException {
-        {
-            send_mass_storage_command(new Inquiry());
+        setupInquiryPhase();
+        setupCapacityPhase();
+    }
 
-            byte[] answer = retrieve_data_packet(StandardInquiryAnswer.LENGTH);
-            StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
+    private void setupCapacityPhase() throws IOException {
+        ReadFormatCapacities cmd = new ReadFormatCapacities();
+        send_mass_storage_command(cmd);
+        byte[] answer = retrieve_data_packet(cmd.getExpectedAnswerLength());
+        ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
 
-            CommandStatusWrapper csw = retrieve_mass_storage_answer();
-            if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
-                throw new IllegalStateException("device signaled error state!");
-            }
+        CommandStatusWrapper csw = retrieve_mass_storage_answer();
+        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
+            throw new IllegalStateException("device signaled error state!");
         }
 
-        {
-            ReadFormatCapacities cmd = new ReadFormatCapacities();
-            send_mass_storage_command(cmd);
-            byte[] answer = retrieve_data_packet(cmd.getExpectedAnswerLength());
-            ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
+        for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
+            byte[] capacityData = retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
+            ReadFormatCapacitiesEntry rce = new ReadFormatCapacitiesEntry(capacityData);
+        }
 
-            CommandStatusWrapper csw = retrieve_mass_storage_answer();
-            if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
-                throw new IllegalStateException("device signaled error state!");
-            }
+        // determine the last addressable block
+        mDeviceBoundaries = 0;
+    }
 
-            for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
-                byte[] capacityData = retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
-                ReadFormatCapacitiesEntry rce = new ReadFormatCapacitiesEntry(capacityData);
-            }
+    private void setupInquiryPhase() throws IOException {
+        send_mass_storage_command(new Inquiry());
 
-            // determine the last addressable block
-            mDeviceBoundaries = 0;
+        byte[] answer = retrieve_data_packet(StandardInquiryAnswer.LENGTH);
+        StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
+
+        CommandStatusWrapper csw = retrieve_mass_storage_answer();
+        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
+            throw new IllegalStateException("device signaled error state!");
         }
     }
 
