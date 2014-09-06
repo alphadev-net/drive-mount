@@ -1,12 +1,10 @@
 package net.alphadev.usbstorage.test;
 
-import net.alphadev.usbstorage.scsi.ReadFormatCapacitiesHeader;
 import net.alphadev.usbstorage.scsi.StandardInquiryAnswer;
 
 import org.junit.Test;
 
 /**
- *
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class CrashTests {
@@ -19,14 +17,5 @@ public class CrashTests {
         };
 
         new StandardInquiryAnswer(data);
-    }
-
-    @Test
-    public void testBla() {
-        byte[] data = new byte[]{
-                0, 0, 0, 8, 7, 0x33, (byte) 0xf3, (byte) 0xf4, 2, 0, 2, 0
-        };
-
-        new ReadFormatCapacitiesHeader(data);
     }
 }

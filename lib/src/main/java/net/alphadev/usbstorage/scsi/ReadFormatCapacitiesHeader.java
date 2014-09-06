@@ -19,6 +19,13 @@ public class ReadFormatCapacitiesHeader {
     public ReadFormatCapacitiesHeader(byte[] answer) {
         /** first three bits are reserved **/
         mCapacityListLength = answer[3];
+
+        int numOfEntries = mCapacityListLength / 8;
+        boolean hasValidNumOfEntries = mCapacityListLength % 8 == 0;
+        if (!hasValidNumOfEntries || numOfEntries <= 0 || numOfEntries >= 32) {
+            throw new IllegalArgumentException("Invalid CapacityListLength!");
+        }
+
         mNumberOfBlocks = convertToInt(answer, 4);
 
         BitSet typeSet = BitSet.valueOf(new byte[]{answer[5]});
