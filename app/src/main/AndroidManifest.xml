@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.alphadev.usbstorage">
 
-    <uses-sdk android:minSdkVersion="19" />
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="true" />
