@@ -5,7 +5,7 @@ import net.alphadev.usbstorage.api.Transmittable;
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
 
 /**
- * Created by jan on 26.08.14.
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public class CommandBlockWrapper implements Transmittable {
     private static int tagCounter = 0;
@@ -26,7 +26,7 @@ public class CommandBlockWrapper implements Transmittable {
     }
 
     public void setFlags(Direction directionFlags) {
-        cwbData[0xc] = (byte) (directionFlags == Direction.DEVICE_TO_HOST?128:0);
+        cwbData[0xc] = (byte) (directionFlags == Direction.DEVICE_TO_HOST ? 128 : 0);
     }
 
     public void setLun(byte lun) {
@@ -41,9 +41,7 @@ public class CommandBlockWrapper implements Transmittable {
         }
 
         int cmdOffset = 0xf;
-        for (int i = 0; i < cmdBlock.length; i++) {
-            cwbData[i+cmdOffset] = cmdBlock[i];
-        }
+        System.arraycopy(cmdBlock, 0, cwbData, cmdOffset, cmdBlock.length);
 
         cwbData[0xe] = (byte) cmdBlock.length;
         setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8);

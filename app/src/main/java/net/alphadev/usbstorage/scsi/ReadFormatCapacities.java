@@ -1,10 +1,11 @@
 package net.alphadev.usbstorage.scsi;
 
 import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
+
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
 
 /**
- * Created by jan on 29.08.14.
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public class ReadFormatCapacities extends ScsiCommand {
     public static final byte READ_FORMAT_CAPACITIES = 0x23;
@@ -22,7 +23,7 @@ public class ReadFormatCapacities extends ScsiCommand {
     public byte[] asBytes() {
         byte[] retval = new byte[10];
         retval[0] = READ_FORMAT_CAPACITIES; // opcode
-        setBytesFromShort((short)getExpectedAnswerLength(), retval, 7);
+        setBytesFromShort((short) getExpectedAnswerLength(), retval, 7);
         return retval;
     }
 

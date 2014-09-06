@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created by jan on 27.08.14.
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public class CommandBlockWrapperTest {
     private CommandBlockWrapper cbw;
@@ -19,24 +19,6 @@ public class CommandBlockWrapperTest {
         cbw.setFlags(CommandBlockWrapper.Direction.HOST_TO_DEVICE);
         cbw.setLun((byte) 0);
         cbw.setCommand(new TransmittableDummy(new byte[]{1, 2, 3, 4, 5, 6}));
-    }
-
-    private static class TransmittableDummy implements Transmittable{
-        private byte[] data;
-
-        private TransmittableDummy(byte[] data) {
-            this.data = data;
-        }
-
-        @Override
-        public byte[] asBytes() {
-            return data;
-        }
-
-        @Override
-        public int getExpectedAnswerLength() {
-            return 36;
-        }
     }
 
     @Test
@@ -72,5 +54,23 @@ public class CommandBlockWrapperTest {
 
         Assert.assertEquals(length, counter);
         Assert.assertEquals(15 + length - 1, lastPos);
+    }
+
+    private static class TransmittableDummy implements Transmittable {
+        private byte[] data;
+
+        private TransmittableDummy(byte[] data) {
+            this.data = data;
+        }
+
+        @Override
+        public byte[] asBytes() {
+            return data;
+        }
+
+        @Override
+        public int getExpectedAnswerLength() {
+            return 36;
+        }
     }
 }

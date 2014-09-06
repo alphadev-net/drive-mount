@@ -1,14 +1,13 @@
 package net.alphadev.usbstorage.test;
 
-import org.junit.Assert;
-
 import net.alphadev.usbstorage.bbb.CommandStatusWrapper;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created by jan on 27.08.14.
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public class CommandStatusWrapperTest {
     private CommandStatusWrapper csw;
@@ -16,10 +15,10 @@ public class CommandStatusWrapperTest {
     @Before
     public void init() {
         byte[] statusData = new byte[]{
-            0x55, 0x53, 0x42, 0x53, // signature
-             0x1,  0x0,  0x0,  0x0, // tag
-             0x0,  0x0,  0x0,  0x0, // data residue
-             0x0 // status flag
+                0x55, 0x53, 0x42, 0x53, // signature
+                0x1, 0x0, 0x0, 0x0, // tag
+                0x0, 0x0, 0x0, 0x0, // data residue
+                0x0 // status flag
         };
         csw = new CommandStatusWrapper(statusData);
     }

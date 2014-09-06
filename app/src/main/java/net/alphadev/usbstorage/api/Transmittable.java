@@ -1,9 +1,10 @@
 package net.alphadev.usbstorage.api;
 
 /**
- * Created by jan on 28.08.14.
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public interface Transmittable {
     byte[] asBytes();
+
     int getExpectedAnswerLength();
 }

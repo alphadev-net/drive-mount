@@ -5,8 +5,9 @@ import java.util.BitSet;
 import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 
 /**
- * Created by jan on 29.08.14.
+ * @author Jan Seeger <jan@alphadev.net>
  */
+@SuppressWarnings("unused")
 public class ReadFormatCapacitiesHeader {
     public static final int LENGTH = 12;
 
@@ -21,14 +22,14 @@ public class ReadFormatCapacitiesHeader {
         mNumberOfBlocks = convertToInt(answer, 4);
 
         BitSet typeSet = BitSet.valueOf(new byte[]{answer[5]});
-        if(typeSet.get(0)) {
-            if(typeSet.get(1)) {
+        if (typeSet.get(0)) {
+            if (typeSet.get(1)) {
                 mDescriptorTypes = DescriptorTypes.NO_MEDIA_PRESENT;
             } else {
                 mDescriptorTypes = DescriptorTypes.FORMATTED_MEDIA;
             }
         } else {
-            if(typeSet.get(1)) {
+            if (typeSet.get(1)) {
                 mDescriptorTypes = DescriptorTypes.UNFORMATTED_MEDIA;
             } else {
                 mDescriptorTypes = DescriptorTypes.RESERVED;
@@ -44,6 +45,18 @@ public class ReadFormatCapacitiesHeader {
 
     public int getCapacityEntryCount() {
         return mCapacityListLength;
+    }
+
+    public int getNumberOfBlocks() {
+        return mNumberOfBlocks;
+    }
+
+    public DescriptorTypes getDescriptorTypes() {
+        return mDescriptorTypes;
+    }
+
+    public int getBlockLength() {
+        return mBlockLength;
     }
 
     public static enum DescriptorTypes {
