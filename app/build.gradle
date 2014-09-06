@@ -6,6 +6,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
+
 apply plugin: 'com.android.application'
 
 repositories {
@@ -38,5 +39,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //compile group: 'de.waldheinz', name: 'fat32-lib', version: '0.6.4'
+    compile group: 'de.waldheinz', name: 'fat32-lib', version: '0.6.4'
 }

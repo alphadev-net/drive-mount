@@ -9,7 +9,9 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import net.alphadev.usbstorage.impl.FatStorage;
+import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.bbb.UsbBlockDevice;
+import net.alphadev.usbstorage.filesystems.FatStorage;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +27,7 @@ public class StorageManager {
     private final HashMap<UsbDevice, StorageDevice> mMountedDevices = new HashMap<>();
     private final BroadcastReceiver mPermissionReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                 tryMount(device);
             }
@@ -64,15 +66,12 @@ public class StorageManager {
     }
 
     private void tryMount(UsbDevice device) {
-		if(mMountedDevices.get(device) != null){
+        if (mMountedDevices.get(device) != null) {
             // device seems already mounted… do nothing.
-			return;
-		}
+            return;
+        }
 
-		StorageDevice storage = null;
-
-        storage = mountAsFatFS(device);
-
+        StorageDevice storage = mountAsFatFS(device);
         mMountedDevices.put(device, storage);
         if (mStorageChangedListener != null) {
             mStorageChangedListener.onStorageChange();
