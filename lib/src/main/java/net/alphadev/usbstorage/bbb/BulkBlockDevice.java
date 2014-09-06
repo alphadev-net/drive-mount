@@ -1,12 +1,12 @@
 package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.BulkDevice;
-import net.alphadev.usbstorage.scsi.Inquiry;
-import net.alphadev.usbstorage.scsi.ReadFormatCapacities;
-import net.alphadev.usbstorage.scsi.ReadFormatCapacitiesEntry;
-import net.alphadev.usbstorage.scsi.ReadFormatCapacitiesHeader;
-import net.alphadev.usbstorage.scsi.ScsiCommand;
-import net.alphadev.usbstorage.scsi.StandardInquiryAnswer;
+import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
+import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
+import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
+import net.alphadev.usbstorage.scsi.command.Inquiry;
+import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
+import net.alphadev.usbstorage.scsi.command.ScsiCommand;
 
 import java.io.Closeable;
 import java.io.IOException;

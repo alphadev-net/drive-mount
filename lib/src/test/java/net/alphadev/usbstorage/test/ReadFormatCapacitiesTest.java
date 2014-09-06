@@ -1,6 +1,6 @@
 package net.alphadev.usbstorage.test;
 
-import net.alphadev.usbstorage.scsi.ReadFormatCapacitiesHeader;
+import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
 
 import org.junit.Test;
 

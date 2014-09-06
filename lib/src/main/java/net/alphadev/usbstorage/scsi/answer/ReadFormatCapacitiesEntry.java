@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.scsi;
+package net.alphadev.usbstorage.scsi.answer;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>

@@ -1,6 +1,6 @@
 package net.alphadev.usbstorage.test;
 
-import net.alphadev.usbstorage.scsi.StandardInquiryAnswer;
+import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.scsi;
+package net.alphadev.usbstorage.scsi.answer;
 
 import java.util.BitSet;
 
@@ -20,12 +20,13 @@ public class ReadFormatCapacitiesHeader {
         /** first three bits are reserved **/
         mCapacityListLength = answer[3];
 
-        int numOfEntries = mCapacityListLength / 8;
         boolean hasValidNumOfEntries = mCapacityListLength % 8 == 0;
-        if (!hasValidNumOfEntries || numOfEntries <= 0 || numOfEntries >= 32) {
+        int numOfEntries = mCapacityListLength / 8;
+        if (!hasValidNumOfEntries || numOfEntries <= 0 || numOfEntries >= 256) {
             throw new IllegalArgumentException("Invalid CapacityListLength!");
         }
 
+        mCapacityListLength = (byte) numOfEntries;
         mNumberOfBlocks = convertToInt(answer, 4);
 
         BitSet typeSet = BitSet.valueOf(new byte[]{answer[5]});

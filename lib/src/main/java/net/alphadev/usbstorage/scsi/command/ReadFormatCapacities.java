@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.scsi;
+package net.alphadev.usbstorage.scsi.command;
 
 import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 
