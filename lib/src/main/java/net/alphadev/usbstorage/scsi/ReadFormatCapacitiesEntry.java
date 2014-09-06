@@ -1,7 +1,8 @@
 package net.alphadev.usbstorage.scsi;
 
 /**
- * Created by jan on 31.08.14.
+ *
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public class ReadFormatCapacitiesEntry {
     public static final int LENGTH = 8;

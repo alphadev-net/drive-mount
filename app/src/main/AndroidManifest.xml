@@ -9,7 +9,7 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name">
         <provider
-            android:name=".saf.DocumentProviderImpl"
+            android:name=".DocumentProviderImpl"
             android:authorities="net.alphadev.usbstorage.documents"
             android:enabled="true"
             android:exported="true"

@@ -4,8 +4,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * Created by jan on 28.08.14.
+ *
+ * @author Jan Seeger <jan@alphadev.net>
  */
+@SuppressWarnings("unused")
 public class BitStitching {
     public static int convertToInt(byte[] byteArray, int offset) {
         byte c1 = byteArray[offset + 3];

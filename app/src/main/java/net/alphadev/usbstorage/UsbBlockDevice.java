@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.bbb;
+package net.alphadev.usbstorage;
 
 import android.content.Context;
 import android.hardware.usb.UsbConstants;
@@ -9,6 +9,8 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
+import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
+import net.alphadev.usbstorage.bbb.CommandStatusWrapper;
 import net.alphadev.usbstorage.scsi.Inquiry;
 import net.alphadev.usbstorage.scsi.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.ReadFormatCapacitiesEntry;
@@ -24,6 +26,9 @@ import de.waldheinz.fs.ReadOnlyException;
 
 import static net.alphadev.usbstorage.util.BitStitching.bytesToHex;
 
+/**
+ * @author Jan Seeger <jan@alphadev.net>
+ */
 public class UsbBlockDevice implements BlockDevice {
 
     public static final int DEFAULT_TRANSFER_SIZE = 512;
@@ -37,7 +42,6 @@ public class UsbBlockDevice implements BlockDevice {
     private boolean closed;
     private byte mLunToUse = 0;
     private long mDeviceBoundaries;
-    private String mDeviceLabel;
 
     public UsbBlockDevice(Context ctx, UsbDevice device) throws IOException {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);

@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.saf;
+package net.alphadev.usbstorage;
 
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -9,8 +9,6 @@ import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 
-import net.alphadev.usbstorage.R;
-import net.alphadev.usbstorage.StorageManager;
 import net.alphadev.usbstorage.api.StorageDevice;
 
 import java.io.File;

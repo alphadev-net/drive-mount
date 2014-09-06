@@ -14,6 +14,6 @@ repositories {
 apply plugin: 'java'
 
 dependencies {
-    testCompile project(':app')
-    testCompile group: 'junit', name: 'junit', version: '4.12-beta-1'
+    compile group: 'de.waldheinz', name: 'fat32-lib', version: '0.6.4'
+    testCompile 'junit:junit:4.+'
 }

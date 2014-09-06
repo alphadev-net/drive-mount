@@ -3,7 +3,8 @@ package net.alphadev.usbstorage.bbb;
 import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 
 /**
- * Created by jan on 27.08.14.
+ *
+ * @author Jan Seeger <jan@alphadev.net>
  */
 public class CommandStatusWrapper {
     private byte[] mSignature;
