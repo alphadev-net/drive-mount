@@ -10,8 +10,4 @@ public class ReadFormatCapacitiesEntry {
     public ReadFormatCapacitiesEntry(byte[] answer) {
 
     }
-
-    public long getCapacity(int mediaIndex) {
-        return 0;
-    }
 }

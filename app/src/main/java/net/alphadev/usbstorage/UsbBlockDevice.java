@@ -114,14 +114,14 @@ public class UsbBlockDevice implements BlockDevice {
         }
 
         // determine the last addressable block
-        mDeviceBoundaries = 0;
+        mDeviceBoundaries = capacity.getNumberOfBlocks();
     }
 
     private void setupInquiryPhase() throws IOException {
         send_mass_storage_command(new Inquiry());
 
         byte[] answer = retrieve_data_packet(StandardInquiryAnswer.LENGTH);
-        StandardInquiryAnswer inquiryAnswer = new StandardInquiryAnswer(answer);
+        new StandardInquiryAnswer(answer);
 
         CommandStatusWrapper csw = retrieve_mass_storage_answer();
         if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
