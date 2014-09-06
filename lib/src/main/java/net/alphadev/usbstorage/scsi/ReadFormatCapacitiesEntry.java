@@ -1,7 +1,6 @@
 package net.alphadev.usbstorage.scsi;
 
 /**
- *
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class ReadFormatCapacitiesEntry {
