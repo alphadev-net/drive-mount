@@ -19,11 +19,9 @@ import de.waldheinz.fs.ReadOnlyException;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class BulkBlockDevice implements BlockDevice, Closeable {
-
-    public static final int DEFAULT_TRANSFER_SIZE = 512;
-
     private BulkDevice mAbstractBulkDevice;
     private long mDeviceBoundaries;
+    private int mBlockSize = 512;
     private byte mLunToUse = 0;
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) throws IOException {
@@ -51,6 +49,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
 
         // determine the last addressable block
         mDeviceBoundaries = capacity.getNumberOfBlocks();
+        mBlockSize = capacity.getBlockLength();
     }
 
     private void setupInquiryPhase() throws IOException {
@@ -104,7 +103,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
 
     @Override
     public int getSectorSize() throws IOException {
-        return DEFAULT_TRANSFER_SIZE;
+        return mBlockSize;
     }
 
     @Override
