@@ -58,8 +58,13 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
             }
 
             // determine the last addressable block
-            mDeviceBoundaries = capacity.getNumberOfBlocks();
-            mBlockSize = capacity.getBlockLength();
+            if (capacity.getNumberOfBlocks() != 0) {
+                mDeviceBoundaries = capacity.getNumberOfBlocks();
+            }
+
+            if (capacity.getBlockLength() != 0) {
+                mBlockSize = capacity.getBlockLength();
+            }
         } catch (IllegalArgumentException ex) {
             // do nothing as the read format capacities command is optional.
         }
