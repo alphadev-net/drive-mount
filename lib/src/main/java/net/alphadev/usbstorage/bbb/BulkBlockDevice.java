@@ -7,6 +7,7 @@ import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
+import net.alphadev.usbstorage.scsi.command.TestUnitReady;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -29,6 +30,16 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
 
         setupInquiryPhase();
         setupCapacityPhase();
+        testReady();
+    }
+
+    private void testReady() throws IOException {
+        send_mass_storage_command(new TestUnitReady());
+
+        CommandStatusWrapper csw = retrieve_mass_storage_answer();
+        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
+            throw new IllegalStateException("device signaled error state!");
+        }
     }
 
     private void setupCapacityPhase() throws IOException {
