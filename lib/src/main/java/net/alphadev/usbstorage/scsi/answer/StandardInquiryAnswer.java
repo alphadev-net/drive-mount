@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.scsi;
+package net.alphadev.usbstorage.scsi.answer;
 
 import static net.alphadev.usbstorage.util.BitStitching.bytesToString;
 

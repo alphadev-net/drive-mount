@@ -10,11 +10,14 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.filesystems.FatStorage;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import de.waldheinz.fs.BlockDevice;
 
 
 public class StorageManager {
@@ -111,7 +114,8 @@ public class StorageManager {
 
     private StorageDevice mountAsFatFS(UsbDevice usbDevice) {
         try {
-            UsbBlockDevice blockDevice = new UsbBlockDevice(mContext, usbDevice);
+            UsbBulkDevice usbBulkDevice = new UsbBulkDevice(mContext, usbDevice);
+            BlockDevice blockDevice = new BulkBlockDevice(usbBulkDevice);
             return new FatStorage(blockDevice, true);
         } catch (Exception ex) {
             Log.d(LOG_TAG, "error while trying to mount fat volume", ex);

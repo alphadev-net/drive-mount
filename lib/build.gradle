@@ -14,6 +14,6 @@ repositories {
 apply plugin: 'java'
 
 dependencies {
-    compile group: 'de.waldheinz', name: 'fat32-lib', version: '0.6.4'
+    compile 'de.waldheinz:fat32-lib:0.6.4'
     testCompile 'junit:junit:4.+'
 }
