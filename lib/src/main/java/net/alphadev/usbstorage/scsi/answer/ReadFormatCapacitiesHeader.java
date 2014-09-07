@@ -1,7 +1,5 @@
 package net.alphadev.usbstorage.scsi.answer;
 
-import java.util.BitSet;
-
 import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 
 /**
@@ -13,7 +11,7 @@ public class ReadFormatCapacitiesHeader {
 
     private byte mCapacityListLength;
     private int mNumberOfBlocks;
-    private DescriptorTypes mDescriptorTypes;
+    private DescriptorType mDescriptorType;
     private int mBlockLength;
 
     public ReadFormatCapacitiesHeader(byte[] answer) {
@@ -29,26 +27,36 @@ public class ReadFormatCapacitiesHeader {
         mCapacityListLength = (byte) numOfEntries;
         mNumberOfBlocks = convertToInt(answer, 4);
 
-        BitSet typeSet = BitSet.valueOf(new byte[]{answer[5]});
-        if (typeSet.get(0)) {
-            if (typeSet.get(1)) {
-                mDescriptorTypes = DescriptorTypes.NO_MEDIA_PRESENT;
-            } else {
-                mDescriptorTypes = DescriptorTypes.FORMATTED_MEDIA;
-            }
-        } else {
-            if (typeSet.get(1)) {
-                mDescriptorTypes = DescriptorTypes.UNFORMATTED_MEDIA;
-            } else {
-                mDescriptorTypes = DescriptorTypes.RESERVED;
-            }
-        }
+        mDescriptorType = getDescriptorType(answer[5]);
 
         byte[] tempBlockLength = new byte[]{
                 0, answer[9], answer[10], answer[11],
         };
 
         mBlockLength = convertToInt(tempBlockLength, 0);
+    }
+
+    /**
+     * Extracts Bitflags from a given byte according to the following schema:
+     * <p/>
+     * 00b = Reserved.
+     * 01b = Unformatted Media.
+     * 10b = Formatted Media.
+     * 11b = No Media Present.
+     *
+     * @param b byte holding the flags
+     */
+    private DescriptorType getDescriptorType(byte b) {
+        switch (b) {
+            case 1:
+                return DescriptorType.UNFORMATTED_MEDIA;
+            case 2:
+                return DescriptorType.FORMATTED_MEDIA;
+            case 3:
+                return DescriptorType.NO_MEDIA_PRESENT;
+            default:
+                return DescriptorType.RESERVED;
+        }
     }
 
     public int getCapacityEntryCount() {
@@ -59,15 +67,15 @@ public class ReadFormatCapacitiesHeader {
         return mNumberOfBlocks;
     }
 
-    public DescriptorTypes getDescriptorTypes() {
-        return mDescriptorTypes;
+    public DescriptorType getDescriptorTypes() {
+        return mDescriptorType;
     }
 
     public int getBlockLength() {
         return mBlockLength;
     }
 
-    public static enum DescriptorTypes {
+    public static enum DescriptorType {
         RESERVED,
         UNFORMATTED_MEDIA,
         FORMATTED_MEDIA,
