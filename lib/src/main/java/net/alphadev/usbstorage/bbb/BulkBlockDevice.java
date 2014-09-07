@@ -1,10 +1,12 @@
 package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
+import net.alphadev.usbstorage.scsi.command.ReadCapacity;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
 import net.alphadev.usbstorage.scsi.command.TestUnitReady;
@@ -30,16 +32,13 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
 
         setupInquiryPhase();
         setupCapacityPhase();
-        testReady();
+        testUnitReady();
     }
 
-    private void testReady() throws IOException {
+    private void testUnitReady() throws IOException {
         send_mass_storage_command(new TestUnitReady());
 
-        CommandStatusWrapper csw = retrieve_mass_storage_answer();
-        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
-            throw new IllegalStateException("device signaled error state!");
-        }
+        checkDeviceStatus();
     }
 
     private void setupCapacityPhase() throws IOException {
@@ -47,10 +46,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
             send_mass_storage_command(new ReadFormatCapacities());
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesHeader.LENGTH);
             ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
-            CommandStatusWrapper csw = retrieve_mass_storage_answer();
-            if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
-                throw new IllegalStateException("device signaled error state!");
-            }
+            checkDeviceStatus();
 
             for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
                 byte[] capacityData = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
@@ -58,10 +54,35 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
             }
 
             // determine the last addressable block
-            mDeviceBoundaries = capacity.getNumberOfBlocks();
-            mBlockSize = capacity.getBlockLength();
+            if (capacity.getNumberOfBlocks() != 0) {
+                mDeviceBoundaries = capacity.getNumberOfBlocks();
+            }
+
+            if (capacity.getBlockLength() != 0) {
+                mBlockSize = capacity.getBlockLength();
+            }
         } catch (IllegalArgumentException ex) {
             // do nothing as the read format capacities command is optional.
+        }
+
+        try {
+            send_mass_storage_command(new ReadCapacity());
+            byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadCapacityResponse.LENGTH);
+            ReadCapacityResponse capacity = new ReadCapacityResponse(answer);
+
+            checkDeviceStatus();
+
+            mDeviceBoundaries = capacity.getNumberOfBlocks();
+            mBlockSize = capacity.getBlockSize();
+        } catch (IllegalArgumentException e) {
+            // whaaat!
+        }
+    }
+
+    private void checkDeviceStatus() {
+        CommandStatusWrapper csw = retrieve_mass_storage_answer();
+        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
+            throw new IllegalStateException("device signaled error state!");
         }
     }
 
@@ -71,10 +92,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         byte[] answer = mAbstractBulkDevice.retrieve_data_packet(StandardInquiryAnswer.LENGTH);
         new StandardInquiryAnswer(answer);
 
-        CommandStatusWrapper csw = retrieve_mass_storage_answer();
-        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
-            throw new IllegalStateException("device signaled error state!");
-        }
+        checkDeviceStatus();
     }
 
     private CommandStatusWrapper retrieve_mass_storage_answer() {
