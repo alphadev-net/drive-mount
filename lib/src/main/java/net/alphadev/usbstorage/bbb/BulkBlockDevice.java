@@ -32,24 +32,26 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     }
 
     private void setupCapacityPhase() throws IOException {
-        ReadFormatCapacities cmd = new ReadFormatCapacities();
-        send_mass_storage_command(cmd);
-        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
-        ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
+        try {
+            send_mass_storage_command(new ReadFormatCapacities());
+            byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesHeader.LENGTH);
+            ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
+            CommandStatusWrapper csw = retrieve_mass_storage_answer();
+            if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
+                throw new IllegalStateException("device signaled error state!");
+            }
 
-        CommandStatusWrapper csw = retrieve_mass_storage_answer();
-        if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
-            throw new IllegalStateException("device signaled error state!");
+            for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
+                byte[] capacityData = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
+                new ReadFormatCapacitiesEntry(capacityData);
+            }
+
+            // determine the last addressable block
+            mDeviceBoundaries = capacity.getNumberOfBlocks();
+            mBlockSize = capacity.getBlockLength();
+        } catch (IllegalArgumentException ex) {
+            // do nothing as the read format capacities command is optional.
         }
-
-        for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
-            byte[] capacityData = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
-            ReadFormatCapacitiesEntry rce = new ReadFormatCapacitiesEntry(capacityData);
-        }
-
-        // determine the last addressable block
-        mDeviceBoundaries = capacity.getNumberOfBlocks();
-        mBlockSize = capacity.getBlockLength();
     }
 
     private void setupInquiryPhase() throws IOException {
