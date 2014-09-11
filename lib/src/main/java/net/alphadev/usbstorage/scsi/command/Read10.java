@@ -2,7 +2,7 @@ package net.alphadev.usbstorage.scsi.command;
 
 import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 
-import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
+import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -25,7 +25,7 @@ public class Read10 extends ScsiCommand {
     public byte[] asBytes() {
         final byte[] bytes = new byte[10];
         bytes[0] = READ10; // opcode
-        setBytesFromShort((short) offset, bytes, 2);
+        setBytesFromInt((int) offset, bytes, 2);
         return bytes;
     }
 
