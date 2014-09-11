@@ -8,6 +8,8 @@ import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 public class Read6 extends ScsiCommand {
     public static final byte READ6 = 0x0;
 
+    private long offset;
+
     public Read6() {
         super(READ6);
     }
@@ -25,5 +27,9 @@ public class Read6 extends ScsiCommand {
     @Override
     public int getExpectedAnswerLength() {
         return 0;
+    }
+
+    public void setOffset(long offset) {
+        this.offset = offset;
     }
 }
