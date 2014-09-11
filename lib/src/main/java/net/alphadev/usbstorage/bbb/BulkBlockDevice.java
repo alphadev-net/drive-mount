@@ -6,7 +6,7 @@ import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
-import net.alphadev.usbstorage.scsi.command.Read6;
+import net.alphadev.usbstorage.scsi.command.Read10;
 import net.alphadev.usbstorage.scsi.command.ReadCapacity;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
@@ -112,7 +112,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
 
     @Override
     public void read(long offset, ByteBuffer byteBuffer) throws IOException {
-        Read6 cmd = new Read6();
+        Read10 cmd = new Read10();
         cmd.setOffset(offset);
         send_mass_storage_command(cmd);
     }
