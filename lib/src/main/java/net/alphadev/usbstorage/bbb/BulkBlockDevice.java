@@ -116,6 +116,9 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         cmd.setOffset(offset);
         cmd.setRequestSize((short) byteBuffer.limit());
         send_mass_storage_command(cmd);
+
+        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(0);
+        byteBuffer.put(answer);
     }
 
     private int send_mass_storage_command(ScsiCommand command) throws IOException {
