@@ -114,6 +114,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     public void read(long offset, ByteBuffer byteBuffer) throws IOException {
         Read10 cmd = new Read10();
         cmd.setOffset(offset);
+        cmd.setRequestSize((short) byteBuffer.limit());
         send_mass_storage_command(cmd);
     }
 
