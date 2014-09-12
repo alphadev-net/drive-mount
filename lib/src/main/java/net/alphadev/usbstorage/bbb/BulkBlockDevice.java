@@ -31,8 +31,14 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         mAbstractBulkDevice = usbBlockDevice;
 
         setupInquiryPhase();
-        acquireDriveCapacity();
         testUnitReady();
+        acquireDriveCapacity();
+        senseMode();
+        testUnitReady();
+    }
+
+    private void senseMode() {
+
     }
 
     private void testUnitReady() throws IOException {
