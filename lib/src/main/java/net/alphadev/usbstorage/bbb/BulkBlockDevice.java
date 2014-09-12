@@ -31,7 +31,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         mAbstractBulkDevice = usbBlockDevice;
 
         setupInquiryPhase();
-        setupCapacityPhase();
+        acquireDriveCapacity();
         testUnitReady();
     }
 
@@ -41,7 +41,8 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         checkDeviceStatus();
     }
 
-    private void setupCapacityPhase() throws IOException {
+    @SuppressWarnings("unused")
+    private void acquireCardCapacities() throws IOException {
         try {
             send_mass_storage_command(new ReadFormatCapacities());
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesHeader.LENGTH);
@@ -64,7 +65,9 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         } catch (IllegalArgumentException ex) {
             // do nothing as the read format capacities command is optional.
         }
+    }
 
+    private void acquireDriveCapacity() throws IOException {
         try {
             send_mass_storage_command(new ReadCapacity());
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadCapacityResponse.LENGTH);
