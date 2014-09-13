@@ -13,11 +13,6 @@ public class ModeSense extends ScsiCommand {
     }
 
     @Override
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
-    }
-
-    @Override
     public byte[] asBytes() {
         byte[] retval = new byte[6];
         retval[0] = MODE_SENSE; // opcode

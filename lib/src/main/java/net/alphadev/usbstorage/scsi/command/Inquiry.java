@@ -36,11 +36,6 @@ public class Inquiry extends ScsiCommand {
         return StandardInquiryAnswer.LENGTH;
     }
 
-    @Override
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
-    }
-
     public boolean isCmdDt() {
         return mCmdDt;
     }

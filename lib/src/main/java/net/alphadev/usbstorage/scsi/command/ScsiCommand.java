@@ -16,5 +16,7 @@ public abstract class ScsiCommand implements Transmittable {
         mOpCode = opCode;
     }
 
-    public abstract CommandBlockWrapper.Direction getDirection();
+    public CommandBlockWrapper.Direction getDirection() {
+        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
+    }
 }

@@ -13,11 +13,6 @@ public class TestUnitReady extends ScsiCommand {
     }
 
     @Override
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
-    }
-
-    @Override
     public byte[] asBytes() {
         // all zero since even opcode == 0x0
         return new byte[6];
