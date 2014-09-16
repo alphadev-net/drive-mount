@@ -40,7 +40,11 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     }
 
     private void senseMode() throws IOException {
-        ScsiCommand cmd = new ModeSense();
+        ModeSense cmd = new ModeSense();
+        cmd.setDisableBlockDescriptor(false);
+        cmd.setPageControl(ModeSense.PageControlValues.Current);
+        cmd.setPageCode((byte) 0x3f);
+        cmd.setSubPageCode((byte) 0);
         send_mass_storage_command(cmd);
 
         byte[] data = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
