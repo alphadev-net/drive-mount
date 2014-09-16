@@ -1,11 +1,13 @@
 package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.scsi.answer.ModeSenseResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
+import net.alphadev.usbstorage.scsi.command.ModeSense;
 import net.alphadev.usbstorage.scsi.command.ReadCapacity;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
@@ -37,8 +39,12 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         testUnitReady();
     }
 
-    private void senseMode() {
+    private void senseMode() throws IOException {
+        ScsiCommand cmd = new ModeSense();
+        send_mass_storage_command(cmd);
 
+        byte[] data = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
+        new ModeSenseResponse(data);
     }
 
     private void testUnitReady() throws IOException {

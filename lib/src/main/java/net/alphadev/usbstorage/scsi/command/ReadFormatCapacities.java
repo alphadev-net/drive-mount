@@ -1,7 +1,5 @@
 package net.alphadev.usbstorage.scsi.command;
 
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
-
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
 
 /**

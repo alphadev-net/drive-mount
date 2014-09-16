@@ -1,6 +1,5 @@
 package net.alphadev.usbstorage.scsi.command;
 
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 
 /**
