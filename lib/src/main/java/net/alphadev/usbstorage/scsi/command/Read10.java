@@ -12,7 +12,7 @@ public class Read10 extends ScsiCommand {
     public static final byte READ10 = 0x28;
 
     private long offset;
-    private short requestSize;
+    private short transferLength;
 
     public Read10() {
         super(READ10);
@@ -30,7 +30,7 @@ public class Read10 extends ScsiCommand {
         // 1 == flags
         setBytesFromInt((int) offset, bytes, 2);
         // 6 == group number
-        setBytesFromShort(requestSize, bytes, 7);
+        setBytesFromShort(transferLength, bytes, 7);
         // 9 == control bits
         return bytes;
     }
@@ -44,7 +44,7 @@ public class Read10 extends ScsiCommand {
         this.offset = offset;
     }
 
-    public void setRequestSize(short requestSize) {
-        this.requestSize = requestSize;
+    public void setTransferLength(short transferLength) {
+        this.transferLength = transferLength;
     }
 }
