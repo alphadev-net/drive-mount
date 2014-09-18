@@ -1,12 +1,14 @@
 package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.scsi.answer.ModeSenseResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
 import net.alphadev.usbstorage.scsi.command.Read10;
+import net.alphadev.usbstorage.scsi.command.ModeSense;
 import net.alphadev.usbstorage.scsi.command.ReadCapacity;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
@@ -32,8 +34,22 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         mAbstractBulkDevice = usbBlockDevice;
 
         setupInquiryPhase();
-        setupCapacityPhase();
         testUnitReady();
+        acquireDriveCapacity();
+        senseMode();
+        testUnitReady();
+    }
+
+    private void senseMode() throws IOException {
+        ModeSense cmd = new ModeSense();
+        cmd.setDisableBlockDescriptor(false);
+        cmd.setPageControl(ModeSense.PageControlValues.Current);
+        cmd.setPageCode((byte) 0x3f);
+        cmd.setSubPageCode((byte) 0);
+        send_mass_storage_command(cmd);
+
+        byte[] data = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
+        new ModeSenseResponse(data);
     }
 
     private void testUnitReady() throws IOException {
@@ -42,7 +58,8 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         checkDeviceStatus();
     }
 
-    private void setupCapacityPhase() throws IOException {
+    @SuppressWarnings("unused")
+    private void acquireCardCapacities() throws IOException {
         try {
             send_mass_storage_command(new ReadFormatCapacities());
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesHeader.LENGTH);
@@ -65,7 +82,9 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         } catch (IllegalArgumentException ex) {
             // do nothing as the read format capacities command is optional.
         }
+    }
 
+    private void acquireDriveCapacity() throws IOException {
         try {
             send_mass_storage_command(new ReadCapacity());
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadCapacityResponse.LENGTH);
