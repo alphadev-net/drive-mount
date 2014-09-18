@@ -1,7 +1,5 @@
 package net.alphadev.usbstorage.scsi.command;
 
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
-
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
 
 /**
@@ -12,11 +10,6 @@ public class ReadFormatCapacities extends ScsiCommand {
 
     public ReadFormatCapacities() {
         super(READ_FORMAT_CAPACITIES);
-    }
-
-    @Override
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
     }
 
     @Override

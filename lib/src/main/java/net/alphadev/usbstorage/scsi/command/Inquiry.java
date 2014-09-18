@@ -1,6 +1,5 @@
 package net.alphadev.usbstorage.scsi.command;
 
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 
 /**
@@ -34,11 +33,6 @@ public class Inquiry extends ScsiCommand {
     @Override
     public int getExpectedAnswerLength() {
         return StandardInquiryAnswer.LENGTH;
-    }
-
-    @Override
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
     }
 
     public boolean isCmdDt() {

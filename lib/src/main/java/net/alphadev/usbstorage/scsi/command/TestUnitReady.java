@@ -1,7 +1,5 @@
 package net.alphadev.usbstorage.scsi.command;
 
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
@@ -10,11 +8,6 @@ public class TestUnitReady extends ScsiCommand {
 
     public TestUnitReady() {
         super(TEST_UNIT_READY);
-    }
-
-    @Override
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
     }
 
     @Override
