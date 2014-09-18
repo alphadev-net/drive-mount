@@ -137,6 +137,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         Read10 cmd = new Read10();
         cmd.setOffset(offset);
         cmd.setTransferLength((short) blockCount);
+        cmd.setExpectedAnswerLength(requestSize);
         send_mass_storage_command(cmd);
 
         byte[] answer = mAbstractBulkDevice.retrieve_data_packet(requestSize);

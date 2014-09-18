@@ -13,6 +13,7 @@ public class Read10 extends ScsiCommand {
 
     private long offset;
     private short transferLength;
+    private int mAnswerLength;
 
     public Read10() {
         super(READ10);
@@ -37,7 +38,11 @@ public class Read10 extends ScsiCommand {
 
     @Override
     public int getExpectedAnswerLength() {
-        return 0;
+        return mAnswerLength;
+    }
+
+    public void setExpectedAnswerLength(int length) {
+        mAnswerLength = length;
     }
 
     public void setOffset(long offset) {
