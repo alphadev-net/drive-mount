@@ -52,7 +52,7 @@ public class ModeSense extends ScsiCommand {
 
     @Override
     public int getExpectedAnswerLength() {
-        return 0;
+        return 192;
     }
 
     public void setDisableBlockDescriptor(boolean value) {
