@@ -75,6 +75,10 @@ public class StorageManager {
 
         StorageDevice storage = mountAsFatFS(device);
         mMountedDevices.put(device, storage);
+        notifyStorageChanged();
+    }
+
+    private void notifyStorageChanged() {
         if (mStorageChangedListener != null) {
             mStorageChangedListener.onStorageChange();
         }
