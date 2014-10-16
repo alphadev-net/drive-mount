@@ -89,8 +89,6 @@ public class StorageManager {
     }
 
     private void enumerateDevices() {
-        mMountedDevices.clear();
-
         for (UsbDevice device : mUsbManager.getDeviceList().values()) {
             if (!mUsbManager.hasPermission(device)) {
                 Log.d(LOG_TAG, "Requesting access to USB device");
