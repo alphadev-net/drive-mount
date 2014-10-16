@@ -1,9 +1,5 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    jcenter()
-}
-
 android {
     compileSdkVersion 19
     buildToolsVersion "20.0.0"
