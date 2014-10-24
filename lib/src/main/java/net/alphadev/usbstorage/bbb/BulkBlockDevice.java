@@ -50,6 +50,8 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
 
         byte[] data = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
         new ModeSenseResponse(data);
+
+        checkDeviceStatus();
     }
 
     private void testUnitReady() throws IOException {
