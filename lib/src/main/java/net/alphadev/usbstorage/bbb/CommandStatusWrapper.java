@@ -44,7 +44,9 @@ public class CommandStatusWrapper {
             case 0:
                 return Status.COMMAND_PASSED;
             case 2:
-                return Status.PHASE_ERROR;
+                return Status.CHECK_CONDITION;
+            case 8:
+                return Status.BUSY;
             default:
                 return Status.COMMAND_FAILED;
         }
@@ -53,6 +55,7 @@ public class CommandStatusWrapper {
     public static enum Status {
         COMMAND_PASSED,
         COMMAND_FAILED,
-        PHASE_ERROR
+        CHECK_CONDITION,
+        BUSY
     }
 }

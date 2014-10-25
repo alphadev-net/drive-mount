@@ -7,8 +7,8 @@ import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
-import net.alphadev.usbstorage.scsi.command.Read10;
 import net.alphadev.usbstorage.scsi.command.ModeSense;
+import net.alphadev.usbstorage.scsi.command.Read10;
 import net.alphadev.usbstorage.scsi.command.ReadCapacity;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
@@ -51,13 +51,18 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         byte[] data = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
         new ModeSenseResponse(data);
 
-        checkDeviceStatus();
+        assumeDeviceStatusOK();
     }
 
     private void testUnitReady() throws IOException {
         send_mass_storage_command(new TestUnitReady());
+        CommandStatusWrapper csw = getDeviceStatus();
 
-        checkDeviceStatus();
+        while (csw.getStatus() == CommandStatusWrapper.Status.BUSY) {
+            testUnitReady();
+        }
+
+        assumeDeviceStatusOK(csw);
     }
 
     @SuppressWarnings("unused")
@@ -66,7 +71,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
             send_mass_storage_command(new ReadFormatCapacities());
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesHeader.LENGTH);
             ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
-            checkDeviceStatus();
+            assumeDeviceStatusOK();
 
             for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
                 byte[] capacityData = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
@@ -92,7 +97,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
             byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadCapacityResponse.LENGTH);
             ReadCapacityResponse capacity = new ReadCapacityResponse(answer);
 
-            checkDeviceStatus();
+            assumeDeviceStatusOK();
 
             mDeviceBoundaries = capacity.getNumberOfBlocks();
             mBlockSize = capacity.getBlockSize();
@@ -101,11 +106,19 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         }
     }
 
-    private void checkDeviceStatus() {
-        CommandStatusWrapper csw = retrieve_mass_storage_answer();
+    private void assumeDeviceStatusOK() {
+        assumeDeviceStatusOK(getDeviceStatus());
+    }
+
+    private void assumeDeviceStatusOK(CommandStatusWrapper csw) {
         if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
             throw new IllegalStateException("device signaled error state!");
         }
+    }
+
+    private CommandStatusWrapper getDeviceStatus() {
+        byte[] buffer = mAbstractBulkDevice.retrieve_data_packet(13);
+        return new CommandStatusWrapper(buffer);
     }
 
     private void setupInquiryPhase() throws IOException {
@@ -114,12 +127,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         byte[] answer = mAbstractBulkDevice.retrieve_data_packet(StandardInquiryAnswer.LENGTH);
         new StandardInquiryAnswer(answer);
 
-        checkDeviceStatus();
-    }
-
-    private CommandStatusWrapper retrieve_mass_storage_answer() {
-        byte[] buffer = mAbstractBulkDevice.retrieve_data_packet(13);
-        return new CommandStatusWrapper(buffer);
+        assumeDeviceStatusOK();
     }
 
     @Override
@@ -145,7 +153,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         byte[] answer = mAbstractBulkDevice.retrieve_data_packet(requestSize);
         byteBuffer.put(answer);
 
-        checkDeviceStatus();
+        assumeDeviceStatusOK();
     }
 
     private int send_mass_storage_command(ScsiCommand command) throws IOException {
