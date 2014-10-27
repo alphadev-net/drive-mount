@@ -22,8 +22,12 @@ public class BitStitching {
     }
 
     public static void setBytesFromInt(int integer, byte[] array, int offset) {
+        setBytesFromInt(integer, array, offset, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    public static void setBytesFromInt(int integer, byte[] array, int offset, ByteOrder order) {
         ByteBuffer b = ByteBuffer.allocate(4);
-        b.order(ByteOrder.LITTLE_ENDIAN);
+        b.order(order);
         b.putInt(integer);
         byte[] temp = b.array();
 
