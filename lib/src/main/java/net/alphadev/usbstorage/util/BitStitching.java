@@ -10,10 +10,10 @@ import java.nio.ByteOrder;
 @SuppressWarnings("unused")
 public class BitStitching {
     public static int convertToInt(byte[] byteArray, int offset) {
-        byte c1 = byteArray[offset + 3];
-        byte c2 = byteArray[offset + 2];
-        byte c3 = byteArray[offset + 1];
-        byte c4 = byteArray[offset];
+        byte c1 = byteArray[offset];
+        byte c2 = byteArray[offset + 1];
+        byte c3 = byteArray[offset + 2];
+        byte c4 = byteArray[offset + 3];
 
         long temp =
                 ((0xFF & c1) << 24) | ((0xFF & c2) << 16) | ((0xFF & c3) << 8) | (0xFF & c4);
