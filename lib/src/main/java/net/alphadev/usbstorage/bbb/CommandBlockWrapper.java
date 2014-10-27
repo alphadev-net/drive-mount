@@ -36,7 +36,8 @@ public class CommandBlockWrapper implements Transmittable {
     public void setCommand(Transmittable command) {
         byte[] cmdBlock = command.asBytes();
 
-        if (cmdBlock.length > 16) {
+        if (cmdBlock.length != 6 && cmdBlock.length != 10 &&
+                cmdBlock.length != 12 && cmdBlock.length != 16) {
             throw new IllegalArgumentException("command has invalid size!");
         }
 
