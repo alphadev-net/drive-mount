@@ -8,6 +8,7 @@ import static net.alphadev.usbstorage.util.BitStitching.convertToShort;
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
+@SuppressWarnings("unused")
 public class RequestSenseResponse {
     public static final byte LENGTH = 18;
 
@@ -65,6 +66,62 @@ public class RequestSenseResponse {
             default:
                 return ResponseCode.RESERVED;
         }
+    }
+
+    public boolean isValid() {
+        return mValid;
+    }
+
+    public boolean isFilemark() {
+        return mFilemark;
+    }
+
+    public boolean isEOM() {
+        return mEOM;
+    }
+
+    public boolean isILI() {
+        return mILI;
+    }
+
+    public boolean isSKSV() {
+        return mSKSV;
+    }
+
+    public ResponseCode getResponseCode() {
+        return mResponseCode;
+    }
+
+    public byte getSenseKey() {
+        return mSenseKey;
+    }
+
+    public byte getAdditionalSenseLength() {
+        return mAdditionalSenseLength;
+    }
+
+    public byte getAdditionalSenseCode() {
+        return mAdditionalSenseCode;
+    }
+
+    public byte getAdditionalSenseQualifier() {
+        return mAdditionalSenseQualifier;
+    }
+
+    public byte getFieldReplacableUnitCode() {
+        return mFieldReplacableUnitCode;
+    }
+
+    public int getInformation() {
+        return mInformation;
+    }
+
+    public int getCommandSpecificInformation() {
+        return mCommandSpecificInformation;
+    }
+
+    public int getSenseKeySpecific() {
+        return mSenseKeySpecific;
     }
 
     public enum ResponseCode {
