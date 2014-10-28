@@ -19,6 +19,7 @@ import net.alphadev.usbstorage.scsi.command.TestUnitReady;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import de.waldheinz.fs.BlockDevice;
 import de.waldheinz.fs.ReadOnlyException;
@@ -161,6 +162,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         send_mass_storage_command(cmd);
 
         byte[] answer = mAbstractBulkDevice.retrieve_data_packet(requestSize);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         byteBuffer.put(answer);
 
         assumeDeviceStatusOK();
