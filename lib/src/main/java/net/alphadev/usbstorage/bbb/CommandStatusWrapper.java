@@ -45,17 +45,39 @@ public class CommandStatusWrapper {
                 return Status.COMMAND_PASSED;
             case 2:
                 return Status.CHECK_CONDITION;
+            case 4:
+                return Status.CONDITION_MET;
             case 8:
                 return Status.BUSY;
+            case 16:
+                return Status.INTERMEDIATE;
+            case 20:
+                return Status.INTERMEDIATE_CONDITION_MET;
+            case 34:
+                return Status.COMMAND_TERMINATED;
+            case 40:
+                return Status.QUEUE_FULL;
             default:
-                return Status.COMMAND_FAILED;
+                return Status.RESERVED;
         }
     }
 
     public static enum Status {
+        /**
+         * This status indicates that the target has successfully completed the command.
+         */
         COMMAND_PASSED,
-        COMMAND_FAILED,
+
+        /**
+         * This status indicates that a contingent allegiance condition has occurred.
+         */
         CHECK_CONDITION,
-        BUSY
+        CONDITION_MET,
+        BUSY,
+        INTERMEDIATE,
+        INTERMEDIATE_CONDITION_MET,
+        COMMAND_TERMINATED,
+        QUEUE_FULL,
+        RESERVED
     }
 }
