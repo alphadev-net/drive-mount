@@ -40,6 +40,13 @@ public class FatStorage implements StorageDevice {
 
     @Override
     public FsType getFsType() {
-        return FsType.FAT;
+        switch (fs.getFatType()) {
+            case FAT12:
+                return FsType.FAT12;
+            case FAT16:
+                return FsType.FAT16;
+            default:
+                return FsType.FAT32;
+        }
     }
 }
