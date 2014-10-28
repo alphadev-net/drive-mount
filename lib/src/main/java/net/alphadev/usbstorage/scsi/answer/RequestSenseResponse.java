@@ -22,7 +22,7 @@ public class RequestSenseResponse {
     private boolean mSKSV;
 
     private ResponseCode mResponseCode;
-    private byte mSenseKey;
+    private SenseKey mSenseKey;
     private byte mAdditionalSenseLength;
     private byte mAdditionalSenseCode;
     private byte mAdditionalSenseQualifier;
@@ -42,7 +42,7 @@ public class RequestSenseResponse {
         mFilemark = (answer[1] & 0x80) == 0x80;
         mEOM = (answer[1] & 0x40) == 0x40;
         mILI = (answer[1] & 0x20) == 0x20;
-        mSenseKey = (byte) (answer[1] & 0xf);
+        mSenseKey = determineSenseKey((byte) (answer[1] & 0xf));
         mInformation = convertToInt(answer, 3);
         mAdditionalSenseLength = answer[7];
         mCommandSpecificInformation = convertToShort(answer, 8);
@@ -51,9 +51,47 @@ public class RequestSenseResponse {
         mFieldReplacableUnitCode = answer[14];
         mSKSV = (answer[15] & 0x80) == 0x80;
 
-        byte[] temp = new byte[]{0, (byte) (answer[15]&0x7f), answer[16], answer[17]};
+        byte[] temp = new byte[]{0, (byte) (answer[15] & 0x7f), answer[16], answer[17]};
         mSenseKeySpecific = BitStitching.convertToInt(temp, 0);
     }
+
+    private SenseKey determineSenseKey(byte senseKey) {
+        switch (senseKey) {
+            case 0x0:
+                return SenseKey.NO_SENSE;
+            case 0x1:
+                return SenseKey.RECOVERED_ERROR;
+            case 0x2:
+                return SenseKey.NOT_READY;
+            case 0x3:
+                return SenseKey.MEDIUM_ERROR;
+            case 0x4:
+                return SenseKey.HARDWARE_ERROR;
+            case 0x5:
+                return SenseKey.ILLEGAL_REQUEST;
+            case 0x6:
+                return SenseKey.UNIT_ATTENTION;
+            case 0x7:
+                return SenseKey.DATA_PROTECT;
+            case 0x8:
+                return SenseKey.BLANK_CHECK;
+            case 0x9:
+                return SenseKey.VENDOR_SPECIFIC;
+            case 0xa:
+                return SenseKey.COPY_ABORTED;
+            case 0xb:
+                return SenseKey.ABORTED_COMMAND;
+            case 0xc:
+                return SenseKey.EQUAL;
+            case 0xd:
+                return SenseKey.VOLUME_OVERFLOW;
+            case 0xe:
+                return SenseKey.MISCOMPARE;
+            default:
+                throw new IllegalArgumentException("Don't know how to process the given Sense Key");
+        }
+    }
+
 
     private ResponseCode determineResponseCode(byte typeField) {
         switch (typeField) {
@@ -92,7 +130,7 @@ public class RequestSenseResponse {
         return mResponseCode;
     }
 
-    public byte getSenseKey() {
+    public SenseKey getSenseKey() {
         return mSenseKey;
     }
 
@@ -124,7 +162,134 @@ public class RequestSenseResponse {
         return mSenseKeySpecific;
     }
 
-    public enum ResponseCode {
+    public static enum SenseKey {
+        /**
+         * Indicates that there is no specific sense key information to be reported for the
+         * designated logical unit. This would be the case for a successful command or a command
+         * that received CHECK CONDITION or COMMAND TERMINATED status because one of the filemark,
+         * EOM, or ILI bits is set to one.
+         * (0x0)
+         */
+        NO_SENSE,
+
+        /**
+         * Indicates that the last command completed successfully with some recovery action
+         * performed by the target. Details may be determinable by examining the additional sense
+         * bytes and the information field.  When multiple recovered errors occur during one
+         * command, the choice of which error to report (first, last, most severe, etc.) is device
+         * specific.
+         * (0x1)
+         */
+        RECOVERED_ERROR,
+
+        /**
+         * Indicates that the logical unit addressed cannot be accessed. Operator intervention may
+         * be required to correct this condition.
+         * (0x2)
+         */
+        NOT_READY,
+
+        /**
+         * Indicates that the command terminated with a non-recovered error condition that was
+         * probably caused by a flaw in the medium or an error in the recorded data.  This sense key
+         * may also be returned if the target is unable to distinguish between a flaw in the medium
+         * and a specific hardware failure (sense key 4h).
+         * (0x3)
+         */
+        MEDIUM_ERROR,
+
+        /**
+         * Indicates that the target detected a non-recoverable hardware failure (for example,
+         * controller failure, device failure, parity error, etc.) while performing the command or
+         * during a self test.
+         * (0x4)
+         */
+        HARDWARE_ERROR,
+
+        /**
+         * Indicates that there was an illegal parameter in the command descriptor block or in the
+         * additional parameters supplied as data for some commands (FORMAT UNIT, SEARCH DATA,
+         * etc.). If the target detects an invalid parameter in the command descriptor block, then
+         * it shall terminate the command without altering the medium. If the target detects an
+         * invalid parameter in the additional parameters supplied as data, then the target may have
+         * already altered the medium. This sense key may also indicate that an invalid IDENTIFY
+         * message was received (5.6.7).
+         * (0x5)
+         */
+        ILLEGAL_REQUEST,
+
+        /**
+         * Indicates that the removable medium may have been changed or the target has been reset.
+         * See 6.9 for more detailed information about the unit attention condition.
+         * (0x6)
+         */
+        UNIT_ATTENTION,
+
+        /**
+         * Indicates that a command that reads or writes the medium was attempted on a block that is
+         * protected from this operation. The read or write operation is not performed.
+         * (0x7)
+         */
+        DATA_PROTECT,
+
+        /**
+         * Indicates that a write-once device or a sequential-access device encountered blank medium
+         * or format-defined end-of-data indication while reading or a write-once device encountered
+         * a non-blank medium while writing.
+         * (0x8)
+         */
+        BLANK_CHECK,
+
+        /**
+         * This sense key is available for reporting vendor specific conditions.
+         * (0x9)
+         */
+        VENDOR_SPECIFIC,
+
+        /**
+         * Indicates a COPY, COMPARE, or COPY AND VERIFY command was aborted due to an error
+         * condition on the source device, the destination device, or both.  (See 7.2.3.2 for
+         * additional information about this sense key.)
+         * (0xa)
+         */
+        COPY_ABORTED,
+
+        /**
+         * Indicates that the target aborted the command. The initiator may be able to recover by
+         * trying the command again.
+         * (0xb)
+         */
+        ABORTED_COMMAND,
+
+        /**
+         * Indicates a SEARCH DATA command has satisfied an equal comparison.
+         * (0xc)
+         */
+        EQUAL,
+
+        /**
+         * Indicates that a buffered peripheral device has reached the end-of-partition and data may
+         * remain in the buffer that has not been written to the medium.  A RECOVER BUFFERED DATA
+         * command(s) may be issued to read the unwritten data from the buffer.
+         * (0xd)
+         */
+        VOLUME_OVERFLOW,
+
+        /**
+         * Indicates that the source data did not match the data read from the medium.
+         * (0xe)
+         */
+        MISCOMPARE,
+
+        /**
+         * Reserved.
+         * (0xf)
+         */
+        RESERVED
+
+    }
+
+    public static enum ResponseCode {
         CURRENT_ERROR,
         DEFERRED_ERROR,
         VENDOR_SPECIFIC,
