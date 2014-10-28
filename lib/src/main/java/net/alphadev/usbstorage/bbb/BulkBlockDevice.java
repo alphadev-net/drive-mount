@@ -5,12 +5,14 @@ import net.alphadev.usbstorage.scsi.answer.ModeSenseResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesHeader;
+import net.alphadev.usbstorage.scsi.answer.RequestSenseResponse;
 import net.alphadev.usbstorage.scsi.answer.StandardInquiryAnswer;
 import net.alphadev.usbstorage.scsi.command.Inquiry;
 import net.alphadev.usbstorage.scsi.command.ModeSense;
 import net.alphadev.usbstorage.scsi.command.Read10;
 import net.alphadev.usbstorage.scsi.command.ReadCapacity;
 import net.alphadev.usbstorage.scsi.command.ReadFormatCapacities;
+import net.alphadev.usbstorage.scsi.command.RequestSense;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
 import net.alphadev.usbstorage.scsi.command.TestUnitReady;
 
@@ -114,6 +116,13 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         if (CommandStatusWrapper.Status.COMMAND_PASSED != csw.getStatus()) {
             throw new IllegalStateException("device signaled error state!");
         }
+    }
+
+    @SuppressWarnings("unused")
+    private void checkErrorCondition() throws IOException {
+        send_mass_storage_command(new RequestSense());
+        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(RequestSenseResponse.LENGTH+10);
+        new RequestSenseResponse(answer);
     }
 
     private CommandStatusWrapper getDeviceStatus() {
