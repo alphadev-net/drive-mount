@@ -30,7 +30,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     private BulkDevice mAbstractBulkDevice;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
-    private byte mLunToUse = 0;
+    private byte mLunToUse;
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) throws IOException {
         mAbstractBulkDevice = usbBlockDevice;
@@ -40,6 +40,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         acquireDriveCapacity();
         senseMode();
         testUnitReady();
+        mLunToUse = 0;
     }
 
     private void senseMode() throws IOException {
@@ -121,7 +122,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     @SuppressWarnings("unused")
     private void checkErrorCondition() throws IOException {
         send_mass_storage_command(new RequestSense());
-        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(RequestSenseResponse.LENGTH+10);
+        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(RequestSenseResponse.LENGTH + 10);
         new RequestSenseResponse(answer);
     }
 

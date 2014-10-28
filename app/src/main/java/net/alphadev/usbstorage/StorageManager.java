@@ -47,8 +47,8 @@ public class StorageManager {
             // code to cleanly unmount drive
         }
     };
-    private UsbManager mUsbManager;
-    private Context mContext;
+    private final UsbManager mUsbManager;
+    private final Context mContext;
     private OnStorageChangedListener mStorageChangedListener;
 
     public StorageManager(Context context) {

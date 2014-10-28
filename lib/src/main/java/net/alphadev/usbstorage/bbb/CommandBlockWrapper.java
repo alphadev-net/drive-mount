@@ -26,8 +26,6 @@ public class CommandBlockWrapper implements Transmittable {
         setBytesFromInt(++tagCounter, cwbData, 0x4, ByteOrder.BIG_ENDIAN);
     }
 
-
-
     public void setFlags(Direction directionFlags) {
         cwbData[0xc] = (byte) (directionFlags == Direction.DEVICE_TO_HOST ? 128 : 0);
     }

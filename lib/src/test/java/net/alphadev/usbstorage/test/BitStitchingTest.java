@@ -11,8 +11,8 @@ import org.junit.Test;
 public class BitStitchingTest {
     @Test
     public void convertsProperlyToInteger() {
-        testNumber(new byte[]{0,0,0,0}, 0);
-        testNumber(new byte[]{0,0,2,0}, 512);
+        testNumber(new byte[]{0, 0, 0, 0}, 0);
+        testNumber(new byte[]{0, 0, 2, 0}, 512);
     }
 
     private void testNumber(byte[] input, int expected) {

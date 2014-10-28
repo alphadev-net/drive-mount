@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- *
  * @author Jan Seeger <jan@alphadev.net>
  */
 @SuppressWarnings("unused")
