@@ -67,4 +67,12 @@ public class BitStitching {
             array[index] = a[i];
         }
     }
+
+    public static byte[] forceCast(int[] input) {
+        byte[] output = new byte[input.length];
+        for(int i=0; i<output.length; i++) {
+            output[i] = (byte) input[i];
+        }
+        return output;
+    }
 }
