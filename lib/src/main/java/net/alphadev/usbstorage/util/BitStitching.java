@@ -4,26 +4,28 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- *
  * @author Jan Seeger <jan@alphadev.net>
  */
 @SuppressWarnings("unused")
+
 public class BitStitching {
     public static int convertToInt(byte[] byteArray, int offset) {
-        byte c1 = byteArray[offset + 3];
-        byte c2 = byteArray[offset + 2];
-        byte c3 = byteArray[offset + 1];
-        byte c4 = byteArray[offset];
+        return convertToInt(byteArray, offset, ByteOrder.LITTLE_ENDIAN);
+    }
 
-        long temp =
-                ((0xFF & c1) << 24) | ((0xFF & c2) << 16) | ((0xFF & c3) << 8) | (0xFF & c4);
-
-        return (int) (temp & 0x0FFFFFFFFL);
+    public static int convertToInt(byte[] byteArray, int offset, ByteOrder order) {
+        ByteBuffer b = ByteBuffer.wrap(byteArray, offset, 4);
+        b.order(order);
+        return b.getInt();
     }
 
     public static void setBytesFromInt(int integer, byte[] array, int offset) {
+        setBytesFromInt(integer, array, offset, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    public static void setBytesFromInt(int integer, byte[] array, int offset, ByteOrder order) {
         ByteBuffer b = ByteBuffer.allocate(4);
-        b.order(ByteOrder.LITTLE_ENDIAN);
+        b.order(order);
         b.putInt(integer);
         byte[] temp = b.array();
 
@@ -64,5 +66,13 @@ public class BitStitching {
             int index = offset + i;
             array[index] = a[i];
         }
+    }
+
+    public static byte[] forceCast(int[] input) {
+        byte[] output = new byte[input.length];
+        for(int i=0; i<output.length; i++) {
+            output[i] = (byte) input[i];
+        }
+        return output;
     }
 }

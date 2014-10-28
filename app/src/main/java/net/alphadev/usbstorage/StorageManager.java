@@ -47,8 +47,8 @@ public class StorageManager {
             // code to cleanly unmount drive
         }
     };
-    private UsbManager mUsbManager;
-    private Context mContext;
+    private final UsbManager mUsbManager;
+    private final Context mContext;
     private OnStorageChangedListener mStorageChangedListener;
 
     public StorageManager(Context context) {
@@ -75,6 +75,10 @@ public class StorageManager {
 
         StorageDevice storage = mountAsFatFS(device);
         mMountedDevices.put(device, storage);
+        notifyStorageChanged();
+    }
+
+    private void notifyStorageChanged() {
         if (mStorageChangedListener != null) {
             mStorageChangedListener.onStorageChange();
         }
@@ -85,8 +89,6 @@ public class StorageManager {
     }
 
     private void enumerateDevices() {
-        mMountedDevices.clear();
-
         for (UsbDevice device : mUsbManager.getDeviceList().values()) {
             if (!mUsbManager.hasPermission(device)) {
                 Log.d(LOG_TAG, "Requesting access to USB device");

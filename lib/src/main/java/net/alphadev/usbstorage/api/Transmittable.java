@@ -14,7 +14,7 @@ public interface Transmittable {
     byte[] asBytes();
 
     /**
-     * Returns the payload size.
+     * Returns the payload size as bytes.
      *
      * @return payload size
      */

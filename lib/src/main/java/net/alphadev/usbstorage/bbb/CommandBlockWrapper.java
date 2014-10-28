@@ -2,6 +2,8 @@ package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.Transmittable;
 
+import java.nio.ByteOrder;
+
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
 
 /**
@@ -21,8 +23,7 @@ public class CommandBlockWrapper implements Transmittable {
         cwbData[0x3] = 'C';
 
         // increase and write tag counter
-        tagCounter++;
-        setBytesFromInt(tagCounter, cwbData, 0x4);
+        setBytesFromInt(++tagCounter, cwbData, 0x4);
     }
 
     public void setFlags(Direction directionFlags) {
@@ -36,7 +37,8 @@ public class CommandBlockWrapper implements Transmittable {
     public void setCommand(Transmittable command) {
         byte[] cmdBlock = command.asBytes();
 
-        if (cmdBlock.length > 16) {
+        if (cmdBlock.length != 6 && cmdBlock.length != 10 &&
+                cmdBlock.length != 12 && cmdBlock.length != 16) {
             throw new IllegalArgumentException("command has invalid size!");
         }
 
@@ -44,7 +46,7 @@ public class CommandBlockWrapper implements Transmittable {
         System.arraycopy(cmdBlock, 0, cwbData, cmdOffset, cmdBlock.length);
 
         cwbData[0xe] = (byte) cmdBlock.length;
-        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8);
+        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, ByteOrder.BIG_ENDIAN);
     }
 
     public byte[] asBytes() {
