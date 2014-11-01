@@ -29,7 +29,6 @@ public class ReadCapacity extends ScsiCommand {
         return retval;
     }
 
-
     @Override
     public int getExpectedAnswerLength() {
         return ReadCapacityResponse.LENGTH;

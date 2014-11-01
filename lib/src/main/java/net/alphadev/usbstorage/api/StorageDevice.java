@@ -6,11 +6,11 @@ package net.alphadev.usbstorage.api;
 @SuppressWarnings("unused")
 public interface StorageDevice {
 
-    public String getDeviceName();
+    String getDeviceName();
 
-    public StorageDetails getStorageDetails();
+    StorageDetails getStorageDetails();
 
-    public FsType getFsType();
+    FsType getFsType();
 
     public static enum FsType {
         FAT12,
