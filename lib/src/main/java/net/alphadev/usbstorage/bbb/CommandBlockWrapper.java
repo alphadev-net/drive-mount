@@ -23,7 +23,7 @@ public class CommandBlockWrapper implements ScsiTransferable {
         cwbData[0x3] = 'C';
 
         // increase and write tag counter
-        setBytesFromInt(++tagCounter, cwbData, 0x4);
+        setBytesFromInt(++tagCounter, cwbData, 0x4, ByteOrder.LITTLE_ENDIAN);
     }
 
     public void setFlags(Direction directionFlags) {

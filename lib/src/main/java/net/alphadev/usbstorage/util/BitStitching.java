@@ -9,18 +9,10 @@ import java.nio.ByteOrder;
 @SuppressWarnings("unused")
 
 public class BitStitching {
-    public static int convertToInt(byte[] byteArray, int offset) {
-        return convertToInt(byteArray, offset, ByteOrder.LITTLE_ENDIAN);
-    }
-
     public static int convertToInt(byte[] byteArray, int offset, ByteOrder order) {
         ByteBuffer b = ByteBuffer.wrap(byteArray, offset, 4);
         b.order(order);
         return b.getInt();
-    }
-
-    public static void setBytesFromInt(int integer, byte[] array, int offset) {
-        setBytesFromInt(integer, array, offset, ByteOrder.LITTLE_ENDIAN);
     }
 
     public static void setBytesFromInt(int integer, byte[] array, int offset, ByteOrder order) {
@@ -39,22 +31,24 @@ public class BitStitching {
         return sb.toString();
     }
 
-    public static short convertToShort(byte[] byteArray, int offset) {
-        byte c1 = byteArray[offset + 1];
-        byte c2 = byteArray[offset];
-        long temp = ((0xFF & c1) << 8) | (0xFF & c2);
-        return (short) (temp & 0x0FFFFFFFFL);
+    public static short convertToShort(byte[] byteArray, int offset, ByteOrder order) {
+        ByteBuffer b = ByteBuffer.wrap(byteArray, offset, 2);
+        b.order(order);
+        return b.getShort();
     }
 
+    /**
+     * Used to read the Vendor and Model descriptions.
+     */
     public static String bytesToString(byte[] answer, int offset, int length) {
         ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put(answer, offset, length);
         return new String(buffer.array());
     }
 
-    public static void setBytesFromShort(short value, byte[] array, int offset) {
+    public static void setBytesFromShort(short value, byte[] array, int offset, ByteOrder order) {
         ByteBuffer b = ByteBuffer.allocate(2);
-        b.order(ByteOrder.LITTLE_ENDIAN);
+        b.order(order);
         b.putShort(value);
         byte[] temp = b.array();
 

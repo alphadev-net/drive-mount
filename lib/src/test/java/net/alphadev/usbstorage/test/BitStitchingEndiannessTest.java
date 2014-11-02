@@ -5,6 +5,8 @@ import net.alphadev.usbstorage.util.BitStitching;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.ByteOrder;
+
 /**
  * Test correct handling of endianness in BitStitching util class.
  * <p/>
@@ -22,7 +24,7 @@ public class BitStitchingEndiannessTest {
         byte[] expected = new byte[]{0x4d, 0x3c, 0x2b, 0x1a};
         int input = 439041101;
         byte[] result = new byte[4];
-        BitStitching.setBytesFromInt(input, result, 0);
+        BitStitching.setBytesFromInt(input, result, 0, ByteOrder.LITTLE_ENDIAN);
         Assert.assertArrayEquals(expected, result);
     }
 
@@ -30,7 +32,7 @@ public class BitStitchingEndiannessTest {
     public void convertsProperlyToInteger() {
         int expected = 512;
         byte[] input = new byte[]{0, 2, 0, 0};
-        int result = BitStitching.convertToInt(input, 0);
+        int result = BitStitching.convertToInt(input, 0, ByteOrder.LITTLE_ENDIAN);
         Assert.assertEquals(expected, result);
     }
 }

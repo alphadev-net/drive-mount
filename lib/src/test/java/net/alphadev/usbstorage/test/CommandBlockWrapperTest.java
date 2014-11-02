@@ -1,6 +1,6 @@
 package net.alphadev.usbstorage.test;
 
-import net.alphadev.usbstorage.api.Transmittable;
+import net.alphadev.usbstorage.api.ScsiTransferable;
 import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 
 import org.junit.Assert;
@@ -26,7 +26,7 @@ public class CommandBlockWrapperTest {
         byte[] expected = new byte[]{
                 0x55, 0x53, 0x42, 0x43, // signature
                 0x1, 0x0, 0x0, 0x0, // tag
-                0x24, 0x0, 0x0, 0x0, // transfer length
+                0x0, 0x0, 0x0, 0x24, // transfer length
                 0x0, // flags
                 0x0, // lun
                 0x6, // length
@@ -56,7 +56,7 @@ public class CommandBlockWrapperTest {
         Assert.assertEquals(15 + length - 1, lastPos);
     }
 
-    private static class TransmittableDummy implements Transmittable {
+    private static class TransmittableDummy implements ScsiTransferable {
         private byte[] data;
 
         private TransmittableDummy(byte[] data) {
