@@ -1,5 +1,7 @@
 package net.alphadev.usbstorage.bbb;
 
+import java.nio.ByteOrder;
+
 import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 
 /**
@@ -22,8 +24,12 @@ public class CommandStatusWrapper {
         mSignature[0x2] = data[0x2];
         mSignature[0x3] = data[0x3];
 
-        mTag = convertToInt(data, 0x4);
-        mDataResidue = convertToInt(data, 0x8);
+        if (!"USBS".equals(getSignature())) {
+            throw new IllegalArgumentException("Invalid CSW header!");
+        }
+
+        mTag = convertToInt(data, 0x4, ByteOrder.LITTLE_ENDIAN);
+        mDataResidue = convertToInt(data, 0x8, ByteOrder.LITTLE_ENDIAN);
         mStatus = data[0xc];
     }
 

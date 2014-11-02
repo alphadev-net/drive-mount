@@ -2,6 +2,8 @@ package net.alphadev.usbstorage.scsi.command;
 
 import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
 
+import java.nio.ByteOrder;
+
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
 
 /**
@@ -23,7 +25,7 @@ public class ReadCapacity extends ScsiCommand {
         byte[] retval = new byte[10];
         retval[0] = READ_CAPACITY; // opcode
         // retval[1] is reserved
-        setBytesFromInt(mLogicalBlockAddress, retval, 2);
+        setBytesFromInt(mLogicalBlockAddress, retval, 2, ByteOrder.BIG_ENDIAN);
         // retval[6-8] is reserved
         retval[9] = mControl;
         return retval;

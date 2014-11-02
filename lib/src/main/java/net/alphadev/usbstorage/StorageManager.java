@@ -39,7 +39,7 @@ public class StorageManager {
 
         StorageDevice storage = mountAsFatFS(device);
 
-        if(storage != null) {
+        if (storage != null) {
             mMountedDevices.put(device.getId(), storage);
         }
     }

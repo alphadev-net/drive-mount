@@ -1,5 +1,7 @@
 package net.alphadev.usbstorage.scsi.command;
 
+import java.nio.ByteOrder;
+
 import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
 
 /**
@@ -16,7 +18,7 @@ public class ReadFormatCapacities extends ScsiCommand {
     public byte[] asBytes() {
         byte[] retval = new byte[10];
         retval[0] = READ_FORMAT_CAPACITIES; // opcode
-        setBytesFromShort((short) getExpectedAnswerLength(), retval, 7);
+        setBytesFromShort((short) getExpectedAnswerLength(), retval, 7, ByteOrder.BIG_ENDIAN);
         return retval;
     }
 

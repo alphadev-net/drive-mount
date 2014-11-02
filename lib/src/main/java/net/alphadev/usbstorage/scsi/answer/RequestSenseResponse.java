@@ -2,6 +2,8 @@ package net.alphadev.usbstorage.scsi.answer;
 
 import net.alphadev.usbstorage.util.BitStitching;
 
+import java.nio.ByteOrder;
+
 import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 import static net.alphadev.usbstorage.util.BitStitching.convertToShort;
 
@@ -43,16 +45,16 @@ public class RequestSenseResponse {
         mEOM = (answer[1] & 0x40) == 0x40;
         mILI = (answer[1] & 0x20) == 0x20;
         mSenseKey = determineSenseKey((byte) (answer[1] & 0xf));
-        mInformation = convertToInt(answer, 3);
+        mInformation = convertToInt(answer, 3, ByteOrder.BIG_ENDIAN);
         mAdditionalSenseLength = answer[7];
-        mCommandSpecificInformation = convertToShort(answer, 8);
+        mCommandSpecificInformation = convertToShort(answer, 8, ByteOrder.BIG_ENDIAN);
         mAdditionalSenseCode = answer[12];
         mAdditionalSenseQualifier = answer[13];
         mFieldReplacableUnitCode = answer[14];
         mSKSV = (answer[15] & 0x80) == 0x80;
 
         byte[] temp = new byte[]{0, (byte) (answer[15] & 0x7f), answer[16], answer[17]};
-        mSenseKeySpecific = BitStitching.convertToInt(temp, 0);
+        mSenseKeySpecific = BitStitching.convertToInt(temp, 0, ByteOrder.BIG_ENDIAN);
     }
 
     private SenseKey determineSenseKey(byte senseKey) {
