@@ -7,11 +7,11 @@ import org.junit.Test;
 
 /**
  * Test correct handling of endianness in BitStitching util class.
+ * <p/>
+ * Used sample values:
+ * http://de.wikipedia.org/wiki/Byte-Reihenfolge#Beispiel:_Speicherung_einer_Integer-Zahl_von_32_Bit_in_4_Bytes
  *
  * @author Jan Seeger <jan@alphadev.net>
- *         <p/>
- *         Used sample values:
- *         http://de.wikipedia.org/wiki/Byte-Reihenfolge#Beispiel:_Speicherung_einer_Integer-Zahl_von_32_Bit_in_4_Bytes
  */
 public class BitStitchingEndiannessTest {
     /**

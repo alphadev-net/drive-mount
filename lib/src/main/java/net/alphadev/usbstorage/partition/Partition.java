@@ -30,12 +30,14 @@ public class Partition implements BlockDevice {
 
     @Override
     public void read(long devOffset, ByteBuffer dest) throws IOException {
-        // TODO: calculate new offset and delegate
+        long newOffset = mParameter.getLogicalStart() + devOffset;
+        mDevice.read(newOffset, dest);
     }
 
     @Override
     public void write(long devOffset, ByteBuffer src) throws ReadOnlyException, IOException, IllegalArgumentException {
-        // TODO: calculate new offset and delegate
+        long newOffset = mParameter.getLogicalStart() + devOffset;
+        mDevice.read(newOffset, src);
     }
 
     @Override
