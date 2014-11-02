@@ -26,7 +26,8 @@ public class MasterBootRecord {
             e.printStackTrace();
         }
 
-        if (buffer.get(SIGNATURE_OFFSET) != 0x55 || buffer.get(SIGNATURE_OFFSET + 1) != 0xaa) {
+        if ((buffer.get(SIGNATURE_OFFSET) & 0xff) != 0x55 ||
+                (buffer.get(SIGNATURE_OFFSET+1) & 0xff) != 0xaa) {
             throw new IllegalArgumentException("no mbr signature found!");
         }
 
