@@ -39,7 +39,9 @@ public class StorageManager {
 
         StorageDevice storage = mountAsFatFS(device);
 
-        mMountedDevices.put(device.getId(), storage);
+        if(storage != null) {
+            mMountedDevices.put(device.getId(), storage);
+        }
     }
 
     private StorageDevice mountAsFatFS(BlockDevice device) {
