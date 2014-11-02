@@ -22,6 +22,10 @@ public class CommandStatusWrapper {
         mSignature[0x2] = data[0x2];
         mSignature[0x3] = data[0x3];
 
+        if(!"USBS".equals(getSignature())) {
+            throw new IllegalArgumentException("Invalid CSW header!");
+        }
+
         mTag = convertToInt(data, 0x4);
         mDataResidue = convertToInt(data, 0x8);
         mStatus = data[0xc];
