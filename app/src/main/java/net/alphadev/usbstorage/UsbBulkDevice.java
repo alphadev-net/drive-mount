@@ -79,7 +79,7 @@ public class UsbBulkDevice implements BulkDevice {
     }
 
     @Override
-    public int send_mass_storage_command(Transmittable command) throws IOException {
+    public int write(Transmittable command) throws IOException {
         checkClosed();
 
         byte[] payload = command.asBytes();
@@ -88,7 +88,7 @@ public class UsbBulkDevice implements BulkDevice {
     }
 
     @Override
-    public byte[] retrieve_data_packet(int expected_length) {
+    public byte[] read(int expected_length) {
         checkClosed();
 
         byte[] buffer = new byte[expected_length];
