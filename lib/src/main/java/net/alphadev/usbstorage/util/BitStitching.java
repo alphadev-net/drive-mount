@@ -10,8 +10,10 @@ import java.nio.ByteOrder;
 
 public class BitStitching {
     public static int convertToInt(byte[] byteArray, int offset, ByteOrder order) {
-        ByteBuffer b = ByteBuffer.wrap(byteArray, offset, 4);
+        ByteBuffer b = ByteBuffer.allocate(4);
         b.order(order);
+        b.put(byteArray, offset, 4);
+        b.rewind();
         return b.getInt();
     }
 
@@ -32,8 +34,10 @@ public class BitStitching {
     }
 
     public static short convertToShort(byte[] byteArray, int offset, ByteOrder order) {
-        ByteBuffer b = ByteBuffer.wrap(byteArray, offset, 2);
+        ByteBuffer b = ByteBuffer.allocate(2);
         b.order(order);
+        b.put(byteArray, offset, 2);
+        b.rewind();
         return b.getShort();
     }
 
