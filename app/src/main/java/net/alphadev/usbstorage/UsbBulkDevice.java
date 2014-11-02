@@ -27,6 +27,7 @@ public class UsbBulkDevice implements BulkDevice {
     private UsbEndpoint mWriteEndpoint;
     private UsbInterface mDataInterface;
     private UsbDeviceConnection mConnection;
+    private int mDeviceId;
     private boolean closed;
 
     public UsbBulkDevice(Context ctx, UsbDevice device) throws IOException {
@@ -36,6 +37,7 @@ public class UsbBulkDevice implements BulkDevice {
             throw new IllegalStateException("You don't have the permission to access this device!");
         }
 
+        mDeviceId = device.getDeviceId();
         findUsableInterface(device);
         findUsableEndpoints();
         openAndLockDevice(device, manager);
@@ -116,5 +118,11 @@ public class UsbBulkDevice implements BulkDevice {
         mConnection.close();
         mConnection = null;
         closed = true;
+    }
+
+
+    @Override
+    public int getId() {
+        return mDeviceId;
     }
 }

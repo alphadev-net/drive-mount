@@ -1,6 +1,6 @@
 package net.alphadev.usbstorage.scsi.command;
 
-import net.alphadev.usbstorage.api.Transmittable;
+import net.alphadev.usbstorage.api.ScsiTransferable;
 import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
 
 /**
@@ -9,7 +9,7 @@ import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
  *
  * @author Jan Seeger <jan@alphadev.net>
  */
-public abstract class ScsiCommand implements Transmittable {
+public abstract class ScsiCommand implements ScsiTransferable {
     protected final byte mOpCode;
 
     public ScsiCommand(byte opCode) {

@@ -9,24 +9,15 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import net.alphadev.usbstorage.api.StorageDevice;
-import net.alphadev.usbstorage.bbb.BulkBlockDevice;
-import net.alphadev.usbstorage.filesystems.FatStorage;
+import net.alphadev.usbstorage.api.BulkDevice;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
 
-import de.waldheinz.fs.BlockDevice;
-
-
-public class StorageManager {
+public class DeviceManager {
 
     public static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
 
     private static final String LOG_TAG = "Drive Mount";
-
-    private final HashMap<UsbDevice, StorageDevice> mMountedDevices = new HashMap<>();
     private final BroadcastReceiver mPermissionReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -49,10 +40,12 @@ public class StorageManager {
     };
     private final UsbManager mUsbManager;
     private final Context mContext;
+    private StorageManager mStorageManager;
     private OnStorageChangedListener mStorageChangedListener;
 
-    public StorageManager(Context context) {
+    public DeviceManager(Context context, StorageManager storageManager) {
         mUsbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        mStorageManager = storageManager;
         mContext = context;
 
         IntentFilter permissionFilter = new IntentFilter(ACTION_USB_PERMISSION);
@@ -68,14 +61,14 @@ public class StorageManager {
     }
 
     private void tryMount(UsbDevice device) {
-        if (mMountedDevices.get(device) != null) {
-            // device seems already mounted… do nothing.
-            return;
+        try {
+            BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
+            mStorageManager.tryMount(usbBulkDevice);
+        } catch (IOException ex) {
+            Log.d(LOG_TAG, "couldn't mount!", ex);
+        } finally {
+            notifyStorageChanged();
         }
-
-        StorageDevice storage = mountAsFatFS(device);
-        mMountedDevices.put(device, storage);
-        notifyStorageChanged();
     }
 
     private void notifyStorageChanged() {
@@ -100,30 +93,6 @@ public class StorageManager {
             Log.d(LOG_TAG, "App already has access to USB device");
             tryMount(device);
         }
-    }
-
-    public Set<StorageDevice> getStorageDevices() {
-        Set<StorageDevice> validDevices = new HashSet<>();
-
-        for (StorageDevice device : mMountedDevices.values()) {
-            if (device != null) {
-                validDevices.add(device);
-            }
-        }
-
-        return validDevices;
-    }
-
-    private StorageDevice mountAsFatFS(UsbDevice usbDevice) {
-        try {
-            UsbBulkDevice usbBulkDevice = new UsbBulkDevice(mContext, usbDevice);
-            BlockDevice blockDevice = new BulkBlockDevice(usbBulkDevice);
-            return new FatStorage(blockDevice, true);
-        } catch (Exception ex) {
-            Log.d(LOG_TAG, "error while trying to mount fat volume", ex);
-        }
-
-        return null;
     }
 
     public static interface OnStorageChangedListener {

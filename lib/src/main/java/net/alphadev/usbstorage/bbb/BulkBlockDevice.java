@@ -52,7 +52,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         cmd.setSubPageCode((byte) 0);
         send_mass_storage_command(cmd);
 
-        byte[] data = mAbstractBulkDevice.retrieve_data_packet(cmd.getExpectedAnswerLength());
+        byte[] data = mAbstractBulkDevice.read(cmd.getExpectedAnswerLength());
         new ModeSenseResponse(data);
 
         assumeDeviceStatusOK();
@@ -73,12 +73,12 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     private void acquireCardCapacities() throws IOException {
         try {
             send_mass_storage_command(new ReadFormatCapacities());
-            byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesHeader.LENGTH);
+            byte[] answer = mAbstractBulkDevice.read(ReadFormatCapacitiesHeader.LENGTH);
             ReadFormatCapacitiesHeader capacity = new ReadFormatCapacitiesHeader(answer);
             assumeDeviceStatusOK();
 
             for (int i = 0; i < capacity.getCapacityEntryCount(); i++) {
-                byte[] capacityData = mAbstractBulkDevice.retrieve_data_packet(ReadFormatCapacitiesEntry.LENGTH);
+                byte[] capacityData = mAbstractBulkDevice.read(ReadFormatCapacitiesEntry.LENGTH);
                 new ReadFormatCapacitiesEntry(capacityData);
             }
 
@@ -98,7 +98,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     private void acquireDriveCapacity() throws IOException {
         try {
             send_mass_storage_command(new ReadCapacity());
-            byte[] answer = mAbstractBulkDevice.retrieve_data_packet(ReadCapacityResponse.LENGTH);
+            byte[] answer = mAbstractBulkDevice.read(ReadCapacityResponse.LENGTH);
             ReadCapacityResponse capacity = new ReadCapacityResponse(answer);
 
             assumeDeviceStatusOK();
@@ -123,19 +123,19 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     @SuppressWarnings("unused")
     private void checkErrorCondition() throws IOException {
         send_mass_storage_command(new RequestSense());
-        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(RequestSenseResponse.LENGTH + 10);
+        byte[] answer = mAbstractBulkDevice.read(RequestSenseResponse.LENGTH + 10);
         new RequestSenseResponse(answer);
     }
 
     private CommandStatusWrapper getDeviceStatus() {
-        byte[] buffer = mAbstractBulkDevice.retrieve_data_packet(13);
+        byte[] buffer = mAbstractBulkDevice.read(13);
         return new CommandStatusWrapper(buffer);
     }
 
     private void setupInquiryPhase() throws IOException {
         send_mass_storage_command(new Inquiry());
 
-        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(StandardInquiryAnswer.LENGTH);
+        byte[] answer = mAbstractBulkDevice.read(StandardInquiryAnswer.LENGTH);
         new StandardInquiryAnswer(answer);
 
         assumeDeviceStatusOK();
@@ -161,7 +161,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         cmd.setExpectedAnswerLength(requestSize);
         send_mass_storage_command(cmd);
 
-        byte[] answer = mAbstractBulkDevice.retrieve_data_packet(requestSize);
+        byte[] answer = mAbstractBulkDevice.read(requestSize);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         byteBuffer.put(answer);
 
@@ -174,7 +174,7 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
         cbw.setLun(mLunToUse);
         cbw.setCommand(command);
 
-        return mAbstractBulkDevice.send_mass_storage_command(cbw);
+        return mAbstractBulkDevice.write(cbw);
     }
 
     @Override
