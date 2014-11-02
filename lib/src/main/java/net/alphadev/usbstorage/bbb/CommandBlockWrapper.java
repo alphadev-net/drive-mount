@@ -46,7 +46,7 @@ public class CommandBlockWrapper implements ScsiTransferable {
         System.arraycopy(cmdBlock, 0, cwbData, cmdOffset, cmdBlock.length);
 
         cwbData[0xe] = (byte) cmdBlock.length;
-        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, ByteOrder.BIG_ENDIAN);
+        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, ByteOrder.LITTLE_ENDIAN);
     }
 
     public byte[] asBytes() {

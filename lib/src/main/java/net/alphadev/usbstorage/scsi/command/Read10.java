@@ -31,9 +31,9 @@ public class Read10 extends ScsiCommand {
         final byte[] bytes = new byte[10];
         bytes[0] = READ10; // opcode
         // 1 == flags
-        setBytesFromInt((int) offset, bytes, 2, ByteOrder.LITTLE_ENDIAN);
+        setBytesFromInt((int) offset, bytes, 2, ByteOrder.BIG_ENDIAN);
         // 6 == group number
-        setBytesFromShort(transferLength, bytes, 7, ByteOrder.LITTLE_ENDIAN);
+        setBytesFromShort(transferLength, bytes, 7, ByteOrder.BIG_ENDIAN);
         // 9 == control bits
         return bytes;
     }
