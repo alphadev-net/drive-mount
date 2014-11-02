@@ -6,11 +6,11 @@ import net.alphadev.usbstorage.api.StorageDevice;
 import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.filesystems.FatStorage;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
+import net.alphadev.usbstorage.partition.Partition;
 import net.alphadev.usbstorage.util.BlockDeviceWrapper;
 
 import java.io.IOException;
 import java.util.HashMap;
-
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -23,11 +23,11 @@ public class StorageManager {
             BlockDevice blockDevice = new BulkBlockDevice(device);
             MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
-            for (BlockDevice partition : mbr.getPartitions()) {
+            for (Partition partition : mbr.getPartitions()) {
                 tryMountPartition(partition);
             }
         } catch (IOException ex) {
-            System.err.println(ex);
+            ex.printStackTrace();
         }
     }
 
