@@ -24,8 +24,7 @@ public class Partition implements BlockDevice {
 
     @Override
     public long getSize() throws IOException {
-        // TODO: calculate size
-        return 0;
+        return mParameter.getNumberOfSectors() * mDevice.getSectorSize();
     }
 
     @Override
