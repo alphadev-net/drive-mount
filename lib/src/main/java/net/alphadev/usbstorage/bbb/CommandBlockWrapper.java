@@ -1,6 +1,6 @@
 package net.alphadev.usbstorage.bbb;
 
-import net.alphadev.usbstorage.api.Transmittable;
+import net.alphadev.usbstorage.api.ScsiTransferable;
 
 import java.nio.ByteOrder;
 
@@ -9,7 +9,7 @@ import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
-public class CommandBlockWrapper implements Transmittable {
+public class CommandBlockWrapper implements ScsiTransferable {
     private static int tagCounter = 0;
     private final byte[] cwbData;
 
@@ -34,7 +34,7 @@ public class CommandBlockWrapper implements Transmittable {
         cwbData[0xd] = lun;
     }
 
-    public void setCommand(Transmittable command) {
+    public void setCommand(ScsiTransferable command) {
         byte[] cmdBlock = command.asBytes();
 
         if (cmdBlock.length != 6 && cmdBlock.length != 10 &&

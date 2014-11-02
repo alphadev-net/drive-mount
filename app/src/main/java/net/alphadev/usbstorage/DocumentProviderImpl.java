@@ -38,8 +38,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
     @Override
     public boolean onCreate() {
-        mStorageManager = new StorageManager(getContext());
-        mStorageManager.setOnStorageChangedListener(new StorageManager.OnStorageChangedListener() {
+        mStorageManager = new StorageManager();
+        DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
+        deviceManager.setOnStorageChangedListener(new DeviceManager.OnStorageChangedListener() {
             @Override
             public void onStorageChange() {
                 getContext().getContentResolver()
@@ -55,7 +56,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
         final MatrixCursor roots =
                 new MatrixCursor(resolveRootProjection(projection));
 
-        for (StorageDevice device : mStorageManager.getStorageDevices()) {
+        for (StorageDevice device : mStorageManager.getMounts()) {
             createDevice(roots.newRow(), device);
         }
 

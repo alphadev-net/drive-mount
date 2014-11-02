@@ -12,11 +12,4 @@ public interface Transmittable {
      * @return payload data
      */
     byte[] asBytes();
-
-    /**
-     * Returns the payload size as bytes.
-     *
-     * @return payload size
-     */
-    int getExpectedAnswerLength();
 }
