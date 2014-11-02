@@ -26,7 +26,7 @@ public class CommandBlockWrapperTest {
         byte[] expected = new byte[]{
                 0x55, 0x53, 0x42, 0x43, // signature
                 0x1, 0x0, 0x0, 0x0, // tag
-                0x0, 0x0, 0x0, 0x24, // transfer length
+                0x24, 0x0, 0x0, 0x0, // transfer length
                 0x0, // flags
                 0x0, // lun
                 0x6, // length
