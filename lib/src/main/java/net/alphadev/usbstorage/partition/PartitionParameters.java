@@ -56,10 +56,10 @@ public class PartitionParameters {
 
         public HeadSectorCylinder(byte[] hscData, int offset) {
             mHead = hscData[offset];
-            mSector = (byte) (hscData[offset+1] & 0x3F);
-            mCylinder = (short) (hscData[offset+1] & 0xC0);
-            mCylinder = (short) (mCylinder <<6);
-            mCylinder += hscData[offset+2];
+            mSector = (byte) (hscData[offset + 1] & 0x3F);
+            mCylinder = (short) (hscData[offset + 1] & 0xC0);
+            mCylinder = (short) (mCylinder << 6);
+            mCylinder += hscData[offset + 2];
         }
 
         public byte getHead() {
