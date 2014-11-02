@@ -1,5 +1,6 @@
 package net.alphadev.usbstorage.bbb;
 
+import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.BulkDevice;
 import net.alphadev.usbstorage.scsi.answer.ModeSenseResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
@@ -16,18 +17,16 @@ import net.alphadev.usbstorage.scsi.command.RequestSense;
 import net.alphadev.usbstorage.scsi.command.ScsiCommand;
 import net.alphadev.usbstorage.scsi.command.TestUnitReady;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import de.waldheinz.fs.BlockDevice;
 import de.waldheinz.fs.ReadOnlyException;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
-public class BulkBlockDevice implements BlockDevice, Closeable {
+public class BulkBlockDevice implements BlockDevice {
     private BulkDevice mAbstractBulkDevice;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
@@ -205,5 +204,10 @@ public class BulkBlockDevice implements BlockDevice, Closeable {
     @Override
     public boolean isReadOnly() {
         return false;
+    }
+
+    @Override
+    public int getId() {
+        return mAbstractBulkDevice.getId();
     }
 }
