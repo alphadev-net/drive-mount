@@ -24,7 +24,7 @@ public class PartitionParameters {
         mLogicalStart = BitStitching.convertToInt(data, 0x8, ByteOrder.LITTLE_ENDIAN);
         mNumberOfSectors = BitStitching.convertToInt(data, 0xc, ByteOrder.LITTLE_ENDIAN);
 
-        if (!mPartitionStart.isValid() || mDescriptor != null || !mPartitionEnd.isValid()) {
+        if (mDescriptor == FileSystemDescriptor.UNUSED) {
             throw new IllegalArgumentException();
         }
     }
@@ -64,10 +64,6 @@ public class PartitionParameters {
             mCylinder = (short) (hscData[offset + 1] & 0xC0);
             mCylinder = (short) (mCylinder << 6);
             mCylinder += hscData[offset + 2];
-        }
-
-        public boolean isValid() {
-            return mCylinder >= 1 & mCylinder <= 1023 & mSector >= 1 & mSector <= 63;
         }
 
         public byte getHead() {
