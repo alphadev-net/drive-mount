@@ -17,6 +17,7 @@ public class PartitionParameters {
     private int mNumberOfSectors;
 
     public PartitionParameters(byte[] data) {
+        mBootIndicator = data[0x0] == 0x80;
         mPartitionStart = new HeadSectorCylinder(data, 0x1);
         mDescriptor = FileSystemDescriptor.parse(data[4]);
         mPartitionEnd = new HeadSectorCylinder(data, 0x5);
@@ -28,7 +29,7 @@ public class PartitionParameters {
         }
     }
 
-    public boolean isBootIndicator() {
+    public boolean isBootable() {
         return mBootIndicator;
     }
 
