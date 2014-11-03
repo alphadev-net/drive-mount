@@ -40,6 +40,7 @@ public class StorageManager {
         StorageDevice storage = mountAsFatFS(device);
 
         if (storage != null) {
+            System.out.println("Successfully mounted device: " + device.getId());
             mMountedDevices.put(device.getId(), storage);
         }
     }
