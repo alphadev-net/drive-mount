@@ -27,7 +27,7 @@ import de.waldheinz.fs.ReadOnlyException;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class BulkBlockDevice implements BlockDevice {
-    private BulkDevice mAbstractBulkDevice;
+    private final BulkDevice mAbstractBulkDevice;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
     private byte mLunToUse;
@@ -44,7 +44,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     private void senseMode() throws IOException {
-        ModeSense cmd = new ModeSense();
+        final ModeSense cmd = new ModeSense();
         cmd.setDisableBlockDescriptor(false);
         cmd.setPageControl(ModeSense.PageControlValues.Current);
         cmd.setPageCode((byte) 0x3f);
@@ -158,22 +158,22 @@ public class BulkBlockDevice implements BlockDevice {
         byteBuffer.rewind();
 
         for (int current=0; current<sectors; current++) {
-            System.out.printf("reading block %d of %d\n", current, sectors);
-            Read10 cmd = new Read10();
+            System.out.printf("reading block %d of %d\n", current + 1, sectors);
+
+            final Read10 cmd = new Read10();
             cmd.setOffset(offset + current * getSectorSize());
             cmd.setTransferLength((short) 1);
             cmd.setExpectedAnswerLength(getSectorSize());
             send_mass_storage_command(cmd);
 
-            byte[] buffer = mAbstractBulkDevice.read(requestSize);
-            byteBuffer.put(buffer);
+            byteBuffer.put(mAbstractBulkDevice.read(requestSize));
 
             assumeDeviceStatusOK();
         }
     }
 
     private int send_mass_storage_command(ScsiCommand command) throws IOException {
-        CommandBlockWrapper cbw = new CommandBlockWrapper();
+        final CommandBlockWrapper cbw = new CommandBlockWrapper();
         cbw.setFlags(command.getDirection());
         cbw.setLun(mLunToUse);
         cbw.setCommand(command);
