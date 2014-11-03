@@ -37,9 +37,12 @@ public class MasterBootRecord {
             buffer.position(offset);
             buffer.get(data);
 
-            PartitionParameters param = new PartitionParameters(data);
-            Partition partition = new Partition(device, entry, param);
-            mPartitions.add(partition);
+            try {
+                PartitionParameters param = new PartitionParameters(data);
+                Partition partition = new Partition(device, entry, param);
+                mPartitions.add(partition);
+            } catch (IllegalArgumentException ex) {
+            }
         }
     }
 
