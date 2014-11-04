@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.bbb;
+package net.alphadev.usbstorage.scsi;
 
 import net.alphadev.usbstorage.api.ScsiTransferable;
 
