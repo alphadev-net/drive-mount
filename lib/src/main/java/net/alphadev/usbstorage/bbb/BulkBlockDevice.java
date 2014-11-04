@@ -152,14 +152,14 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @Override
-    public void read(long offset, ByteBuffer byteBuffer) throws IOException {
-        final int requestSize = byteBuffer.limit();
+    public void read(long offset, ByteBuffer buffer) throws IOException {
+        final int requestSize = buffer.limit();
         final int sectors = requestSize / getSectorSize();
 
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.rewind();
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.rewind();
 
-        for (int current=0; current<sectors; current++) {
+        for (int current = 0; current < sectors; current++) {
             System.out.printf("reading block %d of %d\n", current + 1, sectors);
 
             final Read10 cmd = new Read10();
@@ -168,7 +168,8 @@ public class BulkBlockDevice implements BlockDevice {
             cmd.setExpectedAnswerLength(getSectorSize());
             send_mass_storage_command(cmd);
 
-            byteBuffer.put(mAbstractBulkDevice.read(requestSize));
+            byte[] temp = mAbstractBulkDevice.read(requestSize);
+            buffer.put(temp);
 
             assumeDeviceStatusOK();
         }
