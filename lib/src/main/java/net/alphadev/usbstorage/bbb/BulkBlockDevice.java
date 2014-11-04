@@ -2,6 +2,8 @@ package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
+import net.alphadev.usbstorage.scsi.CommandStatusWrapper;
 import net.alphadev.usbstorage.scsi.answer.ModeSenseResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadCapacityResponse;
 import net.alphadev.usbstorage.scsi.answer.ReadFormatCapacitiesEntry;

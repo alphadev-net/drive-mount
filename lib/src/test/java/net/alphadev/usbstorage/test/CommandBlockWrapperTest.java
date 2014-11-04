@@ -1,7 +1,7 @@
 package net.alphadev.usbstorage.test;
 
 import net.alphadev.usbstorage.api.ScsiTransferable;
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
+import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
 
 import org.junit.Assert;
 import org.junit.Before;

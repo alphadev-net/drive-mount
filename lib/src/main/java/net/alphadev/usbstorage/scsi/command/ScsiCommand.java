@@ -1,7 +1,7 @@
 package net.alphadev.usbstorage.scsi.command;
 
 import net.alphadev.usbstorage.api.ScsiTransferable;
-import net.alphadev.usbstorage.bbb.CommandBlockWrapper;
+import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
 
 /**
  * Class that communicates using SCSI Transparent Command Set as specified by:
