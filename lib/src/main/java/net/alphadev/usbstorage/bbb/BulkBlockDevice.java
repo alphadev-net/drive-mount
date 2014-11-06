@@ -168,7 +168,7 @@ public class BulkBlockDevice implements BlockDevice {
             cmd.setExpectedAnswerLength(getSectorSize());
             send_mass_storage_command(cmd);
 
-            byteBuffer.put(mAbstractBulkDevice.read(requestSize));
+            byteBuffer.put(mAbstractBulkDevice.read(getSectorSize()));
 
             assumeDeviceStatusOK();
         }
