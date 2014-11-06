@@ -5,131 +5,131 @@ package net.alphadev.usbstorage.partition;
  */
 public enum FileSystemDescriptor {
     /**
-    * Unused.
-    * (0x00)
-    */
+     * Unused.
+     * (0x00)
+     */
     UNUSED,
 
     /**
-    * FAT12 for Floppy Disks.
-    * (0x01)
-    */
+     * FAT12 for Floppy Disks.
+     * (0x01)
+     */
     FAT12,
 
     /**
-    * FAT16 ≤ 32MB.
-    * (0x04)
-    */
+     * FAT16 ≤ 32MB.
+     * (0x04)
+     */
     FAT16,
 
     /**
-    * Extended Partition.
-    * (0x05)
-    */
+     * Extended Partition.
+     * (0x05)
+     */
     EXTENDED,
 
     /**
-    * FAT16 > 32MB.
-    * (0x06)
-    */
+     * FAT16 > 32MB.
+     * (0x06)
+     */
     FAT16_LARGE,
 
     /**
-    * NTFS (Windows NT/2000/XP/Vista/7/8).
-    * HPFS (OS/2).
-    * exFAT.
-    * (0x07)
-    */
+     * NTFS (Windows NT/2000/XP/Vista/7/8).
+     * HPFS (OS/2).
+     * exFAT.
+     * (0x07)
+     */
     NTFS,
 
     /**
-    * FAT32.
-    * (0x0b)
-    */
+     * FAT32.
+     * (0x0b)
+     */
     FAT32,
 
     /**
-    * FAT32 with LBA.
-    * (0x0c)
-    */
+     * FAT32 with LBA.
+     * (0x0c)
+     */
     FAT32_LBA,
 
     /**
-    * FAT16 > 32MB with LBA.
-    * (0x0e)
-    */
+     * FAT16 > 32MB with LBA.
+     * (0x0e)
+     */
     FAT16_LBA,
 
     /**
-    * Extended Partition with LBA.
-    * (0x0f)
-    */
+     * Extended Partition with LBA.
+     * (0x0f)
+     */
     EXTENDED_LBA,
 
     /**
-    * OEM Partition.
-    * (0x12)
-    */
+     * OEM Partition.
+     * (0x12)
+     */
     OEM,
 
     /**
-    * Windows RE (hidden).
-    * (0x27)
-    */
+     * Windows RE (hidden).
+     * (0x27)
+     */
     WINDOWS_RE,
 
     /**
-    * Dynamic Drive.
-    * (0x42)
-    */
+     * Dynamic Drive.
+     * (0x42)
+     */
     DYNAMIC,
 
     /**
-    * Linux Swap.
-    * (0x82)
-    */
+     * Linux Swap.
+     * (0x82)
+     */
     LINUX_SWAP,
 
     /**
-    * Linux Native.
-    * (0x83)
-    */
+     * Linux Native.
+     * (0x83)
+     */
     LINUX_NATIVE,
 
     /**
-    * Linux LVM.
-    * (0x8e)
-    */
+     * Linux LVM.
+     * (0x8e)
+     */
     LINUX_LVM,
 
     /**
-    * FreeBSD.
-    * (0xa5)
-    */
+     * FreeBSD.
+     * (0xa5)
+     */
     FREEBSD,
 
     /**
-    * OpenBSD.
-    * (0xa6)
-    */
+     * OpenBSD.
+     * (0xa6)
+     */
     OPENBSD,
 
     /**
-    * NetBSD.
-    * (0xa9)
-    */
+     * NetBSD.
+     * (0xa9)
+     */
     NETBSD,
 
     /**
-    * Legacy MBR with EFI-Header.
-    * (0xee)
-    */
+     * Legacy MBR with EFI-Header.
+     * (0xee)
+     */
     LEGACY_MBR_EFI,
 
     /**
-    * EFI Filesystem.
-    * (0xef)
-    */
+     * EFI Filesystem.
+     * (0xef)
+     */
     EFI;
 
     public static FileSystemDescriptor parse(int fsd) {
