@@ -29,7 +29,7 @@ import de.waldheinz.fs.ReadOnlyException;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class BulkBlockDevice implements BlockDevice {
-    private BulkDevice mAbstractBulkDevice;
+    private final BulkDevice mAbstractBulkDevice;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
     private byte mLunToUse;
@@ -46,7 +46,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     private void senseMode() throws IOException {
-        ModeSense cmd = new ModeSense();
+        final ModeSense cmd = new ModeSense();
         cmd.setDisableBlockDescriptor(false);
         cmd.setPageControl(ModeSense.PageControlValues.Current);
         cmd.setPageCode((byte) 0x3f);
@@ -152,25 +152,30 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @Override
-    public void read(long offset, ByteBuffer byteBuffer) throws IOException {
-        final int requestSize = byteBuffer.limit();
-        int blockCount = requestSize / getSectorSize();
+    public void read(long offset, ByteBuffer buffer) throws IOException {
+        final int requestSize = buffer.limit();
+        final int sectors = requestSize / getSectorSize();
 
-        Read10 cmd = new Read10();
-        cmd.setOffset(offset);
-        cmd.setTransferLength((short) blockCount);
-        cmd.setExpectedAnswerLength(requestSize);
-        send_mass_storage_command(cmd);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.rewind();
 
-        byte[] answer = mAbstractBulkDevice.read(requestSize);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put(answer);
+        for (int current = 0; current < sectors; current++) {
+            System.out.printf("reading block %d of %d\n", current + 1, sectors);
 
-        assumeDeviceStatusOK();
+            final Read10 cmd = new Read10();
+            cmd.setOffset(offset + current * getSectorSize());
+            cmd.setTransferLength((short) 1);
+            cmd.setExpectedAnswerLength(getSectorSize());
+            send_mass_storage_command(cmd);
+
+            buffer.put(mAbstractBulkDevice.read(getSectorSize()));
+
+            assumeDeviceStatusOK();
+        }
     }
 
     private int send_mass_storage_command(ScsiCommand command) throws IOException {
-        CommandBlockWrapper cbw = new CommandBlockWrapper();
+        final CommandBlockWrapper cbw = new CommandBlockWrapper();
         cbw.setFlags(command.getDirection());
         cbw.setLun(mLunToUse);
         cbw.setCommand(command);

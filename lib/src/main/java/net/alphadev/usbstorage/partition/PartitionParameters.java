@@ -12,7 +12,7 @@ public class PartitionParameters {
     private boolean mBootIndicator;
     private FileSystemDescriptor mDescriptor;
     private HeadSectorCylinder mPartitionStart;
-    private HeadSectorCylinder mParititionEnd;
+    private HeadSectorCylinder mPartitionEnd;
     private int mLogicalStart;
     private int mNumberOfSectors;
 
@@ -20,12 +20,16 @@ public class PartitionParameters {
         mBootIndicator = data[0x0] == 0x80;
         mPartitionStart = new HeadSectorCylinder(data, 0x1);
         mDescriptor = FileSystemDescriptor.parse(data[4]);
-        mParititionEnd = new HeadSectorCylinder(data, 0x5);
+        mPartitionEnd = new HeadSectorCylinder(data, 0x5);
         mLogicalStart = BitStitching.convertToInt(data, 0x8, ByteOrder.LITTLE_ENDIAN);
         mNumberOfSectors = BitStitching.convertToInt(data, 0xc, ByteOrder.LITTLE_ENDIAN);
+
+        if (mDescriptor == FileSystemDescriptor.UNUSED) {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public boolean isBootIndicator() {
+    public boolean isBootable() {
         return mBootIndicator;
     }
 
@@ -38,7 +42,7 @@ public class PartitionParameters {
     }
 
     public HeadSectorCylinder getParititionEnd() {
-        return mParititionEnd;
+        return mPartitionEnd;
     }
 
     public int getLogicalStart() {
