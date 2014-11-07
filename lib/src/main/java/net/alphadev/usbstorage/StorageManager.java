@@ -22,7 +22,6 @@ import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.filesystems.FatStorage;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
 import net.alphadev.usbstorage.partition.Partition;
-import net.alphadev.usbstorage.util.BlockDeviceWrapper;
 
 import java.util.HashMap;
 
@@ -57,8 +56,7 @@ public class StorageManager {
 
     private StorageDevice mountAsFatFS(BlockDevice device) {
         try {
-            de.waldheinz.fs.BlockDevice wrapper = new BlockDeviceWrapper(device);
-            return new FatStorage(wrapper, true);
+            return new FatStorage(device, true);
         } catch (Exception ex) {
             // don't do shit as it could also be a different fs format.
         }
