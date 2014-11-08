@@ -69,7 +69,7 @@ public class FatStorage implements StorageDevice {
     }
 
     @Override
-    public int getId() {
+    public String getId() {
         return blockDevice.getId();
     }
 }

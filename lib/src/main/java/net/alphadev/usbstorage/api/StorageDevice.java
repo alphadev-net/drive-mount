@@ -19,15 +19,13 @@ package net.alphadev.usbstorage.api;
  * @author Jan Seeger <jan@alphadev.net>
  */
 @SuppressWarnings("unused")
-public interface StorageDevice {
+public interface StorageDevice extends Identifiable {
 
     String getDeviceName();
 
     StorageDetails getStorageDetails();
 
     FsType getFsType();
-
-    int getId();
 
     public static enum FsType {
         FAT12,

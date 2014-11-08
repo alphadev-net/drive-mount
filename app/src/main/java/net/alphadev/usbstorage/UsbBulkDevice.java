@@ -135,7 +135,7 @@ public class UsbBulkDevice implements BulkDevice {
 
 
     @Override
-    public int getId() {
-        return mDeviceId;
+    public String getId() {
+        return Integer.toString(mDeviceId);
     }
 }

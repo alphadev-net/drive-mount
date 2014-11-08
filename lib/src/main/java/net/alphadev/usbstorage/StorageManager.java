@@ -29,7 +29,7 @@ import java.util.HashMap;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class StorageManager {
-    private final HashMap<Integer, StorageDevice> mMountedDevices = new HashMap<>();
+    private final HashMap<String, StorageDevice> mMountedDevices = new HashMap<>();
 
     public void tryMount(BulkDevice device) {
         BlockDevice blockDevice = new BulkBlockDevice(device);

@@ -236,7 +236,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @Override
-    public int getId() {
+    public String getId() {
         return mAbstractBulkDevice.getId();
     }
 }
