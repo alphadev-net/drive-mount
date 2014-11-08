@@ -36,7 +36,6 @@ import net.alphadev.usbstorage.scsi.command.TestUnitReady;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import de.waldheinz.fs.ReadOnlyException;
 
@@ -170,9 +169,6 @@ public class BulkBlockDevice implements BlockDevice {
     public void read(long offset, ByteBuffer buffer) {
         final int requestSize = buffer.limit();
         final int sectors = requestSize / getSectorSize();
-
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.rewind();
 
         final Read10 cmd = new Read10();
         cmd.setOffset(offset);
