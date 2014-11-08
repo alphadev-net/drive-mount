@@ -159,19 +159,18 @@ public class BulkBlockDevice implements BlockDevice {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.rewind();
 
+        final Read10 cmd = new Read10();
+        cmd.setOffset(offset);
+        cmd.setTransferLength((short) sectors);
+        cmd.setExpectedAnswerLength(requestSize);
+        send_mass_storage_command(cmd);
+
         for (int current = 0; current < sectors; current++) {
             System.out.printf("reading block %d of %d\n", current + 1, sectors);
-
-            final Read10 cmd = new Read10();
-            cmd.setOffset(offset + current * getSectorSize());
-            cmd.setTransferLength((short) 1);
-            cmd.setExpectedAnswerLength(getSectorSize());
-            send_mass_storage_command(cmd);
-
             buffer.put(mAbstractBulkDevice.read(getSectorSize()));
-
-            assumeDeviceStatusOK();
         }
+
+        assumeDeviceStatusOK();
     }
 
     private int send_mass_storage_command(ScsiCommand command) throws IOException {
