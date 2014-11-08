@@ -100,7 +100,6 @@ public class UsbBulkDevice implements BulkDevice {
         checkClosed();
 
         byte[] payload = command.asBytes();
-        Log.d(LOG_TAG, "sending: " + bytesToHex(payload));
         return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, TIMEOUT);
     }
 
@@ -110,7 +109,6 @@ public class UsbBulkDevice implements BulkDevice {
 
         byte[] buffer = new byte[expected_length];
         mConnection.bulkTransfer(mReadEndpoint, buffer, buffer.length, TIMEOUT);
-        Log.d(LOG_TAG, "receiving: " + bytesToHex(buffer));
         return buffer;
     }
 
