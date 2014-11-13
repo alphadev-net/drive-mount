@@ -58,10 +58,11 @@ public class StorageManager {
         try {
             return new FatStorage(device, true);
         } catch (Exception ex) {
-            // don't do shit as it could also be a different fs format.
+            ex.printStackTrace();
+            // at this point we tried to mount using the wrong fs type or the data is corrupt:
+            // either way do not attempt to read any further.
+            return null;
         }
-
-        return null;
     }
 
     public Iterable<? extends StorageDevice> getMounts() {
