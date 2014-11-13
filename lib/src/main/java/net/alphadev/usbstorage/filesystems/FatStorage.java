@@ -27,12 +27,12 @@ import de.waldheinz.fs.fat.FatFileSystem;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class FatStorage implements StorageDevice {
-    private final BlockDevice blockDevice;
+    private final String mId;
     private final FatFileSystem fs;
 
     public FatStorage(BlockDevice blockDevice, boolean readOnly) throws IOException {
         de.waldheinz.fs.BlockDevice wrapper = new BlockDeviceWrapper(blockDevice);
-        this.blockDevice = blockDevice;
+        this.mId = blockDevice.getId();
         fs = FatFileSystem.read(wrapper, readOnly);
     }
 
@@ -70,6 +70,6 @@ public class FatStorage implements StorageDevice {
 
     @Override
     public String getId() {
-        return blockDevice.getId();
+        return mId;
     }
 }
