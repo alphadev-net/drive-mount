@@ -22,19 +22,17 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.util.Log;
 
 import net.alphadev.usbstorage.api.BulkDevice;
 import net.alphadev.usbstorage.api.Transmittable;
 
 import java.io.IOException;
 
-import static net.alphadev.usbstorage.util.BitStitching.bytesToHex;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class UsbBulkDevice implements BulkDevice {
+    @SuppressWarnings("unused")
     private static final String LOG_TAG = "Drive Mount";
     private static final int TIMEOUT = 20000;
 
@@ -133,9 +131,8 @@ public class UsbBulkDevice implements BulkDevice {
         closed = true;
     }
 
-
     @Override
     public String getId() {
-        return Integer.toString(mDeviceId);
+        return Integer.valueOf(mDeviceId).toString();
     }
 }

@@ -16,7 +16,6 @@
 package net.alphadev.usbstorage.partition;
 
 import net.alphadev.usbstorage.api.BlockDevice;
-import net.alphadev.usbstorage.util.HashCodeUtil;
 
 import java.io.File;
 import java.io.IOException;
