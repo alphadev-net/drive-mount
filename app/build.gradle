@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'eu.widgetlabs:gradle-android-svg:+'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'eu.widgetlabs.gradle-android-svg'
 
 android {
     compileSdkVersion 21
@@ -23,6 +33,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+svg {
+    // denstities you want to have exported, default:
+    densities = [
+            'mdpi', 'hdpi',
+            'xhdpi', 'xxhdpi'
+    ]
+    source = '../art'
 }
 
 dependencies {

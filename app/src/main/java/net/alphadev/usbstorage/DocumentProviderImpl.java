@@ -80,7 +80,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
     private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device) {
         row.add(Root.COLUMN_ROOT_ID, device.getDeviceName());
-        row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
+        row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
         row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
     }
 
