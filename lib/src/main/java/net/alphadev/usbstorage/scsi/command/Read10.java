@@ -11,15 +11,11 @@ import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class Read10 extends ScsiCommand {
-    public static final byte READ10 = 0x28;
+    private static final byte READ10 = 0x28;
 
     private long offset;
     private short transferLength;
     private int mAnswerLength;
-
-    public Read10() {
-        super(READ10);
-    }
 
     @Override
     public CommandBlockWrapper.Direction getDirection() {

@@ -12,9 +12,9 @@ import de.waldheinz.fs.ReadOnlyException;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class Partition implements BlockDevice {
-    private BlockDevice mDevice;
-    private int mPartitionOffset;
-    private PartitionParameters mParameter;
+    private final BlockDevice mDevice;
+    private final int mPartitionOffset;
+    private final PartitionParameters mParameter;
 
     public Partition(BlockDevice device, int partitionOffset, PartitionParameters param) {
         mDevice = device;

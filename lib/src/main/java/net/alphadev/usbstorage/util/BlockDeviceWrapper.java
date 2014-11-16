@@ -11,7 +11,7 @@ import de.waldheinz.fs.ReadOnlyException;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class BlockDeviceWrapper implements de.waldheinz.fs.BlockDevice {
-    private BlockDevice mDevice;
+    private final BlockDevice mDevice;
 
     public BlockDeviceWrapper(BlockDevice device) {
         mDevice = device;

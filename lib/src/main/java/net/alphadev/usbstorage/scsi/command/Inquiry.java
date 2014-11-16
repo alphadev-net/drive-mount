@@ -12,10 +12,6 @@ public class Inquiry extends ScsiCommand {
     private boolean mCmdDt;
     private boolean mEvpd;
 
-    public Inquiry() {
-        super(INQUIRY);
-    }
-
     @Override
     public byte[] asBytes() {
         byte[] buffer = new byte[6];

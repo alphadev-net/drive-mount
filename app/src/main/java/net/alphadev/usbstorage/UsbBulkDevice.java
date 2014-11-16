@@ -30,7 +30,7 @@ public class UsbBulkDevice implements BulkDevice {
     private int mDeviceId;
     private boolean closed;
 
-    public UsbBulkDevice(Context ctx, UsbDevice device) throws IOException {
+    public UsbBulkDevice(Context ctx, UsbDevice device) {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
 
         if (!manager.hasPermission(device)) {
@@ -81,7 +81,7 @@ public class UsbBulkDevice implements BulkDevice {
     }
 
     @Override
-    public int write(Transmittable command) throws IOException {
+    public int write(Transmittable command) {
         checkClosed();
 
         byte[] payload = command.asBytes();

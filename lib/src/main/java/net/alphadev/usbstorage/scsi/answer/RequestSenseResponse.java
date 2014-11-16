@@ -17,26 +17,26 @@ public class RequestSenseResponse {
     /**
      * False indicates the information field not formatted according to SCSI standard.
      */
-    private boolean mValid;
-    private boolean mFilemark;
-    private boolean mEOM;
-    private boolean mILI;
-    private boolean mSKSV;
+    private final boolean mValid;
+    private final boolean mFilemark;
+    private final boolean mEOM;
+    private final boolean mILI;
+    private final boolean mSKSV;
 
-    private ResponseCode mResponseCode;
-    private SenseKey mSenseKey;
-    private byte mAdditionalSenseLength;
-    private byte mAdditionalSenseCode;
-    private byte mAdditionalSenseQualifier;
-    private byte mFieldReplacableUnitCode;
+    private final ResponseCode mResponseCode;
+    private final SenseKey mSenseKey;
+    private final byte mAdditionalSenseLength;
+    private final byte mAdditionalSenseCode;
+    private final byte mAdditionalSenseQualifier;
+    private final byte mFieldReplacableUnitCode;
 
-    private int mInformation;
-    private int mCommandSpecificInformation;
+    private final int mInformation;
+    private final int mCommandSpecificInformation;
 
     /**
      * This field is only 3 byte long!
      */
-    private int mSenseKeySpecific;
+    private final int mSenseKeySpecific;
 
     public RequestSenseResponse(byte[] answer) {
         mValid = (answer[0] & 0x80) == 0x80;

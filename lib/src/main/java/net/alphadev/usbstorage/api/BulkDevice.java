@@ -1,7 +1,6 @@
 package net.alphadev.usbstorage.api;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 /**
  * A bulk device is an abstract device which communicates using SCSI.
@@ -9,9 +8,24 @@ import java.io.IOException;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public interface BulkDevice extends Closeable, Identifiable {
-    int write(Transmittable command) throws IOException;
+    /**
+     * Transmits a given payload to the device BulkDevice being represented.
+     *
+     * @param payload to transfer
+     * @return the amount actually sent
+     */
+    int write(Transmittable payload);
 
-    byte[] read(int expected_length);
+    /**
+     * Receives a payload of a given length from the BulkDevice being represented.
+     *
+     * @param length of the payload
+     * @return the payload data
+     */
+    byte[] read(int length);
 
+    /**
+     * @return true if the connection to the BulkDevice being represented has already been disengaged.
+     */
     boolean isClosed();
 }

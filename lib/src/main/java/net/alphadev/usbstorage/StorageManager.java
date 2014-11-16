@@ -9,7 +9,6 @@ import net.alphadev.usbstorage.partition.MasterBootRecord;
 import net.alphadev.usbstorage.partition.Partition;
 import net.alphadev.usbstorage.util.BlockDeviceWrapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -19,15 +18,11 @@ public class StorageManager {
     private final HashMap<Integer, StorageDevice> mMountedDevices = new HashMap<>();
 
     public void tryMount(BulkDevice device) {
-        try {
-            BlockDevice blockDevice = new BulkBlockDevice(device);
-            MasterBootRecord mbr = new MasterBootRecord(blockDevice);
+        BlockDevice blockDevice = new BulkBlockDevice(device);
+        MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
-            for (Partition partition : mbr.getPartitions()) {
-                tryMountPartition(partition);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        for (Partition partition : mbr.getPartitions()) {
+            tryMountPartition(partition);
         }
     }
 

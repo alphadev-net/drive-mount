@@ -30,11 +30,11 @@ import de.waldheinz.fs.ReadOnlyException;
  */
 public class BulkBlockDevice implements BlockDevice {
     private final BulkDevice mAbstractBulkDevice;
+    private final byte mLunToUse;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
-    private byte mLunToUse;
 
-    public BulkBlockDevice(BulkDevice usbBlockDevice) throws IOException {
+    public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
 
         setupInquiryPhase();
@@ -45,7 +45,7 @@ public class BulkBlockDevice implements BlockDevice {
         mLunToUse = 0;
     }
 
-    private void senseMode() throws IOException {
+    private void senseMode() {
         final ModeSense cmd = new ModeSense();
         cmd.setDisableBlockDescriptor(false);
         cmd.setPageControl(ModeSense.PageControlValues.Current);
@@ -59,7 +59,7 @@ public class BulkBlockDevice implements BlockDevice {
         assumeDeviceStatusOK();
     }
 
-    private void testUnitReady() throws IOException {
+    private void testUnitReady() {
         send_mass_storage_command(new TestUnitReady());
         CommandStatusWrapper csw = getDeviceStatus();
 
@@ -71,7 +71,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @SuppressWarnings("unused")
-    private void acquireCardCapacities() throws IOException {
+    private void acquireCardCapacities() {
         try {
             send_mass_storage_command(new ReadFormatCapacities());
             byte[] answer = mAbstractBulkDevice.read(ReadFormatCapacitiesHeader.LENGTH);
@@ -96,7 +96,7 @@ public class BulkBlockDevice implements BlockDevice {
         }
     }
 
-    private void acquireDriveCapacity() throws IOException {
+    private void acquireDriveCapacity() {
         try {
             send_mass_storage_command(new ReadCapacity());
             byte[] answer = mAbstractBulkDevice.read(ReadCapacityResponse.LENGTH);
@@ -122,7 +122,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @SuppressWarnings("unused")
-    private void checkErrorCondition() throws IOException {
+    private void checkErrorCondition() {
         send_mass_storage_command(new RequestSense());
         byte[] answer = mAbstractBulkDevice.read(RequestSenseResponse.LENGTH + 10);
         new RequestSenseResponse(answer);
@@ -133,7 +133,7 @@ public class BulkBlockDevice implements BlockDevice {
         return new CommandStatusWrapper(buffer);
     }
 
-    private void setupInquiryPhase() throws IOException {
+    private void setupInquiryPhase() {
         send_mass_storage_command(new Inquiry());
 
         byte[] answer = mAbstractBulkDevice.read(StandardInquiryAnswer.LENGTH);
@@ -152,7 +152,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @Override
-    public void read(long offset, ByteBuffer buffer) throws IOException {
+    public void read(long offset, ByteBuffer buffer) {
         final int requestSize = buffer.limit();
         final int sectors = requestSize / getSectorSize();
 
@@ -173,7 +173,7 @@ public class BulkBlockDevice implements BlockDevice {
         assumeDeviceStatusOK();
     }
 
-    private int send_mass_storage_command(ScsiCommand command) throws IOException {
+    private int send_mass_storage_command(ScsiCommand command) {
         final CommandBlockWrapper cbw = new CommandBlockWrapper();
         cbw.setFlags(command.getDirection());
         cbw.setLun(mLunToUse);
@@ -183,17 +183,17 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @Override
-    public void write(long offset, ByteBuffer byteBuffer) throws ReadOnlyException, IOException, IllegalArgumentException {
+    public void write(long offset, ByteBuffer byteBuffer) throws ReadOnlyException, IllegalArgumentException {
 
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flush() {
         // since we write everything directly to the device there's no need to flush.
     }
 
     @Override
-    public int getSectorSize() throws IOException {
+    public int getSectorSize() {
         return mBlockSize;
     }
 

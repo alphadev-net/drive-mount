@@ -10,8 +10,8 @@ import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 public class ReadCapacityResponse {
     public static final int LENGTH = 8;
 
-    private int mBlockSize;
-    private int mNumberOfBlocks;
+    private final int mBlockSize;
+    private final int mNumberOfBlocks;
 
     public ReadCapacityResponse(byte[] answer) {
         mNumberOfBlocks = convertToInt(answer, 0, ByteOrder.BIG_ENDIAN);

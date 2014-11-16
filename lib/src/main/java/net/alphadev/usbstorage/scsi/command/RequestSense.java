@@ -6,11 +6,7 @@ import net.alphadev.usbstorage.scsi.answer.RequestSenseResponse;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class RequestSense extends ScsiCommand {
-    public static final byte REQUEST_SENSE = 0x3;
-
-    public RequestSense() {
-        super(REQUEST_SENSE);
-    }
+    private static final byte REQUEST_SENSE = 0x3;
 
     @Override
     public byte[] asBytes() {

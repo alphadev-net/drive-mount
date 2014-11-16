@@ -8,28 +8,24 @@ import static net.alphadev.usbstorage.util.BitStitching.bytesToString;
 @SuppressWarnings("unused")
 public class StandardInquiryAnswer {
     public static final byte LENGTH = 0x24;
-
+    private final byte mResponseDataFormat;
+    private final boolean mSccs;
+    private final short mVersionDescriptor1;
+    private final short mVersionDescriptor2;
+    private final short mVersionDescriptor3;
     private byte mPeripheralQualifier;
     private byte mPeripheralDeviceType;
     private boolean mRemovable;
     private boolean mAerc;
     private boolean mNormAca;
-
     /**
      * Hierarchical Addressing Support
      */
     private boolean mHiSup;
-
-    private byte mResponseDataFormat = 0;
     private byte mAdditionalLength;
-    private boolean mSccs = false;
     private String mVendorId;
     private String mProductId;
     private String mRevisionId;
-    private short mVersionDescriptor1 = 0;
-    private short mVersionDescriptor2 = 0;
-    private short mVersionDescriptor3 = 0;
-
     /**
      * Version 4 == SPC-2
      */
@@ -52,6 +48,11 @@ public class StandardInquiryAnswer {
         mVendorId = bytesToString(answer, 8, 8);
         mProductId = bytesToString(answer, 16, 16);
         mRevisionId = bytesToString(answer, 32, 4);
+        mVersionDescriptor1 = 0;
+        mVersionDescriptor2 = 0;
+        mVersionDescriptor3 = 0;
+        mResponseDataFormat = 0;
+        mSccs = false;
     }
 
     public byte getAdditionalLength() {

@@ -16,10 +16,6 @@ public class ReadCapacity extends ScsiCommand {
     private int mLogicalBlockAddress;
     private byte mControl;
 
-    public ReadCapacity() {
-        super(READ_CAPACITY);
-    }
-
     @Override
     public byte[] asBytes() {
         byte[] retval = new byte[10];

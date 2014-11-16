@@ -5,6 +5,7 @@ import java.util.BitSet;
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
+@SuppressWarnings("unused")
 public class ModeSenseResponse {
     public static final int LENGTH = 8;
 
@@ -28,10 +29,58 @@ public class ModeSenseResponse {
 
     private MediumType determineMediumType(byte typeField) {
         switch (typeField) {
-            case 00:
+            case 0x00:
                 return MediumType.SCB_DEVICE;
         }
         return null;
+    }
+
+    public byte getModeDataLength() {
+        return mModeDataLength;
+    }
+
+    public void setModeDataLength(byte modeDataLength) {
+        mModeDataLength = modeDataLength;
+    }
+
+    public MediumType getMediumType() {
+        return mMediumType;
+    }
+
+    public void setMediumType(MediumType mediumType) {
+        mMediumType = mediumType;
+    }
+
+    public byte getDeviceSpecificParameter() {
+        return mDeviceSpecificParameter;
+    }
+
+    public void setDeviceSpecificParameter(byte deviceSpecificParameter) {
+        mDeviceSpecificParameter = deviceSpecificParameter;
+    }
+
+    public byte getBlockDescriptorLength() {
+        return mBlockDescriptorLength;
+    }
+
+    public void setBlockDescriptorLength(byte blockDescriptorLength) {
+        mBlockDescriptorLength = blockDescriptorLength;
+    }
+
+    public boolean getWriteProtection() {
+        return mWriteProtection;
+    }
+
+    public void setWriteProtection(boolean writeProtection) {
+        mWriteProtection = writeProtection;
+    }
+
+    public boolean getDPOFUA() {
+        return mDPOFUA;
+    }
+
+    public void setDPOFUA(boolean dPOFUA) {
+        mDPOFUA = dPOFUA;
     }
 
     public static enum MediumType {

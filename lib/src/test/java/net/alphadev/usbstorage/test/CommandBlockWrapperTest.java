@@ -57,7 +57,7 @@ public class CommandBlockWrapperTest {
     }
 
     private static class TransmittableDummy implements ScsiTransferable {
-        private byte[] data;
+        private final byte[] data;
 
         private TransmittableDummy(byte[] data) {
             this.data = data;

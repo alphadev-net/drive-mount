@@ -16,10 +16,6 @@ public class ModeSense extends ScsiCommand {
     private byte mSubPageCode;
     private PageControlValues mPageControl;
 
-    public ModeSense() {
-        super(MODE_SENSE);
-    }
-
     @Override
     public byte[] asBytes() {
         byte[] retval = new byte[6];

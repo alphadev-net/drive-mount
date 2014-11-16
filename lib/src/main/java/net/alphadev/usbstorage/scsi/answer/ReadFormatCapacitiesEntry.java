@@ -11,8 +11,8 @@ import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
 public class ReadFormatCapacitiesEntry {
     public static final int LENGTH = 8;
 
-    private int mNumOfBlocks;
-    private FormatType mFormatType;
+    private final int mNumOfBlocks;
+    private final FormatType mFormatType;
     private int mTypeDependentParameter;
 
     public ReadFormatCapacitiesEntry(byte[] answer) {
