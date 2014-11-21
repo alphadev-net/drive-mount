@@ -36,10 +36,8 @@ android {
 }
 
 svg {
-    // denstities you want to have exported, default:
     densities = [
-            'mdpi', 'hdpi',
-            'xhdpi', 'xxhdpi'
+            'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi'
     ]
     source = '../art'
 }
