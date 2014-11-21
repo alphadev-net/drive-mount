@@ -1,6 +1,10 @@
 buildscript {
     repositories {
+        /*maven {
+            url "https://dl.bintray.com/widgetlabs/maven/"
+        }*/
         mavenLocal()
+        mavenCentral()
     }
     dependencies {
         classpath 'eu.widgetlabs:gradle-android-svg:+'
@@ -36,10 +40,8 @@ android {
 }
 
 svg {
-    // denstities you want to have exported, default:
     densities = [
-            'mdpi', 'hdpi',
-            'xhdpi', 'xxhdpi'
+            'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi'
     ]
     source = '../art'
 }
