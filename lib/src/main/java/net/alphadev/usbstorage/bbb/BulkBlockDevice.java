@@ -188,7 +188,7 @@ public class BulkBlockDevice implements BlockDevice {
             }
 
             assumeDeviceStatusOK();
-            System.out.printf("read %d bytes, offset %d\n", totalRequestSize, offset);
+            System.out.printf("read %d bytes, offset %, in %d chunks of size %d\n", totalRequestSize, offset, sectors, mBlockSize);
         }
     }
 
