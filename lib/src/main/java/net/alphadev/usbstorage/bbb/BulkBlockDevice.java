@@ -173,14 +173,18 @@ public class BulkBlockDevice implements BlockDevice {
     @Override
     public void read(long offset, ByteBuffer buffer) {
         final int totalRequestSize = buffer.limit();
-        final int totalRequests = totalRequestSize / mMaxTransferSize;
-        final int sectors = mMaxTransferSize / mBlockSize;
+        int remainingBytes = buffer.limit();
 
-        for (int request = 0; request < totalRequests; request++) {
+        System.out.printf("reading %d bytes, offset %d%n", totalRequestSize, offset);
+        while(remainingBytes > 0) {
+            final int requestSize = remainingBytes>mMaxTransferSize?mMaxTransferSize:remainingBytes;
+            final int sectors = Math.ceil(requestSize / mBlockSize);
+            remainingBytes -= requestSize;
+
             final Read10 cmd = new Read10();
             cmd.setOffset(offset);
             cmd.setTransferLength((short) sectors);
-            cmd.setExpectedAnswerLength(mMaxTransferSize);
+            cmd.setExpectedAnswerLength(requestSize);
             send_mass_storage_command(cmd);
 
             for (int subRequest = 0; subRequest < sectors; subRequest++) {
@@ -188,7 +192,7 @@ public class BulkBlockDevice implements BlockDevice {
             }
 
             assumeDeviceStatusOK();
-            System.out.printf("read %d bytes, offset %, in %d chunks of size %d\n", totalRequestSize, offset, sectors, mBlockSize);
+            System.out.printf("  in %d chunks of size %d%n", sectors, requestSize);
         }
     }
 
