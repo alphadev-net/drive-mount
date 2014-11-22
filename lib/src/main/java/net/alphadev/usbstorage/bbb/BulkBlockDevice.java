@@ -48,6 +48,11 @@ public class BulkBlockDevice implements BlockDevice {
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
 
+    /**
+     * 512 KB.
+     */
+    private int mMaxTransferSize = 512 * 1024;
+
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
 
@@ -167,21 +172,28 @@ public class BulkBlockDevice implements BlockDevice {
 
     @Override
     public void read(long offset, ByteBuffer buffer) {
-        final int requestSize = buffer.limit();
-        final int sectors = requestSize / getSectorSize();
+        final int totalRequestSize = buffer.limit();
+        int remainingBytes = buffer.limit();
 
-        final Read10 cmd = new Read10();
-        cmd.setOffset(offset);
-        cmd.setTransferLength((short) sectors);
-        cmd.setExpectedAnswerLength(requestSize);
-        send_mass_storage_command(cmd);
+        System.out.printf("reading %d bytes, offset %d%n", totalRequestSize, offset);
+        while(remainingBytes > 0) {
+            final int requestSize = remainingBytes>mMaxTransferSize?mMaxTransferSize:remainingBytes;
+            final int sectors = (int) Math.ceil(requestSize / mBlockSize);
+            remainingBytes -= requestSize;
 
-        for (int current = 0; current < sectors; current++) {
-            buffer.put(mAbstractBulkDevice.read(getSectorSize()));
+            final Read10 cmd = new Read10();
+            cmd.setOffset(offset);
+            cmd.setTransferLength((short) sectors);
+            cmd.setExpectedAnswerLength(requestSize);
+            send_mass_storage_command(cmd);
+
+            for (int subRequest = 0; subRequest < sectors; subRequest++) {
+                buffer.put(mAbstractBulkDevice.read(mBlockSize));
+            }
+
+            assumeDeviceStatusOK();
+            System.out.printf("  in %d chunks of size %d%n", sectors, requestSize);
         }
-
-        System.out.printf("read %d bytes, offset %d\n", requestSize, offset);
-        assumeDeviceStatusOK();
     }
 
     private int send_mass_storage_command(ScsiCommand command) {
