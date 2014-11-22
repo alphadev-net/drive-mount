@@ -91,7 +91,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     Log.i("Drive Mount", "name: " + device.getDeviceName());
                     break;
                 case Root.COLUMN_ICON:
-                    row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
+                    row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
                     break;
                 case Root.COLUMN_SUMMARY:
                     row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
