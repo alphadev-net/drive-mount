@@ -181,10 +181,10 @@ public class BulkBlockDevice implements BlockDevice {
         send_mass_storage_command(cmd);
 
         for (int current = 0; current < sectors; current++) {
-            System.out.printf("reading block %d of %d\n", current + 1, sectors);
             buffer.put(mAbstractBulkDevice.read(getSectorSize()));
         }
 
+        System.out.printf("read %d bytes, offset %d\n", requestSize, offset);
         assumeDeviceStatusOK();
     }
 
