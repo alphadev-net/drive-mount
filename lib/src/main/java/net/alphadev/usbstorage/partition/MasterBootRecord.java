@@ -16,6 +16,7 @@
 package net.alphadev.usbstorage.partition;
 
 import net.alphadev.usbstorage.api.BlockDevice;
+import net.alphadev.usbstorage.util.BitStitching;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -43,6 +44,7 @@ public class MasterBootRecord {
 
         if ((buffer.get(SIGNATURE_OFFSET) & 0xff) != 0x55 ||
                 (buffer.get(SIGNATURE_OFFSET + 1) & 0xff) != 0xaa) {
+            System.out.println(BitStitching.bytesToHex(buffer.array()));
             throw new IllegalArgumentException("no mbr signature found!");
         }
 
