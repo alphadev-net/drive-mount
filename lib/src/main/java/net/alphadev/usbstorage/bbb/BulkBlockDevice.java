@@ -177,7 +177,7 @@ public class BulkBlockDevice implements BlockDevice {
 
         System.out.printf("reading %d bytes, offset %d%n", totalRequestSize, offset);
         while(remainingBytes > 0) {
-            final int requestSize = remainingBytes>mMaxTransferSize?mMaxTransferSize:remainingBytes;
+            final int requestSize = Math.min(remainingBytes, mMaxTransferSize);
             final int sectors = (int) Math.ceil(requestSize / mBlockSize);
             remainingBytes -= requestSize;
 
@@ -192,7 +192,7 @@ public class BulkBlockDevice implements BlockDevice {
             }
 
             assumeDeviceStatusOK();
-            System.out.printf("  in %d chunks of size %d%n", sectors, requestSize);
+            System.out.printf("  of size %d%n", requestSize);
         }
     }
 
