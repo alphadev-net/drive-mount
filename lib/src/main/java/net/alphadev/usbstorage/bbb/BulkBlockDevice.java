@@ -56,7 +56,7 @@ public class BulkBlockDevice implements BlockDevice {
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
 
-        setupInquiryPhase();
+        inquireDevice();
         testUnitReady();
         acquireDriveCapacity();
         senseMode();
@@ -152,7 +152,7 @@ public class BulkBlockDevice implements BlockDevice {
         return new CommandStatusWrapper(buffer);
     }
 
-    private void setupInquiryPhase() {
+    private void inquireDevice() {
         send_mass_storage_command(new Inquiry());
 
         byte[] answer = mAbstractBulkDevice.read(StandardInquiryAnswer.LENGTH);
