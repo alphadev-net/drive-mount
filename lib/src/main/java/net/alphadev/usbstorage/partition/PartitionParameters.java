@@ -38,10 +38,6 @@ public class PartitionParameters {
         mPartitionEnd = new HeadSectorCylinder(data, 0x5);
         mLogicalStart = BitStitching.convertToInt(data, 0x8, ByteOrder.LITTLE_ENDIAN);
         mNumberOfSectors = BitStitching.convertToInt(data, 0xc, ByteOrder.LITTLE_ENDIAN);
-
-        if (mDescriptor == FileSystemDescriptor.UNUSED) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public boolean isBootable() {

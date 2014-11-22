@@ -54,8 +54,10 @@ public class MasterBootRecord {
 
             try {
                 PartitionParameters param = new PartitionParameters(data);
-                Partition partition = new Partition(device, entry, param);
-                mPartitions.add(partition);
+                if(param.getDescriptor() != FileSystemDescriptor.UNUSED) {
+                    Partition partition = new Partition(device, entry, param);
+                    mPartitions.add(partition);
+                }
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
