@@ -15,6 +15,8 @@
  */
 package net.alphadev.usbstorage.scsi;
 
+import net.alphadev.usbstorage.util.BitStitching;
+
 import java.nio.ByteOrder;
 
 import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
@@ -40,6 +42,7 @@ public class CommandStatusWrapper {
         mSignature[0x3] = data[0x3];
 
         if (!"USBS".equals(getSignature())) {
+            System.out.println(BitStitching.bytesToHex(data));
             throw new IllegalArgumentException("Invalid CSW header!");
         }
 
