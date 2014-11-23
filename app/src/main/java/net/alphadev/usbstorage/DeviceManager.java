@@ -74,10 +74,11 @@ public final class DeviceManager {
 
     private void tryMount(UsbDevice device) {
         BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
-        mStorageManager.tryMount(usbBulkDevice);
+        if (mStorageManager.tryMount(usbBulkDevice)) {
 
-        notifyStorageChanged();
-        Toast.makeText(mContext, "Mounted USB Device", Toast.LENGTH_SHORT).show();
+            notifyStorageChanged();
+            Toast.makeText(mContext, "Mounted USB Device", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void notifyStorageChanged() {

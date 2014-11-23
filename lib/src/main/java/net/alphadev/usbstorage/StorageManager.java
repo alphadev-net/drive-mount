@@ -31,19 +31,23 @@ import java.util.HashMap;
 public class StorageManager {
     private final HashMap<String, StorageDevice> mMountedDevices = new HashMap<>();
 
-    public void tryMount(BulkDevice device) {
+    public boolean tryMount(BulkDevice device) {
         BlockDevice blockDevice = new BulkBlockDevice(device);
         MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
         for (Partition partition : mbr.getPartitions()) {
-            tryMountPartition(partition);
+            if(tryMountPartition(partition)) {
+                return true;
+            }
         }
+
+        return false;
     }
 
-    private void tryMountPartition(BlockDevice device) {
+    private boolean tryMountPartition(BlockDevice device) {
         if (mMountedDevices.get(device.getId()) != null) {
             // device seems already mounted… do nothing.
-            return;
+            return false;
         }
 
         StorageDevice storage = mountAsFatFS(device);
@@ -51,7 +55,10 @@ public class StorageManager {
         if (storage != null) {
             System.out.println("Successfully mounted device: " + device.getId());
             mMountedDevices.put(device.getId(), storage);
+            return true;
         }
+
+        return false;
     }
 
     private StorageDevice mountAsFatFS(BlockDevice device) {
