@@ -30,8 +30,8 @@ public class FatStorage implements StorageDevice {
     private final FatFileSystem fs;
 
     public FatStorage(BlockDevice blockDevice, boolean readOnly) throws IOException {
-        de.waldheinz.fs.BlockDevice wrapper = new FatBlockDeviceWrapper(blockDevice);
         this.mId = blockDevice.getId();
+        de.waldheinz.fs.BlockDevice wrapper = new FatBlockDeviceWrapper(blockDevice);
         fs = FatFileSystem.read(wrapper, readOnly);
     }
 
@@ -57,14 +57,7 @@ public class FatStorage implements StorageDevice {
 
     @Override
     public FsType getFsType() {
-        switch (fs.getFatType()) {
-            case FAT12:
-                return FsType.FAT12;
-            case FAT16:
-                return FsType.FAT16;
-            default:
-                return FsType.FAT32;
-        }
+        return FsType.FAT;
     }
 
     @Override

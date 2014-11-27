@@ -28,9 +28,7 @@ public interface StorageDevice extends Identifiable {
     FsType getFsType();
 
     public static enum FsType {
-        FAT12,
-        FAT16,
-        FAT32
+        FAT
     }
 
     public static interface StorageDetails {
