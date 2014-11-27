@@ -14,7 +14,7 @@ This app aims to provide access to USB Mass Storage devices on Android devices w
 
 For now it is planned to support common USB drive file formats like FAT32 and NTFS. However I'd like to support HFS and Linux file systems, sometime.
 
-Please refer to the [Milestones](https://bitbucket.org/jandroid/drive-mount/wiki/Milestones) for a more detailed look ahead.
+Please refer to the [Milestones](https://github.com/alphaDev-net/drive-mount/milestones) for a more detailed look ahead.
 
 ## Issues
 
@@ -26,4 +26,4 @@ adb logcat
 
 ## Links
 
-[External Resources](https://bitbucket.org/jandroid/drive-mount/wiki/External%20Resources)
+[External Resources](https://github.com/alphaDev-net/drive-mount/wiki/External-Resources)
