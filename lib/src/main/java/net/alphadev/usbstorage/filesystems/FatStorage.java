@@ -17,7 +17,6 @@ package net.alphadev.usbstorage.filesystems;
 
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.StorageDevice;
-import net.alphadev.usbstorage.util.BlockDeviceWrapper;
 
 import java.io.IOException;
 
@@ -31,7 +30,7 @@ public class FatStorage implements StorageDevice {
     private final FatFileSystem fs;
 
     public FatStorage(BlockDevice blockDevice, boolean readOnly) throws IOException {
-        de.waldheinz.fs.BlockDevice wrapper = new BlockDeviceWrapper(blockDevice);
+        de.waldheinz.fs.BlockDevice wrapper = new FatBlockDeviceWrapper(blockDevice);
         this.mId = blockDevice.getId();
         fs = FatFileSystem.read(wrapper, readOnly);
     }

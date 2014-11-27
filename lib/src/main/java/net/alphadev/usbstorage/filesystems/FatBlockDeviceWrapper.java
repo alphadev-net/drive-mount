@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.alphadev.usbstorage.util;
+package net.alphadev.usbstorage.filesystems;
 
 import net.alphadev.usbstorage.api.BlockDevice;
 
@@ -25,10 +25,10 @@ import de.waldheinz.fs.ReadOnlyException;
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
-public class BlockDeviceWrapper implements de.waldheinz.fs.BlockDevice {
+public class FatBlockDeviceWrapper implements de.waldheinz.fs.BlockDevice {
     private final BlockDevice mDevice;
 
-    public BlockDeviceWrapper(BlockDevice device) {
+    public FatBlockDeviceWrapper(BlockDevice device) {
         mDevice = device;
     }
 
