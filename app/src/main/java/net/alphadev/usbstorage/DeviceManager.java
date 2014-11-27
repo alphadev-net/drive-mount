@@ -23,6 +23,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import net.alphadev.usbstorage.api.BulkDevice;
 
@@ -73,9 +74,11 @@ public final class DeviceManager {
 
     private void tryMount(UsbDevice device) {
         BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
-        mStorageManager.tryMount(usbBulkDevice);
+        if (mStorageManager.tryMount(usbBulkDevice)) {
 
-        notifyStorageChanged();
+            notifyStorageChanged();
+            Toast.makeText(mContext, "Mounted USB Device", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void notifyStorageChanged() {

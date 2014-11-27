@@ -56,7 +56,7 @@ public class BulkBlockDevice implements BlockDevice {
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
 
-        setupInquiryPhase();
+        inquireDevice();
         testUnitReady();
         acquireDriveCapacity();
         senseMode();
@@ -152,7 +152,7 @@ public class BulkBlockDevice implements BlockDevice {
         return new CommandStatusWrapper(buffer);
     }
 
-    private void setupInquiryPhase() {
+    private void inquireDevice() {
         send_mass_storage_command(new Inquiry());
 
         byte[] answer = mAbstractBulkDevice.read(StandardInquiryAnswer.LENGTH);
@@ -176,8 +176,8 @@ public class BulkBlockDevice implements BlockDevice {
         int remainingBytes = buffer.limit();
 
         System.out.printf("reading %d bytes, offset %d%n", totalRequestSize, offset);
-        while(remainingBytes > 0) {
-            final int requestSize = remainingBytes>mMaxTransferSize?mMaxTransferSize:remainingBytes;
+        while (remainingBytes > 0) {
+            final int requestSize = Math.min(remainingBytes, mMaxTransferSize);
             final int sectors = (int) Math.ceil(requestSize / mBlockSize);
             remainingBytes -= requestSize;
 
@@ -188,11 +188,13 @@ public class BulkBlockDevice implements BlockDevice {
             send_mass_storage_command(cmd);
 
             for (int subRequest = 0; subRequest < sectors; subRequest++) {
-                buffer.put(mAbstractBulkDevice.read(mBlockSize));
+                final int overLength = requestSize % mBlockSize;
+                final byte[] buf = mAbstractBulkDevice.read(mBlockSize);
+                buffer.put(buf, 0, mBlockSize - overLength);
             }
 
             assumeDeviceStatusOK();
-            System.out.printf("  in %d chunks of size %d%n", sectors, requestSize);
+            System.out.printf("  of size %d%n", requestSize);
         }
     }
 
@@ -236,7 +238,7 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     @Override
-    public int getId() {
+    public String getId() {
         return mAbstractBulkDevice.getId();
     }
 }

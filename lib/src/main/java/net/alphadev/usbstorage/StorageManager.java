@@ -22,7 +22,6 @@ import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.filesystems.FatStorage;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
 import net.alphadev.usbstorage.partition.Partition;
-import net.alphadev.usbstorage.util.BlockDeviceWrapper;
 
 import java.util.HashMap;
 
@@ -30,21 +29,25 @@ import java.util.HashMap;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class StorageManager {
-    private final HashMap<Integer, StorageDevice> mMountedDevices = new HashMap<>();
+    private final HashMap<String, StorageDevice> mMountedDevices = new HashMap<>();
 
-    public void tryMount(BulkDevice device) {
+    public boolean tryMount(BulkDevice device) {
         BlockDevice blockDevice = new BulkBlockDevice(device);
         MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
         for (Partition partition : mbr.getPartitions()) {
-            tryMountPartition(partition);
+            if(tryMountPartition(partition)) {
+                return true;
+            }
         }
+
+        return false;
     }
 
-    private void tryMountPartition(BlockDevice device) {
+    private boolean tryMountPartition(BlockDevice device) {
         if (mMountedDevices.get(device.getId()) != null) {
             // device seems already mounted… do nothing.
-            return;
+            return false;
         }
 
         StorageDevice storage = mountAsFatFS(device);
@@ -52,18 +55,21 @@ public class StorageManager {
         if (storage != null) {
             System.out.println("Successfully mounted device: " + device.getId());
             mMountedDevices.put(device.getId(), storage);
+            return true;
         }
+
+        return false;
     }
 
     private StorageDevice mountAsFatFS(BlockDevice device) {
         try {
-            de.waldheinz.fs.BlockDevice wrapper = new BlockDeviceWrapper(device);
-            return new FatStorage(wrapper, true);
+            return new FatStorage(device, true);
         } catch (Exception ex) {
-            // don't do shit as it could also be a different fs format.
+            ex.printStackTrace();
+            // at this point we tried to mount using the wrong fs type or the data is corrupt:
+            // either way do not attempt to read any further.
+            return null;
         }
-
-        return null;
     }
 
     public Iterable<? extends StorageDevice> getMounts() {

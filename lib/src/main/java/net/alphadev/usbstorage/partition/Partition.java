@@ -16,8 +16,8 @@
 package net.alphadev.usbstorage.partition;
 
 import net.alphadev.usbstorage.api.BlockDevice;
-import net.alphadev.usbstorage.util.HashCodeUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -45,6 +45,7 @@ public class Partition implements BlockDevice {
     @Override
     public void read(long devOffset, ByteBuffer dest) throws IOException {
         long newOffset = mParameter.getLogicalStart() + devOffset;
+        System.out.printf("translating read from %d to %d%n", devOffset, newOffset);
         mDevice.read(newOffset, dest);
     }
 
@@ -80,7 +81,7 @@ public class Partition implements BlockDevice {
     }
 
     @Override
-    public int getId() {
-        return HashCodeUtil.getHashCode(mDevice.getId(), mPartitionOffset);
+    public String getId() {
+        return mDevice.getId() + File.pathSeparatorChar + Integer.toString(mPartitionOffset);
     }
 }

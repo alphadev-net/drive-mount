@@ -24,5 +24,5 @@ public interface Identifiable {
     /**
      * @return Identifier
      */
-    int getId();
+    String getId();
 }

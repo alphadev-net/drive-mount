@@ -15,22 +15,25 @@
  */
 package net.alphadev.usbstorage.filesystems;
 
+import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.util.BlockDeviceWrapper;
 
 import java.io.IOException;
 
-import de.waldheinz.fs.BlockDevice;
 import de.waldheinz.fs.fat.FatFileSystem;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class FatStorage implements StorageDevice {
-
+    private final String mId;
     private final FatFileSystem fs;
 
     public FatStorage(BlockDevice blockDevice, boolean readOnly) throws IOException {
-        fs = FatFileSystem.read(blockDevice, readOnly);
+        de.waldheinz.fs.BlockDevice wrapper = new BlockDeviceWrapper(blockDevice);
+        this.mId = blockDevice.getId();
+        fs = FatFileSystem.read(wrapper, readOnly);
     }
 
     @Override
@@ -63,5 +66,10 @@ public class FatStorage implements StorageDevice {
             default:
                 return FsType.FAT32;
         }
+    }
+
+    @Override
+    public String getId() {
+        return mId;
     }
 }

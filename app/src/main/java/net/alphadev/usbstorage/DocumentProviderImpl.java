@@ -23,6 +23,7 @@ import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
+import android.util.Log;
 
 import net.alphadev.usbstorage.api.StorageDevice;
 
@@ -72,16 +73,33 @@ public class DocumentProviderImpl extends DocumentsProvider {
                 new MatrixCursor(resolveRootProjection(projection));
 
         for (StorageDevice device : mStorageManager.getMounts()) {
-            createDevice(roots.newRow(), device);
+            createDevice(roots.newRow(), device, projection);
         }
 
         return roots;
     }
 
-    private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device) {
-        row.add(Root.COLUMN_ROOT_ID, device.getDeviceName());
-        row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
-        row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
+    private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device, String[] projection) {
+        for (String column : projection) {
+            switch (column) {
+                case Root.COLUMN_ROOT_ID:
+                    Log.i("Drive Mount", "id: " + device.getId());
+                    row.add(Root.COLUMN_ROOT_ID, device.getId());
+                    break;
+                case Root.COLUMN_TITLE:
+                    row.add(Root.COLUMN_TITLE, device.getDeviceName());
+                    Log.i("Drive Mount", "name: " + device.getDeviceName());
+                    break;
+                case Root.COLUMN_ICON:
+                    row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
+                    break;
+                case Root.COLUMN_SUMMARY:
+                    row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
+                    break;
+                default:
+                    Log.w("Drive Mount", "Couldn't satisfy " + column + " column.");
+            }
+        }
     }
 
     @Override
