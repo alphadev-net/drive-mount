@@ -54,14 +54,10 @@ public class MasterBootRecord {
             buffer.position(offset);
             buffer.get(data);
 
-            try {
-                PartitionParameters param = new PartitionParameters(data);
-                if(param.getDescriptor() != FileSystemDescriptor.UNUSED) {
-                    Partition partition = new Partition(device, entry, param);
-                    mPartitions.add(partition);
-                }
-            } catch (IllegalArgumentException ex) {
-                ex.printStackTrace();
+            PartitionParameters param = new PartitionParameters(data);
+            if (param.getDescriptor() != FileSystemDescriptor.UNUSED) {
+                Partition partition = new Partition(device, entry, param);
+                mPartitions.add(partition);
             }
         }
     }
