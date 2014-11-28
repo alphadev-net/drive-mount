@@ -2,9 +2,9 @@
 
 This app aims to provide access to USB Mass Storage devices on Android devices without requiring root permissions.
 
-![SAF UsbProvider](https://cloud.githubusercontent.com/assets/1467318/5219580/0696d7ac-765a-11e4-9cfe-a53727d4323e.png)
+![SAF UsbDocProvider](https://cloud.githubusercontent.com/assets/1467318/5219580/0696d7ac-765a-11e4-9cfe-a53727d4323e.png)
 
-This is achieved in pure Java, which trades performance for portability. But since there's no alternative: *Better have slow access to drives, than having no access at all.*
+This is achieved in pure Java, which trades performance for portability. *Better slow access, than having no access at all.*
 
 ## Requirements
 
