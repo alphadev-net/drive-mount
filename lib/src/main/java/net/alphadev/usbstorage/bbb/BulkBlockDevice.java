@@ -45,13 +45,12 @@ import de.waldheinz.fs.ReadOnlyException;
 public class BulkBlockDevice implements BlockDevice {
     private final BulkDevice mAbstractBulkDevice;
     private final byte mLunToUse;
+    /**
+     * 512 KB max transfer unit.
+     */
+    private final int mMaxTransferSize = 512 * 1024;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
-
-    /**
-     * 512 KB.
-     */
-    private int mMaxTransferSize = 512 * 1024;
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;

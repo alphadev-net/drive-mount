@@ -58,6 +58,11 @@ public class Read10 extends ScsiCommand {
         mAnswerLength = length;
     }
 
+    /**
+     * Sets read offset in logical blocks.
+     *
+     * @param offset as absolute value
+     */
     public void setOffset(long offset) {
         this.offset = offset;
     }
