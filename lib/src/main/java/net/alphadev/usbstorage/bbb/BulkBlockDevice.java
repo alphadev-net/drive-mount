@@ -79,13 +79,12 @@ public class BulkBlockDevice implements BlockDevice {
     }
 
     private void testUnitReady() {
-        send_mass_storage_command(new TestUnitReady());
-        CommandStatusWrapper csw = getDeviceStatus();
-
-        while (csw.getStatus() == CommandStatusWrapper.Status.BUSY) {
-            testUnitReady();
+        CommandStatusWrapper csw;
+        do {
+            send_mass_storage_command(new TestUnitReady());
+            csw = getDeviceStatus();
         }
-
+        while (csw.getStatus() == CommandStatusWrapper.Status.BUSY);
         assumeDeviceStatusOK(csw);
     }
 
