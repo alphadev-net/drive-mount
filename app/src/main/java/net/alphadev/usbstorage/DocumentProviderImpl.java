@@ -57,7 +57,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
      * http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
      */
     private static String readableFileSize(long size) {
-        if (size <= 0) return "0";
+        if (size <= 0) return "0B";
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
