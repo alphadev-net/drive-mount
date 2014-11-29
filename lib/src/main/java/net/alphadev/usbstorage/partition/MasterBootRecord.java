@@ -44,7 +44,7 @@ public class MasterBootRecord {
 
         if ((buffer.get(SIGNATURE_OFFSET) & 0xff) != 0x55 ||
                 (buffer.get(SIGNATURE_OFFSET + 1) & 0xff) != 0xaa) {
-            System.out.println(BitStitching.bytesToHex(buffer.array()));
+            System.out.println(BitStitching.convertByteBufferToHex(buffer));
             throw new IllegalArgumentException("no mbr signature found!");
         }
 

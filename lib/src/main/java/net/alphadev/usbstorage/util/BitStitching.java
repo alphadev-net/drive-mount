@@ -40,11 +40,17 @@ public class BitStitching {
         setBytes(temp, array, offset, 4);
     }
 
-    public static String bytesToHex(byte[] a) {
+    public static String convertBytesToHex(byte[] a) {
         StringBuilder sb = new StringBuilder(a.length * 2);
         for (byte b : a)
             sb.append(String.format("%02x ", b & 0xff));
         return sb.toString();
+    }
+
+    public static String convertByteBufferToHex(final ByteBuffer buffer) {
+        final byte[] bytes = new byte[buffer.remaining()];
+        buffer.duplicate().get(bytes);
+        return convertBytesToHex(bytes);
     }
 
     public static short convertToShort(byte[] byteArray, int offset, ByteOrder order) {

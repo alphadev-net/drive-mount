@@ -42,7 +42,7 @@ public class CommandStatusWrapper {
         mSignature[0x3] = data[0x3];
 
         if (!"USBS".equals(getSignature())) {
-            System.out.println(BitStitching.bytesToHex(data));
+            System.out.println(BitStitching.convertBytesToHex(data));
             throw new IllegalArgumentException("Invalid CSW header!");
         }
 
