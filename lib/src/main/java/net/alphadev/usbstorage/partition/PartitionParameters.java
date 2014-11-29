@@ -24,6 +24,7 @@ import java.nio.ByteOrder;
  */
 @SuppressWarnings("unused")
 public class PartitionParameters {
+    private final byte mPartitionOffset;
     private final boolean mBootIndicator;
     private final FileSystemDescriptor mDescriptor;
     private final HeadSectorCylinder mPartitionStart;
@@ -31,7 +32,8 @@ public class PartitionParameters {
     private final int mLogicalStart;
     private final int mNumberOfSectors;
 
-    public PartitionParameters(byte[] data) {
+    public PartitionParameters(byte[] data, byte offset) {
+        mPartitionOffset = offset;
         mBootIndicator = data[0x0] == 0x80;
         mPartitionStart = new HeadSectorCylinder(data, 0x1);
         mDescriptor = FileSystemDescriptor.parse(data[4]);
@@ -62,6 +64,10 @@ public class PartitionParameters {
 
     public int getNumberOfSectors() {
         return mNumberOfSectors;
+    }
+
+    public byte getPartitionOffset() {
+        return mPartitionOffset;
     }
 
     public static class HeadSectorCylinder {

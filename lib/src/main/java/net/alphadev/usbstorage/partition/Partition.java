@@ -28,12 +28,10 @@ import de.waldheinz.fs.ReadOnlyException;
  */
 public class Partition implements BlockDevice {
     private final BlockDevice mDevice;
-    private final int mPartitionOffset;
     private final PartitionParameters mParameter;
 
-    public Partition(BlockDevice device, int partitionOffset, PartitionParameters param) {
+    public Partition(BlockDevice device, PartitionParameters param) {
         mDevice = device;
-        mPartitionOffset = partitionOffset;
         mParameter = param;
     }
 
@@ -44,15 +42,16 @@ public class Partition implements BlockDevice {
 
     @Override
     public void read(long devOffset, ByteBuffer dest) throws IOException {
-        long newOffset = mParameter.getLogicalStart() + devOffset;
+        long newOffset = mParameter.getLogicalStart() * mDevice.getSectorSize() + devOffset;
         System.out.printf("translating read from %d to %d%n", devOffset, newOffset);
         mDevice.read(newOffset, dest);
     }
 
     @Override
     public void write(long devOffset, ByteBuffer src) throws ReadOnlyException, IOException, IllegalArgumentException {
-        long newOffset = mParameter.getLogicalStart() + devOffset;
-        mDevice.read(newOffset, src);
+        // don't try to write anything while offset calculation is off!
+        //long newOffset = mParameter.getLogicalStart() + devOffset;
+        //mDevice.read(newOffset, src);
     }
 
     @Override
@@ -82,6 +81,6 @@ public class Partition implements BlockDevice {
 
     @Override
     public String getId() {
-        return mDevice.getId() + File.pathSeparatorChar + Integer.toString(mPartitionOffset);
+        return mDevice.getId() + File.pathSeparatorChar + Integer.toString(mParameter.getPartitionOffset());
     }
 }
