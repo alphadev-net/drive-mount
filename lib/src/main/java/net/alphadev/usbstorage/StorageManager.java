@@ -36,7 +36,7 @@ public class StorageManager {
         MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
         for (Partition partition : mbr.getPartitions()) {
-            if(tryMountPartition(partition)) {
+            if (tryMountPartition(partition)) {
                 return true;
             }
         }
@@ -74,5 +74,17 @@ public class StorageManager {
 
     public Iterable<? extends StorageDevice> getMounts() {
         return mMountedDevices.values();
+    }
+
+    public void removeAll(String deviceId) {
+        if (mMountedDevices.containsKey(deviceId)) {
+            mMountedDevices.remove(deviceId);
+        }
+
+        for (String key : mMountedDevices.keySet()) {
+            if (key.startsWith(deviceId)) {
+                mMountedDevices.remove(key);
+            }
+        }
     }
 }

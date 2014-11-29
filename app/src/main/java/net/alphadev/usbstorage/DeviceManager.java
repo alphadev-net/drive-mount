@@ -64,12 +64,19 @@ public final class DeviceManager {
         BroadcastReceiver mDetachmentReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                // code to cleanly unmount drive
+                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                unmountRemovedDevices(device);
             }
         };
         context.registerReceiver(mDetachmentReceiver, detachmentFilter);
 
         enumerateDevices();
+    }
+
+    private void unmountRemovedDevices(UsbDevice device) {
+        String deviceId = Integer.valueOf(device.getDeviceId()).toString();
+        mStorageManager.removeAll(deviceId);
+        notifyStorageChanged();
     }
 
     private void tryMount(UsbDevice device) {
