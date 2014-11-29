@@ -94,6 +94,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
                 case Root.COLUMN_SUMMARY:
                     row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
                     break;
+                case Root.COLUMN_AVAILABLE_BYTES:
+                    row.add(Root.COLUMN_AVAILABLE_BYTES, device.getStorageDetails().getFreeSpace());
+                    break;
                 default:
                     Log.w("Drive Mount", "Couldn't satisfy " + column + " column.");
             }
