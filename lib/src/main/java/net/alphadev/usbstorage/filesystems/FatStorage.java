@@ -61,6 +61,11 @@ public class FatStorage implements StorageDevice {
     }
 
     @Override
+    public boolean isWritable() {
+        return !fs.isReadOnly();
+    }
+
+    @Override
     public String getId() {
         return mId;
     }

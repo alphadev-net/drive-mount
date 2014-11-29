@@ -36,4 +36,6 @@ public interface StorageDevice extends Identifiable {
 
         public long getFreeSpace();
     }
+
+    boolean isWritable();
 }
