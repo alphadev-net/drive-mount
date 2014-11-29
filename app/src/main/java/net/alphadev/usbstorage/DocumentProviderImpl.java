@@ -96,6 +96,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
                 case Root.COLUMN_ROOT_ID:
                     row.add(Root.COLUMN_ROOT_ID, device.getId());
                     break;
+                case Root.COLUMN_DOCUMENT_ID:
+                    row.add(Root.COLUMN_DOCUMENT_ID, device.getId());
+                    break;
                 case Root.COLUMN_TITLE:
                     row.add(Root.COLUMN_TITLE, device.getName());
                     break;
