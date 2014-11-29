@@ -43,7 +43,6 @@ public class Partition implements BlockDevice {
     @Override
     public void read(long devOffset, ByteBuffer dest) throws IOException {
         long newOffset = mParameter.getLogicalStart() * mDevice.getSectorSize() + devOffset;
-        System.out.printf("translating read from %d to %d%n", devOffset, newOffset);
         mDevice.read(newOffset, dest);
     }
 
