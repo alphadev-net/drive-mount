@@ -27,15 +27,15 @@ public interface StorageDevice extends Identifiable {
 
     FsType getFsType();
 
+    boolean isWritable();
+
     public static enum FsType {
         FAT
     }
 
     public static interface StorageDetails {
-        public long getTotalSpace();
+        long getTotalSpace();
 
-        public long getFreeSpace();
+        long getFreeSpace();
     }
-
-    boolean isWritable();
 }

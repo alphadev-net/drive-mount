@@ -29,6 +29,7 @@ import net.alphadev.usbstorage.api.StorageDevice;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 
 public class DocumentProviderImpl extends DocumentsProvider {
 
@@ -50,6 +51,16 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
     private static String[] resolveDocumentProjection(String[] projection) {
         return projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION;
+    }
+
+    /**
+     * http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
+     */
+    private static String readableFileSize(long size) {
+        if (size <= 0) return "0";
+        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     @Override
@@ -92,14 +103,16 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
                     break;
                 case Root.COLUMN_SUMMARY:
-                    row.add(Root.COLUMN_SUMMARY, device.getStorageDetails());
+                    final String sizeUnit = readableFileSize(device.getStorageDetails().getFreeSpace());
+                    final String summary = getContext().getString(R.string.free_space, sizeUnit);
+                    row.add(Root.COLUMN_SUMMARY, summary);
                     break;
                 case Root.COLUMN_AVAILABLE_BYTES:
                     row.add(Root.COLUMN_AVAILABLE_BYTES, device.getStorageDetails().getFreeSpace());
                     break;
                 case Root.COLUMN_FLAGS:
                     int flags = 0;
-                    if(device.isWritable()) {
+                    if (device.isWritable()) {
                         flags |= Root.FLAG_SUPPORTS_CREATE;
                     }
                     row.add(Root.COLUMN_FLAGS, flags);
@@ -111,16 +124,19 @@ public class DocumentProviderImpl extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryDocument(String documentId, String[] projection) throws FileNotFoundException {
-        final MatrixCursor result = new
-                MatrixCursor(resolveDocumentProjection(projection));
+    public Cursor queryDocument(String documentId,
+                                final String[] requestedProjection) throws FileNotFoundException {
+        final String[] projection = resolveDocumentProjection(requestedProjection);
+        final MatrixCursor result = new MatrixCursor(projection);
         return result;
     }
 
     @Override
-    public Cursor queryChildDocuments(String parentDocumentId, String[] projection, String p3) throws FileNotFoundException {
-        final MatrixCursor result = new
-                MatrixCursor(resolveDocumentProjection(projection));
+    public Cursor queryChildDocuments(String parentDocumentId,
+                                      final String[] requestedProjection,
+                                      String sortOrder) throws FileNotFoundException {
+        final String[] projection = resolveDocumentProjection(requestedProjection);
+        final MatrixCursor result = new MatrixCursor(projection);
         return result;
     }
 
