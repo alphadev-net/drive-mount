@@ -68,9 +68,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryRoots(String[] projection) throws FileNotFoundException {
-        final MatrixCursor roots =
-                new MatrixCursor(resolveRootProjection(projection));
+    public Cursor queryRoots(final String[] requestedProjection) throws FileNotFoundException {
+        final String[] projection = resolveRootProjection(requestedProjection);
+        final MatrixCursor roots = new MatrixCursor(projection);
 
         for (StorageDevice device : mStorageManager.getMounts()) {
             createDevice(roots.newRow(), device, projection);
@@ -83,12 +83,10 @@ public class DocumentProviderImpl extends DocumentsProvider {
         for (String column : projection) {
             switch (column) {
                 case Root.COLUMN_ROOT_ID:
-                    Log.i("Drive Mount", "id: " + device.getId());
                     row.add(Root.COLUMN_ROOT_ID, device.getId());
                     break;
                 case Root.COLUMN_TITLE:
                     row.add(Root.COLUMN_TITLE, device.getDeviceName());
-                    Log.i("Drive Mount", "name: " + device.getDeviceName());
                     break;
                 case Root.COLUMN_ICON:
                     row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
