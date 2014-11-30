@@ -111,8 +111,4 @@ public final class DeviceManager {
             tryMount(device);
         }
     }
-
-    public static interface OnStorageChangedListener {
-        public void onStorageChange();
-    }
 }

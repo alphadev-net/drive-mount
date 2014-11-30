@@ -67,7 +67,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
     public boolean onCreate() {
         mStorageManager = new StorageManager();
         DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
-        deviceManager.setOnStorageChangedListener(new DeviceManager.OnStorageChangedListener() {
+        deviceManager.setOnStorageChangedListener(new OnStorageChangedListener() {
             @Override
             public void onStorageChange() {
                 getContext().getContentResolver()
