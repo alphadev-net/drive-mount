@@ -16,11 +16,9 @@
 package net.alphadev.usbstorage.scsi.command;
 
 import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
+import net.alphadev.usbstorage.util.BitStitching;
 
 import java.nio.ByteOrder;
-
-import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
-import static net.alphadev.usbstorage.util.BitStitching.setBytesFromShort;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -42,9 +40,9 @@ public class Read10 extends ScsiCommand {
         final byte[] bytes = new byte[10];
         bytes[0] = READ10; // opcode
         // 1 == flags
-        setBytesFromInt((int) offset, bytes, 2, ByteOrder.BIG_ENDIAN);
+        BitStitching.setBytesFromInt((int) offset, bytes, 2, ByteOrder.BIG_ENDIAN);
         // 6 == group number
-        setBytesFromShort(transferLength, bytes, 7, ByteOrder.BIG_ENDIAN);
+        BitStitching.setBytesFromShort(transferLength, bytes, 7, ByteOrder.BIG_ENDIAN);
         // 9 == control bits
         return bytes;
     }

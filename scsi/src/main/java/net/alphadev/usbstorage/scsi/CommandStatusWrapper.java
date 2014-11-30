@@ -19,8 +19,6 @@ import net.alphadev.usbstorage.util.BitStitching;
 
 import java.nio.ByteOrder;
 
-import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
@@ -46,8 +44,8 @@ public class CommandStatusWrapper {
             throw new IllegalArgumentException("Invalid CSW header!");
         }
 
-        mTag = convertToInt(data, 0x4, ByteOrder.LITTLE_ENDIAN);
-        mDataResidue = convertToInt(data, 0x8, ByteOrder.LITTLE_ENDIAN);
+        mTag = BitStitching.convertToInt(data, 0x4, ByteOrder.LITTLE_ENDIAN);
+        mDataResidue = BitStitching.convertToInt(data, 0x8, ByteOrder.LITTLE_ENDIAN);
         mStatus = data[0xc];
     }
 

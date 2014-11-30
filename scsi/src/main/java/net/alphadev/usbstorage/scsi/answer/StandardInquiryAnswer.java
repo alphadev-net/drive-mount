@@ -15,7 +15,7 @@
  */
 package net.alphadev.usbstorage.scsi.answer;
 
-import static net.alphadev.usbstorage.util.BitStitching.bytesToString;
+import net.alphadev.usbstorage.util.BitStitching;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -60,9 +60,9 @@ public class StandardInquiryAnswer {
         mHiSup = answer[3] == (byte) 0x10;
         mAdditionalLength = answer[4];
         mRemovable = answer[5] == (byte) 0x80;
-        mVendorId = bytesToString(answer, 8, 8);
-        mProductId = bytesToString(answer, 16, 16);
-        mRevisionId = bytesToString(answer, 32, 4);
+        mVendorId = BitStitching.bytesToString(answer, 8, 8);
+        mProductId = BitStitching.bytesToString(answer, 16, 16);
+        mRevisionId = BitStitching.bytesToString(answer, 32, 4);
         mVersionDescriptor1 = 0;
         mVersionDescriptor2 = 0;
         mVersionDescriptor3 = 0;

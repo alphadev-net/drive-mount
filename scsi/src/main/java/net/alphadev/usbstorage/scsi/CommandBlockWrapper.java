@@ -16,10 +16,9 @@
 package net.alphadev.usbstorage.scsi;
 
 import net.alphadev.usbstorage.api.ScsiTransferable;
+import net.alphadev.usbstorage.util.BitStitching;
 
 import java.nio.ByteOrder;
-
-import static net.alphadev.usbstorage.util.BitStitching.setBytesFromInt;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -38,7 +37,7 @@ public class CommandBlockWrapper implements ScsiTransferable {
         cwbData[0x3] = 'C';
 
         // increase and write tag counter
-        setBytesFromInt(++tagCounter, cwbData, 0x4, ByteOrder.LITTLE_ENDIAN);
+        BitStitching.setBytesFromInt(++tagCounter, cwbData, 0x4, ByteOrder.LITTLE_ENDIAN);
     }
 
     public void setFlags(Direction directionFlags) {
@@ -61,7 +60,7 @@ public class CommandBlockWrapper implements ScsiTransferable {
         System.arraycopy(cmdBlock, 0, cwbData, cmdOffset, cmdBlock.length);
 
         cwbData[0xe] = (byte) cmdBlock.length;
-        setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, ByteOrder.LITTLE_ENDIAN);
+        BitStitching.setBytesFromInt(command.getExpectedAnswerLength(), cwbData, 0x8, ByteOrder.LITTLE_ENDIAN);
     }
 
     public byte[] asBytes() {

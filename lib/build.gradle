@@ -1,7 +1,6 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(':api')
+    compile project(':scsi')
     compile project(':fat32')
-    testCompile 'junit:junit:4.+'
 }

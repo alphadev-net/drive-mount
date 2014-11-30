@@ -15,9 +15,9 @@
  */
 package net.alphadev.usbstorage.scsi.answer;
 
-import java.nio.ByteOrder;
+import net.alphadev.usbstorage.util.BitStitching;
 
-import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
+import java.nio.ByteOrder;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -31,7 +31,7 @@ public class ReadFormatCapacitiesEntry {
     private int mTypeDependentParameter;
 
     public ReadFormatCapacitiesEntry(byte[] answer) {
-        mNumOfBlocks = convertToInt(answer, 0, ByteOrder.BIG_ENDIAN);
+        mNumOfBlocks = BitStitching.convertToInt(answer, 0, ByteOrder.BIG_ENDIAN);
         mFormatType = determineType(answer[5]);
     }
 

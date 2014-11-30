@@ -16,12 +16,11 @@
 package net.alphadev.usbstorage.partition;
 
 import net.alphadev.usbstorage.api.BlockDevice;
+import net.alphadev.usbstorage.api.ReadOnlyException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import de.waldheinz.fs.ReadOnlyException;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>

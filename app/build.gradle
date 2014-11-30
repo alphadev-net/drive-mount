@@ -47,7 +47,5 @@ svg {
 }
 
 dependencies {
-    compile project(':api')
-    compile project(':fat32')
     compile project(':lib')
 }

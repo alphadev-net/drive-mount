@@ -1,1 +1,5 @@
-include 'api', 'app', 'lib', 'fat32'
+include ':api'
+include ':scsi'
+include ':fat32'
+include ':lib'
+include ':app'

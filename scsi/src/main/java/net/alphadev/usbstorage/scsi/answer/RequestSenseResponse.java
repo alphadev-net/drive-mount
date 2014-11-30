@@ -19,9 +19,6 @@ import net.alphadev.usbstorage.util.BitStitching;
 
 import java.nio.ByteOrder;
 
-import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
-import static net.alphadev.usbstorage.util.BitStitching.convertToShort;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
@@ -60,9 +57,9 @@ public class RequestSenseResponse {
         mEOM = (answer[1] & 0x40) == 0x40;
         mILI = (answer[1] & 0x20) == 0x20;
         mSenseKey = determineSenseKey((byte) (answer[1] & 0xf));
-        mInformation = convertToInt(answer, 3, ByteOrder.BIG_ENDIAN);
+        mInformation = BitStitching.convertToInt(answer, 3, ByteOrder.BIG_ENDIAN);
         mAdditionalSenseLength = answer[7];
-        mCommandSpecificInformation = convertToShort(answer, 8, ByteOrder.BIG_ENDIAN);
+        mCommandSpecificInformation = BitStitching.convertToShort(answer, 8, ByteOrder.BIG_ENDIAN);
         mAdditionalSenseCode = answer[12];
         mAdditionalSenseQualifier = answer[13];
         mFieldReplacableUnitCode = answer[14];

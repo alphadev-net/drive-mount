@@ -17,6 +17,7 @@ package net.alphadev.usbstorage.bbb;
 
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.api.ReadOnlyException;
 import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
 import net.alphadev.usbstorage.scsi.CommandStatusWrapper;
 import net.alphadev.usbstorage.scsi.answer.ModeSenseResponse;
@@ -36,8 +37,6 @@ import net.alphadev.usbstorage.scsi.command.TestUnitReady;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import de.waldheinz.fs.ReadOnlyException;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>

@@ -15,9 +15,9 @@
  */
 package net.alphadev.usbstorage.scsi.answer;
 
-import java.nio.ByteOrder;
+import net.alphadev.usbstorage.util.BitStitching;
 
-import static net.alphadev.usbstorage.util.BitStitching.convertToInt;
+import java.nio.ByteOrder;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -42,7 +42,7 @@ public class ReadFormatCapacitiesHeader {
         }
 
         mCapacityListLength = (byte) numOfEntries;
-        mNumberOfBlocks = convertToInt(answer, 4, ByteOrder.BIG_ENDIAN);
+        mNumberOfBlocks = BitStitching.convertToInt(answer, 4, ByteOrder.BIG_ENDIAN);
 
         mDescriptorType = getDescriptorType(answer[5]);
 
@@ -50,7 +50,7 @@ public class ReadFormatCapacitiesHeader {
                 0, answer[9], answer[10], answer[11],
         };
 
-        mBlockLength = convertToInt(tempBlockLength, 0, ByteOrder.BIG_ENDIAN);
+        mBlockLength = BitStitching.convertToInt(tempBlockLength, 0, ByteOrder.BIG_ENDIAN);
     }
 
     /**

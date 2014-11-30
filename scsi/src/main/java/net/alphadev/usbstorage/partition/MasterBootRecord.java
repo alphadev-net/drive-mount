@@ -55,7 +55,7 @@ public class MasterBootRecord {
             buffer.get(data);
 
             PartitionParameters param = new PartitionParameters(data, entry);
-            if(param.getDescriptor() != FileSystemDescriptor.UNUSED) {
+            if (param.getDescriptor() != FileSystemDescriptor.UNUSED) {
                 Partition partition = new Partition(device, param);
                 mPartitions.add(partition);
             }
