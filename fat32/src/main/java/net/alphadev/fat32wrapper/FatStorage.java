@@ -36,37 +36,37 @@ public class FatStorage implements StorageDevice {
     }
 
     @Override
-    public String getDeviceName() {
+    public String getName() {
         return fs.getVolumeLabel();
-    }
-
-    @Override
-    public StorageDetails getStorageDetails() {
-        return new StorageDetails() {
-            @Override
-            public long getTotalSpace() {
-                return fs.getTotalSpace();
-            }
-
-            @Override
-            public long getFreeSpace() {
-                return fs.getFreeSpace();
-            }
-        };
-    }
-
-    @Override
-    public FsType getFsType() {
-        return FsType.FAT;
-    }
-
-    @Override
-    public boolean isWritable() {
-        return !fs.isReadOnly();
     }
 
     @Override
     public String getId() {
         return mId;
+    }
+
+    @Override
+    public long getTotalSpace() {
+        return fs.getTotalSpace();
+    }
+
+    @Override
+    public long getUnallocatedSpace() {
+        return fs.getFreeSpace();
+    }
+
+    @Override
+    public long getUsableSpace() {
+        return fs.getUsableSpace();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return fs.isReadOnly();
+    }
+
+    @Override
+    public String getType() {
+        return fs.getFatType().name();
     }
 }

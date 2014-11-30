@@ -97,22 +97,22 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     row.add(Root.COLUMN_ROOT_ID, device.getId());
                     break;
                 case Root.COLUMN_TITLE:
-                    row.add(Root.COLUMN_TITLE, device.getDeviceName());
+                    row.add(Root.COLUMN_TITLE, device.getName());
                     break;
                 case Root.COLUMN_ICON:
                     row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
                     break;
                 case Root.COLUMN_SUMMARY:
-                    final String sizeUnit = readableFileSize(device.getStorageDetails().getFreeSpace());
+                    final String sizeUnit = readableFileSize(device.getUnallocatedSpace());
                     final String summary = getContext().getString(R.string.free_space, sizeUnit);
                     row.add(Root.COLUMN_SUMMARY, summary);
                     break;
                 case Root.COLUMN_AVAILABLE_BYTES:
-                    row.add(Root.COLUMN_AVAILABLE_BYTES, device.getStorageDetails().getFreeSpace());
+                    row.add(Root.COLUMN_AVAILABLE_BYTES, device.getUnallocatedSpace());
                     break;
                 case Root.COLUMN_FLAGS:
                     int flags = 0;
-                    if (device.isWritable()) {
+                    if (!device.isReadOnly()) {
                         flags |= Root.FLAG_SUPPORTS_CREATE;
                     }
                     row.add(Root.COLUMN_FLAGS, flags);

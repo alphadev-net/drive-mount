@@ -20,22 +20,69 @@ package net.alphadev.usbstorage.api;
  */
 @SuppressWarnings("unused")
 public interface StorageDevice extends Identifiable {
+    /**
+     * Returns the size, in bytes, of the file store.
+     *
+     * @return the size of the file store, in bytes
+     */
+    long getTotalSpace();
 
-    String getDeviceName();
+    /**
+     * Returns the number of unallocated bytes in the file store.
+     * <p/>
+     * The returned number of unallocated bytes is a hint, but not a guarantee, that it is possible
+     * to use most or any of these bytes. The number of unallocated bytes is most likely to be
+     * accurate immediately after the space attributes are obtained. It is likely to be made
+     * inaccurate by any external I/O operations including those made on the system outside of this
+     * virtual machine.
+     *
+     * @return the number of unallocated bytes
+     */
+    long getUnallocatedSpace();
 
-    StorageDetails getStorageDetails();
+    /**
+     * Returns the number of bytes available to this Java virtual machine on the file store.
+     * <p/>
+     * The returned number of available bytes is a hint, but not a guarantee, that it is possible to
+     * use most or any of these bytes. The number of usable bytes is most likely to be accurate
+     * immediately after the space attributes are obtained. It is likely to be made inaccurate by
+     * any external I/O operations including those made on the system outside of this Java virtual
+     * machine.
+     *
+     * @return the number of bytes available
+     */
+    long getUsableSpace();
 
-    FsType getFsType();
+    /**
+     * Tells whether this file store is read-only.
+     * <p/>
+     * A file store is read-only if it does not support write operations or other changes to files.
+     * Any attempt to create a file, open an existing file for writing etc. causes an IOException to
+     * be thrown.
+     *
+     * @return true if, and only if, this file store is read-only
+     */
+    boolean isReadOnly();
 
-    boolean isWritable();
+    /**
+     * Returns the type of this file store.
+     * <p/>
+     * The format of the string returned by this method is highly implementation specific.
+     * It may indicate, for example, the format used or if the file store is local or remote.
+     *
+     * @return a string representing the type of this file store
+     */
+    String getType();
 
-    public static enum FsType {
-        FAT
-    }
-
-    public static interface StorageDetails {
-        long getTotalSpace();
-
-        long getFreeSpace();
-    }
+    /**
+     * Returns the name of this file store.
+     * <p/>
+     * The format of the name is highly implementation specific.
+     * It will typically be the name of the storage pool or volume.
+     * The string returned by this method may differ from the string returned by the toString
+     * method.
+     *
+     * @return the name of this file store
+     */
+    String getName();
 }
