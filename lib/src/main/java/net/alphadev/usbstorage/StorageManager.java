@@ -19,7 +19,7 @@ import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.BulkDevice;
 import net.alphadev.usbstorage.api.StorageDevice;
 import net.alphadev.usbstorage.bbb.BulkBlockDevice;
-import net.alphadev.usbstorage.filesystems.FatStorage;
+import net.alphadev.fat32wrapper.FatStorage;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
 import net.alphadev.usbstorage.partition.Partition;
 

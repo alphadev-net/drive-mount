@@ -1,0 +1,6 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':api')
+    compile 'de.waldheinz:fat32-lib:0.6.5'
+}

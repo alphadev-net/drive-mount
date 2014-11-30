@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.alphadev.usbstorage.filesystems;
+package net.alphadev.fat32wrapper;
 
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.StorageDevice;

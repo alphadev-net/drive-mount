@@ -19,8 +19,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import de.waldheinz.fs.ReadOnlyException;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
@@ -48,14 +46,13 @@ public interface BlockDevice extends Identifiable, Closeable {
      *
      * @param devOffset the byte offset where to store the data
      * @param src       the source {@code ByteBuffer} to write to the device
-     * @throws de.waldheinz.fs.ReadOnlyException if this {@code BlockDevice} is read-only
      * @throws IOException                       on write error
      * @throws IllegalArgumentException          if the {@code devOffset} is negative
      *                                           or the write would go beyond the end of the device
      * @see #isReadOnly()
      */
     public abstract void write(long devOffset, ByteBuffer src)
-            throws ReadOnlyException, IOException,
+            throws IOException,
             IllegalArgumentException;
 
     /**
