@@ -109,8 +109,19 @@ public class PathTest {
 
         Iterator<String> firstIterator = first.getIterator().iterator();
         Iterator<String> secondIterator = second.getIterator().iterator();
-        while(firstIterator.hasNext()) {
+        while (firstIterator.hasNext()) {
             Assert.assertEquals(firstIterator.next(), secondIterator.next());
         }
+    }
+
+    @Test
+    public void devideIdOnlyTest() {
+        Path withAppendedSlash = new Path("deviceId/");
+        Path withoutAppendedSlash = new Path("deviceId");
+        Path nonRoot = new Path("deviceId/path");
+
+        Assert.assertTrue(withAppendedSlash.isRoot());
+        Assert.assertTrue(withoutAppendedSlash.isRoot());
+        Assert.assertFalse(nonRoot.isRoot());
     }
 }

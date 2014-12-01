@@ -11,9 +11,14 @@ import java.util.List;
  */
 public final class Path {
     private final List<String> paths;
+    private boolean root;
 
     public Path(String path) {
         this(Arrays.asList(path.split("/")));
+    }
+
+    private Path(List<String> list) {
+        this.paths = list;
     }
 
     public static final Path createWithAppended(Path path, String... appendToPath) {
@@ -26,10 +31,6 @@ public final class Path {
             }
         }
         return new Path(paths);
-    }
-
-    private Path(List<String> list) {
-        this.paths = list;
     }
 
     /**
@@ -69,6 +70,7 @@ public final class Path {
     public String toAbsolute() {
         StringBuilder sb = new StringBuilder();
         boolean firstTime = true;
+
         for (String token : paths) {
             if (firstTime) {
                 firstTime = false;
@@ -77,6 +79,11 @@ public final class Path {
             }
             sb.append(token);
         }
+
         return sb.toString();
+    }
+
+    public boolean isRoot() {
+        return paths.size() == 1;
     }
 }
