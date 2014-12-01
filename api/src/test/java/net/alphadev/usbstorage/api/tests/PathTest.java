@@ -93,4 +93,24 @@ public class PathTest {
         Assert.assertEquals("third", third.getName());
         Assert.assertEquals("second", second.getName());
     }
+
+    @Test
+    public void toAbsoluteTest() {
+        Path first = new Path("driveId/first");
+        Path second = Path.createWithAppended(first, "second", "third", "fourth");
+        Assert.assertEquals("driveId/first", first.toAbsolute());
+        Assert.assertEquals("driveId/first/second/third/fourth", second.toAbsolute());
+    }
+
+    @Test
+    public void serializationTest() {
+        Path first = new Path("driveId/first/second/third/fourth");
+        Path second = new Path(first.toAbsolute());
+
+        Iterator<String> firstIterator = first.getIterator().iterator();
+        Iterator<String> secondIterator = second.getIterator().iterator();
+        while(firstIterator.hasNext()) {
+            Assert.assertEquals(firstIterator.next(), secondIterator.next());
+        }
+    }
 }

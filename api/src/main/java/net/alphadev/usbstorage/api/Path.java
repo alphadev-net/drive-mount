@@ -17,7 +17,7 @@ public final class Path {
     }
 
     public static final Path createWithAppended(Path path, String... appendToPath) {
-        final List<String> paths = new ArrayList(path.paths);
+        final List<String> paths = new ArrayList<>(path.paths);
         for (String appendix : appendToPath) {
             if (appendix.indexOf('/') != -1) {
                 paths.addAll(Arrays.asList(appendix.split("/")));
@@ -64,5 +64,19 @@ public final class Path {
 
     public final Iterable<String> getIterator() {
         return paths.subList(1, paths.size());
+    }
+
+    public String toAbsolute() {
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (String token : paths) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                sb.append('/');
+            }
+            sb.append(token);
+        }
+        return sb.toString();
     }
 }
