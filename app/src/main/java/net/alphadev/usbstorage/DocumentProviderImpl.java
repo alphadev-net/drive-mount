@@ -28,6 +28,7 @@ import android.util.Log;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.util.MimeUtil;
 
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
@@ -199,6 +200,6 @@ public class DocumentProviderImpl extends DocumentsProvider {
             return Document.MIME_TYPE_DIR;
         }
 
-        return "";
+        return MimeUtil.guessMimeType(path);
     }
 }
