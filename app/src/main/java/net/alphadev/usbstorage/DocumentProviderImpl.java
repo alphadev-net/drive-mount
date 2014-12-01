@@ -178,7 +178,10 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     row.add(Document.COLUMN_SIZE, provider.getFileSize(path));
                     break;
                 case Document.COLUMN_LAST_MODIFIED:
-                    row.add(Document.COLUMN_LAST_MODIFIED, provider.getLastModified(path));
+                    long lastModified = provider.getLastModified(path);
+                    if(lastModified != 0) {
+                        row.add(Document.COLUMN_LAST_MODIFIED, lastModified);
+                    }
                     break;
                 case Document.COLUMN_FLAGS:
                     int flags = 0;
