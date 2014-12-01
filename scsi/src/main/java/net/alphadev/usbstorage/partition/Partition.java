@@ -76,6 +76,10 @@ public class Partition implements BlockDevice {
         return mDevice.isReadOnly();
     }
 
+    public FileSystemDescriptor getType() {
+        return mParameter.getDescriptor();
+    }
+
     @Override
     public String getId() {
         return mDevice.getId() + ':' + Integer.toString(mParameter.getPartitionOffset());
