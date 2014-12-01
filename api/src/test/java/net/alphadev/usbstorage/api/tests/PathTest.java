@@ -53,4 +53,18 @@ public class PathTest {
         Assert.assertEquals("c", iterator.next());
         Assert.assertEquals("d", iterator.next());
     }
+
+    @Test
+    public void appendPathToTest() {
+        Path first = new Path("driveId/first");
+        Assert.assertEquals("first", first.getName());
+        Path second = Path.createWithAppended(first, "second");
+
+        // verify the first Path is not altered
+        Assert.assertEquals("first", first.getName());
+
+        // but the second one is created correctly
+        Assert.assertEquals("first", second.getParent().getName());
+        Assert.assertEquals("second", second.getName());
+    }
 }
