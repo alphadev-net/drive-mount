@@ -60,7 +60,8 @@ public class DocumentProviderImpl extends DocumentsProvider {
         if (size <= 0) return "0B";
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        float roundedSize = (float) (size / Math.pow(1024, digitGroups));
+        return new DecimalFormat("#,##0.#").format(roundedSize) + " " + units[digitGroups];
     }
 
     @Override
@@ -90,7 +91,8 @@ public class DocumentProviderImpl extends DocumentsProvider {
         return roots;
     }
 
-    private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device, String[] projection) {
+    private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device,
+                              String[] projection) {
         for (String column : projection) {
             switch (column) {
                 case Root.COLUMN_ROOT_ID:
@@ -135,8 +137,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryChildDocuments(String parentDocumentId,
-                                      final String[] requestedProjection,
+    public Cursor queryChildDocuments(String parentDocumentId, final String[] requestedProjection,
                                       String sortOrder) throws FileNotFoundException {
         final String[] projection = resolveDocumentProjection(requestedProjection);
         final MatrixCursor result = new MatrixCursor(projection);
@@ -144,8 +145,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
     }
 
     @Override
-    public ParcelFileDescriptor openDocument(final String documentId,
-                                             final String mode,
+    public ParcelFileDescriptor openDocument(final String documentId, final String mode,
                                              CancellationSignal signal) throws FileNotFoundException {
         return null;
     }
