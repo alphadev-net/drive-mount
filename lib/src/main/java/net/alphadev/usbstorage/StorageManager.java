@@ -18,6 +18,7 @@ package net.alphadev.usbstorage;
 import net.alphadev.fat32wrapper.FatStorage;
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
 import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
@@ -74,6 +75,10 @@ public class StorageManager {
 
     public Iterable<? extends StorageDevice> getMounts() {
         return mMountedDevices.values();
+    }
+
+    public StorageDevice getDevice(Path path) {
+        return mMountedDevices.get(path.getDeviceId());
     }
 
     public void removeAll(String deviceId) {
