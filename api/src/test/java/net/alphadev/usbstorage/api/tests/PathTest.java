@@ -1,0 +1,56 @@
+package net.alphadev.usbstorage.api.tests;
+
+import net.alphadev.usbstorage.api.Path;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.Iterator;
+
+/**
+ * @author Jan Seeger <jan@alphadev.net>
+ */
+public class PathTest {
+    @Test
+    public void basicHasNoParentsTest() {
+        Path instance = new Path("driveId/");
+        Assert.assertNull(instance.getParent());
+    }
+
+    @Test
+    public void basicInstantiationTest() {
+        Path instance = new Path("driveId/test");
+        Assert.assertEquals("test", instance.getName());
+        Assert.assertEquals("driveId", instance.getDeviceId());
+    }
+
+    @Test
+    public void basicHasNoDevIdTest() {
+        Path instance = new Path("/test");
+        Assert.assertNull(instance.getDeviceId());
+    }
+
+    @Test
+    public void subItemInstantiationTest() {
+        Path instance = new Path("driveId/test/abc");
+        Assert.assertEquals("abc", instance.getName());
+    }
+
+    @Test
+    public void subItemParentTest() {
+        Path instance = new Path("driveId/test/abc");
+        Assert.assertEquals("abc", instance.getName());
+        Assert.assertEquals("test", instance.getParent().getName());
+        Assert.assertNull(instance.getParent().getParent());
+    }
+
+    @Test
+    public void iteratorInOrderTest() {
+        Path instance = new Path("driveId/a/b/c/d");
+        Iterator<String> iterator = instance.getIterator().iterator();
+        Assert.assertEquals("a", iterator.next());
+        Assert.assertEquals("b", iterator.next());
+        Assert.assertEquals("c", iterator.next());
+        Assert.assertEquals("d", iterator.next());
+    }
+}
