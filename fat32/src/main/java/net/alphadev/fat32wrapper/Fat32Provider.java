@@ -15,6 +15,7 @@
  */
 package net.alphadev.fat32wrapper;
 
+import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
@@ -66,13 +67,23 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     @Override
-    public long getFileSize(Path path) {
+    public Object getAttribute(Path path, FileAttribute attr) {
+        switch (attr) {
+            case FILESIZE:
+                return getFileSize(path);
+            case LAST_MODIFIED:
+                return getLastModified(path);
+            default:
+                return null;
+        }
+    }
+
+    private long getFileSize(Path path) {
         FatFile file = getFileOrNull(path);
         return file != null ? file.getLength() : 0;
     }
 
-    @Override
-    public long getLastModified(Path path) {
+    private long getLastModified(Path path) {
         FatLfnDirectoryEntry entry = getEntry(path);
         if (entry != null && entry.isFile()) {
             try {

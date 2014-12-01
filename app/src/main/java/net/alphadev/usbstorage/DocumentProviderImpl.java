@@ -25,6 +25,7 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
+import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
@@ -175,10 +176,11 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     row.add(Document.COLUMN_DISPLAY_NAME, path.getName());
                     break;
                 case Document.COLUMN_SIZE:
-                    row.add(Document.COLUMN_SIZE, provider.getFileSize(path));
+                    long fileSize = (long) provider.getAttribute(path, FileAttribute.FILESIZE);
+                    row.add(Document.COLUMN_SIZE, fileSize);
                     break;
                 case Document.COLUMN_LAST_MODIFIED:
-                    long lastModified = provider.getLastModified(path);
+                    long lastModified = (long) provider.getAttribute(path, FileAttribute.LAST_MODIFIED);
                     if(lastModified != 0) {
                         row.add(Document.COLUMN_LAST_MODIFIED, lastModified);
                     }

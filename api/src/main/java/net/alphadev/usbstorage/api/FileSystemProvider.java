@@ -19,11 +19,29 @@ package net.alphadev.usbstorage.api;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public interface FileSystemProvider {
+    /**
+     * Returs true if, and only if, the item represented by the given Path is a directory.
+     *
+     * @param path Path to check
+     * @return true if is directory
+     */
     boolean isDirectory(Path path);
 
+    /**
+     * Returns list of Paths (sub entries) for a given Path or an empty list otherwise.
+     *
+     * @param path path Path to look for sub entries
+     * @return List of Paths
+     */
     Iterable<Path> getEntries(Path path);
 
-    long getFileSize(Path path);
+    /**
+     * Returns the requested File Attribute or null if not applicable.
+     *
+     * @param path Path to get the Attribute for
+     * @param attr Type of Attribute accortidng to FileAttribute
+     * @return Attribute value or null
+     */
+    Object getAttribute(Path path, FileAttribute attr);
 
-    long getLastModified(Path path);
 }
