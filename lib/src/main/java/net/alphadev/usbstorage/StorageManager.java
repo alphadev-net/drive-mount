@@ -45,13 +45,13 @@ public class StorageManager {
         return false;
     }
 
-    private boolean tryMountPartition(BlockDevice device) {
+    private boolean tryMountPartition(Partition device) {
         if (mMountedDevices.get(device.getId()) != null) {
             // device seems already mounted… do nothing.
             return false;
         }
 
-        StorageDevice storage = mountAsFatFS(device);
+        StorageDevice storage = firstTry(device);
 
         if (storage != null) {
             System.out.println("Successfully mounted device: " + device.getId());
@@ -60,6 +60,20 @@ public class StorageManager {
         }
 
         return false;
+    }
+
+    private StorageDevice firstTry(Partition device) {
+        switch (device.getType()) {
+            case FAT12:
+            case FAT16:
+            case FAT16_LARGE:
+            case FAT16_LBA:
+            case FAT32:
+            case FAT32_LBA:
+                return mountAsFatFS(device);
+            default:
+                return null;
+        }
     }
 
     private StorageDevice mountAsFatFS(BlockDevice device) {
