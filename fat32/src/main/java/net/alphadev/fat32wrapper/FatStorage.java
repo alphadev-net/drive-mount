@@ -16,6 +16,7 @@
 package net.alphadev.fat32wrapper;
 
 import net.alphadev.usbstorage.api.BlockDevice;
+import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.StorageDevice;
 
 import java.io.IOException;
@@ -38,6 +39,11 @@ public class FatStorage implements StorageDevice {
     @Override
     public String getName() {
         return fs.getVolumeLabel();
+    }
+
+    @Override
+    public FileSystemProvider getProvider() {
+        return new Fat32Provider(fs);
     }
 
     @Override

@@ -25,9 +25,10 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
+import net.alphadev.usbstorage.api.FileSystemProvider;
+import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 
@@ -153,5 +154,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
     @SuppressWarnings("unused")
     private File getFileForDocId(String documentId) {
         return null;
+    private FileSystemProvider getProvider(Path path) {
+        return mStorageManager.getDevice(path).getProvider();
     }
 }
