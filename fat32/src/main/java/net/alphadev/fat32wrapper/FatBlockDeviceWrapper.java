@@ -25,7 +25,7 @@ import de.waldheinz.fs.ReadOnlyException;
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
-public class FatBlockDeviceWrapper implements de.waldheinz.fs.BlockDevice {
+public final class FatBlockDeviceWrapper implements de.waldheinz.fs.BlockDevice {
     private final BlockDevice mDevice;
 
     public FatBlockDeviceWrapper(BlockDevice device) {

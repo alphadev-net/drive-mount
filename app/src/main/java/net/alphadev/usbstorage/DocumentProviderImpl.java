@@ -25,9 +25,10 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
+import net.alphadev.usbstorage.api.FileSystemProvider;
+import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 
@@ -60,7 +61,8 @@ public class DocumentProviderImpl extends DocumentsProvider {
         if (size <= 0) return "0B";
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        float roundedSize = (float) (size / Math.pow(1024, digitGroups));
+        return new DecimalFormat("#,##0.#").format(roundedSize) + " " + units[digitGroups];
     }
 
     @Override
@@ -90,11 +92,15 @@ public class DocumentProviderImpl extends DocumentsProvider {
         return roots;
     }
 
-    private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device, String[] projection) {
+    private void createDevice(MatrixCursor.RowBuilder row, StorageDevice device,
+                              String[] projection) {
         for (String column : projection) {
             switch (column) {
                 case Root.COLUMN_ROOT_ID:
                     row.add(Root.COLUMN_ROOT_ID, device.getId());
+                    break;
+                case Root.COLUMN_DOCUMENT_ID:
+                    row.add(Root.COLUMN_DOCUMENT_ID, device.getId());
                     break;
                 case Root.COLUMN_TITLE:
                     row.add(Root.COLUMN_TITLE, device.getName());
@@ -128,27 +134,71 @@ public class DocumentProviderImpl extends DocumentsProvider {
                                 final String[] requestedProjection) throws FileNotFoundException {
         final String[] projection = resolveDocumentProjection(requestedProjection);
         final MatrixCursor result = new MatrixCursor(projection);
+        addEntry(result, new Path(documentId), projection);
         return result;
     }
 
     @Override
-    public Cursor queryChildDocuments(String parentDocumentId,
-                                      final String[] requestedProjection,
+    public Cursor queryChildDocuments(String parentDocumentId, final String[] requestedProjection,
                                       String sortOrder) throws FileNotFoundException {
         final String[] projection = resolveDocumentProjection(requestedProjection);
         final MatrixCursor result = new MatrixCursor(projection);
+
+        Path parent = new Path(parentDocumentId);
+        FileSystemProvider provider = getProvider(parent);
+        for (Path child : provider.getEntries(parent)) {
+            addEntry(result, child, projection);
+        }
+
         return result;
     }
 
     @Override
-    public ParcelFileDescriptor openDocument(final String documentId,
-                                             final String mode,
+    public ParcelFileDescriptor openDocument(final String documentId, final String mode,
                                              CancellationSignal signal) throws FileNotFoundException {
         return null;
     }
 
-    @SuppressWarnings("unused")
-    private File getFileForDocId(String documentId) {
-        return null;
+    private void addEntry(MatrixCursor cursor, Path path, String[] projection) {
+        MatrixCursor.RowBuilder row = cursor.newRow();
+        FileSystemProvider provider = getProvider(path);
+        for (String column : projection) {
+            switch (column) {
+                case Document.COLUMN_MIME_TYPE:
+                    row.add(Document.COLUMN_MIME_TYPE, determineMimeType(path));
+                    break;
+                case Document.COLUMN_DOCUMENT_ID:
+                    row.add(Document.COLUMN_DOCUMENT_ID, path.toAbsolute());
+                    break;
+                case Document.COLUMN_DISPLAY_NAME:
+                    row.add(Document.COLUMN_DISPLAY_NAME, path.getName());
+                    break;
+                case Document.COLUMN_SIZE:
+                    row.add(Document.COLUMN_SIZE, provider.getFileSize(path));
+                    break;
+                case Document.COLUMN_LAST_MODIFIED:
+                    row.add(Document.COLUMN_LAST_MODIFIED, provider.getLastModified(path));
+                    break;
+                case Document.COLUMN_FLAGS:
+                    int flags = 0;
+                    row.add(Document.COLUMN_FLAGS, flags);
+                    break;
+                default:
+                    Log.w("Drive Mount", "Couldn't satisfy " + column + " column.");
+            }
+        }
+    }
+
+    private FileSystemProvider getProvider(Path path) {
+        return mStorageManager.getDevice(path).getProvider();
+    }
+
+    private String determineMimeType(Path path) {
+        FileSystemProvider provider = getProvider(path);
+        if (provider.isDirectory(path)) {
+            return Document.MIME_TYPE_DIR;
+        }
+
+        return "";
     }
 }

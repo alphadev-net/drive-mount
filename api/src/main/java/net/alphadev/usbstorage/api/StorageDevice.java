@@ -85,4 +85,6 @@ public interface StorageDevice extends Identifiable {
      * @return the name of this file store
      */
     String getName();
+
+    FileSystemProvider getProvider();
 }
