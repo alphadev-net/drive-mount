@@ -15,6 +15,9 @@
  */
 package net.alphadev.usbstorage.api;
 
+import java.io.File;
+import java.io.FileDescriptor;
+
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
@@ -44,4 +47,5 @@ public interface FileSystemProvider {
      */
     Object getAttribute(Path path, FileAttribute attr);
 
+    FileDescriptor copyToLocal(Path path, File destination);
 }

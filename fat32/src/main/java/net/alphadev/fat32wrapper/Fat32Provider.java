@@ -19,7 +19,11 @@ import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,8 @@ import de.waldheinz.fs.fat.FatLfnDirectoryEntry;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class Fat32Provider implements FileSystemProvider {
+    private static final long MAX_TRANSFER = 512 *1024;
+
     private final FatFileSystem fs;
 
     public Fat32Provider(FatFileSystem fs) {
@@ -95,6 +101,33 @@ public class Fat32Provider implements FileSystemProvider {
 
         return 0;
     }
+
+    @Override
+    public FileDescriptor copyToLocal(Path path, File destination) {
+        final FatFile file = getFileOrNull(path);
+        long remainingSize = file.getLength();
+        long position = 0;
+
+        try {
+            final FileOutputStream fos = new FileOutputStream(destination);
+
+            while (remainingSize > 0){
+                final int bufferSize = (int) Math.min(remainingSize, MAX_TRANSFER);
+                final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+                file.read(position, buffer);
+                fos.write(buffer.array());
+                remainingSize -= bufferSize;
+                position += bufferSize;
+            }
+
+            return fos.getFD();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
     private FatLfnDirectoryEntry getEntry(Path path) {
         FatLfnDirectory lastDir = fs.getRoot();

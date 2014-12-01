@@ -29,9 +29,12 @@ import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.util.FilenameHash;
 import net.alphadev.usbstorage.util.MimeUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 public class DocumentProviderImpl extends DocumentsProvider {
@@ -158,6 +161,15 @@ public class DocumentProviderImpl extends DocumentsProvider {
     @Override
     public ParcelFileDescriptor openDocument(final String documentId, final String mode,
                                              CancellationSignal signal) throws FileNotFoundException {
+        try {
+            Path path = new Path(documentId);
+            String filename = FilenameHash.getHash(path);
+            File cacheDir = getContext().getCacheDir();
+            File tempFile = File.createTempFile(filename, null, cacheDir);
+            FileSystemProvider provider = getProvider(path);
+            return ParcelFileDescriptor.dup(provider.copyToLocal(path, tempFile));
+        } catch (IOException e) {
+        }
         return null;
     }
 
