@@ -2,7 +2,6 @@ package net.alphadev.usbstorage.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,9 +16,15 @@ public final class Path {
         this(Arrays.asList(path.split("/")));
     }
 
-    public static final Path createWithAppended(Path path, String appended) {
+    public static final Path createWithAppended(Path path, String... appendToPath) {
         final List<String> paths = new ArrayList(path.paths);
-        paths.add(appended);
+        for (String appendix : appendToPath) {
+            if (appendix.indexOf('/') != -1) {
+                paths.addAll(Arrays.asList(appendix.split("/")));
+            } else {
+                paths.add(appendix);
+            }
+        }
         return new Path(paths);
     }
 
@@ -37,7 +42,7 @@ public final class Path {
             return null;
         }
 
-        List<String> parentPaths = paths.subList(0, paths.size()-1);
+        List<String> parentPaths = paths.subList(0, paths.size() - 1);
         return new Path(parentPaths);
     }
 

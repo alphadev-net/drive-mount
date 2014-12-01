@@ -55,7 +55,7 @@ public class PathTest {
     }
 
     @Test
-    public void appendPathToTest() {
+    public void appendToPathTest() {
         Path first = new Path("driveId/first");
         Assert.assertEquals("first", first.getName());
         Path second = Path.createWithAppended(first, "second");
@@ -65,6 +65,32 @@ public class PathTest {
 
         // but the second one is created correctly
         Assert.assertEquals("first", second.getParent().getName());
+        Assert.assertEquals("second", second.getName());
+    }
+
+    @Test
+    public void appendMultipleToPathTest() {
+        Path first = new Path("driveId/first");
+        Assert.assertEquals("first", first.getName());
+        Path fourth = Path.createWithAppended(first, "second/third/fourth");
+        Path third = fourth.getParent();
+        Path second = third.getParent();
+
+        Assert.assertEquals("fourth", fourth.getName());
+        Assert.assertEquals("third", third.getName());
+        Assert.assertEquals("second", second.getName());
+    }
+
+    @Test
+    public void appendMultipleToPathOtherTest() {
+        Path first = new Path("driveId/first");
+        Assert.assertEquals("first", first.getName());
+        Path fourth = Path.createWithAppended(first, "second", "third", "fourth");
+        Path third = fourth.getParent();
+        Path second = third.getParent();
+
+        Assert.assertEquals("fourth", fourth.getName());
+        Assert.assertEquals("third", third.getName());
         Assert.assertEquals("second", second.getName());
     }
 }
