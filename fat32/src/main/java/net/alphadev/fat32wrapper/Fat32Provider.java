@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.waldheinz.fs.FsDirectoryEntry;
+import de.waldheinz.fs.fat.FatFile;
 import de.waldheinz.fs.fat.FatFileSystem;
 import de.waldheinz.fs.fat.FatLfnDirectory;
 import de.waldheinz.fs.fat.FatLfnDirectoryEntry;
@@ -32,18 +33,12 @@ public class Fat32Provider implements FileSystemProvider {
     public Iterable<Path> getEntries(Path path) {
         final List<Path> entries = new ArrayList<>();
 
-        FatLfnDirectory directory = null;
+        FatLfnDirectory directory;
         if (path.isRoot()) {
             directory = fs.getRoot();
         } else {
             final FatLfnDirectoryEntry dirEntry = getEntry(path);
-            if (dirEntry.isDirectory()) {
-                try {
-                    directory = dirEntry.getDirectory();
-                } catch (IOException e) {
-                    // we have just checked if it is a directory!
-                }
-            }
+            directory = getDirectoryOrNull(dirEntry);
         }
 
         if (directory != null) {
@@ -55,21 +50,60 @@ public class Fat32Provider implements FileSystemProvider {
         return entries;
     }
 
+    @Override
+    public long getFileSize(Path path) {
+        FatFile file = getFileOrNull(path);
+        return file != null ? file.getLength() : 0;
+    }
+
+    @Override
+    public long getLastModified(Path path) {
+        FatLfnDirectoryEntry entry = getEntry(path);
+        if (entry != null && entry.isFile()) {
+            try {
+                return entry.getLastModified();
+            } catch (IOException e) {
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
     private FatLfnDirectoryEntry getEntry(Path path) {
         FatLfnDirectory lastDir = fs.getRoot();
         FatLfnDirectoryEntry lastEntry = null;
 
         for (String segment : path.getIterator()) {
-            lastEntry = lastDir.getEntry(segment);
-            if (lastEntry.isDirectory()) {
-                try {
-                    lastDir = lastEntry.getDirectory();
-                } catch (IOException e) {
-                    // we have just checked if it is a directory!
-                }
+            if (lastDir != null) {
+                lastEntry = lastDir.getEntry(segment);
+                lastDir = getDirectoryOrNull(lastEntry);
             }
         }
 
         return lastEntry;
+    }
+
+    private FatFile getFileOrNull(Path path) {
+        FatLfnDirectoryEntry entry = getEntry(path);
+        if (entry != null && entry.isFile()) {
+            try {
+                return entry.getFile();
+            } catch (IOException e) {
+                // yeah, we already checked!
+            }
+        }
+        return null;
+    }
+
+    private FatLfnDirectory getDirectoryOrNull(FatLfnDirectoryEntry entry) {
+        if (entry.isDirectory()) {
+            try {
+                entry.getDirectory();
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        return null;
     }
 }
