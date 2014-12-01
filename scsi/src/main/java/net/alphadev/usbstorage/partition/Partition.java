@@ -18,7 +18,6 @@ package net.alphadev.usbstorage.partition;
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.ReadOnlyException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -79,6 +78,6 @@ public class Partition implements BlockDevice {
 
     @Override
     public String getId() {
-        return mDevice.getId() + File.pathSeparatorChar + Integer.toString(mParameter.getPartitionOffset());
+        return mDevice.getId() + ':' + Integer.toString(mParameter.getPartitionOffset());
     }
 }
