@@ -16,8 +16,8 @@ before_install:
     # Install local gradle maven plugin
     - git clone https://github.com/Widgetlabs/gradle-android-svg svg
     - echo "include ':plugin'" >> svg/settings.gradle
-    - ./gradlew install
-    - rm -rf svg
+    - cd svg; ./gradlew install
+    - cd ..; rm -rf svg
 install: echo "Installation done"
 script:
     - ./gradlew assemble -S -q
