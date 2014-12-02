@@ -22,4 +22,4 @@ before_install:
     - rm -rf svg
 install: echo "Installation done"
 script:
-    - ./gradlew assembleDebug test -S -q
+    - ./gradlew assembleDebug test -S
