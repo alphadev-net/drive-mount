@@ -55,6 +55,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
             Document.COLUMN_LAST_MODIFIED, Document.COLUMN_FLAGS, Document.COLUMN_SIZE,
     };
     private StorageManager mStorageManager;
+    private File mCacheDir;
 
     private static String[] resolveRootProjection(String[] projection) {
         return projection != null ? projection : DEFAULT_ROOT_PROJECTION;
@@ -78,6 +79,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
     @Override
     public boolean onCreate() {
+        mCacheDir = getContext().getCacheDir();
         mStorageManager = new StorageManager();
         final DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
         deviceManager.setOnStorageChangedListener(new OnStorageChangedListener() {
@@ -220,9 +222,8 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
     private File getTemporaryName(Path path) throws IOException {
         final String filename = FilenameHash.getHash(path);
-        final File cacheDir = getContext().getCacheDir();
 
-        return File.createTempFile(filename, null, cacheDir);
+        return File.createTempFile(filename, null, mCacheDir);
     }
 
     private void writeToCacheFile(Path path, File destination) {
