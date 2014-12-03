@@ -1,5 +1,6 @@
 include ':api'
 include ':scsi'
 include ':fat32'
+include ':ntfs'
 include ':lib'
 include ':app'

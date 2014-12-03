@@ -1,0 +1,3 @@
+[submodule "ntfs"]
+	path = ntfs
+	url = git@github.com:alphaDev-net/NtfsLib.git
