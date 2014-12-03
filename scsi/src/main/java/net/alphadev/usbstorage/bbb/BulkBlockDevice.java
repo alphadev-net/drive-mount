@@ -44,12 +44,12 @@ import java.nio.ByteBuffer;
 public class BulkBlockDevice implements BlockDevice {
     private final BulkDevice mAbstractBulkDevice;
     private final byte mLunToUse;
+    private long mDeviceBoundaries;
+    private int mBlockSize = 512;
     /**
      * 512 KB max transfer unit.
      */
-    private final int mMaxTransferSize = 512 * 1024;
-    private long mDeviceBoundaries;
-    private int mBlockSize = 512;
+    private final int mMaxTransferSize = mBlockSize * 1024;
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
@@ -175,6 +175,7 @@ public class BulkBlockDevice implements BlockDevice {
         while (remainingBytes > 0) {
             final int requestSize = Math.min(remainingBytes, mMaxTransferSize);
             final int requestedBlocks = (int) Math.ceil(requestSize / mBlockSize);
+            System.out.println(requestSize);
 
             final Read10 cmd = new Read10();
             cmd.setOffset(offsetBlocks);
@@ -199,7 +200,6 @@ public class BulkBlockDevice implements BlockDevice {
         cbw.setFlags(command.getDirection());
         cbw.setLun(mLunToUse);
         cbw.setCommand(command);
-
         return mAbstractBulkDevice.write(cbw);
     }
 

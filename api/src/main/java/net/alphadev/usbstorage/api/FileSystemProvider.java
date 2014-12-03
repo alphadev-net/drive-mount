@@ -47,5 +47,5 @@ public interface FileSystemProvider {
      */
     Object getAttribute(Path path, FileAttribute attr);
 
-    FileDescriptor copyToLocal(Path path, File destination);
+    void retrieveFile(Path path, File toDirectory);
 }

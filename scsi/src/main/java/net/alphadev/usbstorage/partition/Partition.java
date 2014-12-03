@@ -16,7 +16,6 @@
 package net.alphadev.usbstorage.partition;
 
 import net.alphadev.usbstorage.api.BlockDevice;
-import net.alphadev.usbstorage.api.ReadOnlyException;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -45,7 +44,7 @@ public class Partition implements BlockDevice {
     }
 
     @Override
-    public void write(long devOffset, ByteBuffer src) throws ReadOnlyException, IOException, IllegalArgumentException {
+    public void write(long devOffset, ByteBuffer src) throws IOException, IllegalArgumentException {
         // don't try to write anything while offset calculation is off!
         //long newOffset = mParameter.getLogicalStart() + devOffset;
         //mDevice.read(newOffset, src);

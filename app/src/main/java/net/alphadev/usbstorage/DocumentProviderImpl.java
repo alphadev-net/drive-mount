@@ -167,7 +167,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
             File cacheDir = getContext().getCacheDir();
             File tempFile = File.createTempFile(filename, null, cacheDir);
             FileSystemProvider provider = getProvider(path);
-            return ParcelFileDescriptor.dup(provider.copyToLocal(path, tempFile));
+
+            provider.retrieveFile(path, tempFile);
+            return ParcelFileDescriptor.open(tempFile, ParcelFileDescriptor.MODE_READ_ONLY);
         } catch (IOException e) {
         }
         return null;

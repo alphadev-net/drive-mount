@@ -19,10 +19,12 @@ import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ import de.waldheinz.fs.fat.FatLfnDirectoryEntry;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class Fat32Provider implements FileSystemProvider {
-    private static final long MAX_TRANSFER = 512 *1024;
+    private static final long MAX_TRANSFER = 512 * 1024;
 
     private final FatFileSystem fs;
 
@@ -103,31 +105,31 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     @Override
-    public FileDescriptor copyToLocal(Path path, File destination) {
-        final FatFile file = getFileOrNull(path);
-        long remainingSize = file.getLength();
+    public void retrieveFile(Path path, File destination) {
+        System.out.println("Copying " + path.toAbsolute() + " to local cache" + destination.toString());
+        final FatFile fatFile = getFileOrNull(path);
+        long remainingSize = fatFile.getLength();
         long position = 0;
 
+        FileOutputStream fos = null;
         try {
-            final FileOutputStream fos = new FileOutputStream(destination);
+            fos = new FileOutputStream(destination);
 
-            while (remainingSize > 0){
+            while (remainingSize > 0) {
                 final int bufferSize = (int) Math.min(remainingSize, MAX_TRANSFER);
                 final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-                file.read(position, buffer);
+                fatFile.read(position, buffer);
                 fos.write(buffer.array());
                 remainingSize -= bufferSize;
                 position += bufferSize;
             }
 
-            return fos.getFD();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(fos);
         }
-
-        return null;
     }
-
 
     private FatLfnDirectoryEntry getEntry(Path path) {
         FatLfnDirectory lastDir = fs.getRoot();
