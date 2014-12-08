@@ -1,9 +1,8 @@
 buildscript {
     repositories {
-        /*maven {
-            url "https://dl.bintray.com/widgetlabs/maven/"
-        }*/
-        mavenLocal()
+        maven {
+            url "https://dl.bintray.com/asdf/maven/"
+        }
         mavenCentral()
     }
     dependencies {
