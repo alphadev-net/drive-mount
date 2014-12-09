@@ -16,15 +16,12 @@
 package net.alphadev.fat32wrapper;
 
 import net.alphadev.usbstorage.api.FileAttribute;
+import net.alphadev.usbstorage.api.FileHandle;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +36,6 @@ import de.waldheinz.fs.fat.FatLfnDirectoryEntry;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class Fat32Provider implements FileSystemProvider {
-    private static final long MAX_TRANSFER = 512 * 1024;
-
     private final FatFileSystem fs;
 
     public Fat32Provider(FatFileSystem fs) {
@@ -105,30 +100,10 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     @Override
-    public void retrieveFile(Path path, File destination) {
-        System.out.println("Copying " + path.toAbsolute() + " to local cache" + destination.toString());
+    public FileHandle openDocument(Path path) {
+        System.out.println("Opening " + path.toAbsolute() + " for reading");
         final FatFile fatFile = getFileOrNull(path);
-        long remainingSize = fatFile.getLength();
-        long position = 0;
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(destination);
-
-            while (remainingSize > 0) {
-                final int bufferSize = (int) Math.min(remainingSize, MAX_TRANSFER);
-                final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-                fatFile.read(position, buffer);
-                fos.write(buffer.array());
-                remainingSize -= bufferSize;
-                position += bufferSize;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(fos);
-        }
+        return new ReadingFileHandle(fatFile);
     }
 
     private FatLfnDirectoryEntry getEntry(Path path) {

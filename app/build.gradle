@@ -49,4 +49,5 @@ dependencies {
     compile project(':scsi')
     compile project(':fat32')
     compile 'org.apache.tika:tika-core:1.6'
+    compile 'commons-io:commons-io:2.4'
 }

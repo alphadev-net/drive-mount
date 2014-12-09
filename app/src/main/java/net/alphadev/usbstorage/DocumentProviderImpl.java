@@ -25,17 +25,22 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
+
 import net.alphadev.usbstorage.api.FileAttribute;
+import net.alphadev.usbstorage.api.FileHandle;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
 import net.alphadev.usbstorage.util.FilenameHash;
 import net.alphadev.usbstorage.util.MimeUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.DecimalFormat;
+import org.apache.commons.io.IOUtils;
 
 public class DocumentProviderImpl extends DocumentsProvider {
 
@@ -67,13 +72,14 @@ public class DocumentProviderImpl extends DocumentsProvider {
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         float roundedSize = (float) (size / Math.pow(1024, digitGroups));
+
         return new DecimalFormat("#,##0.#").format(roundedSize) + " " + units[digitGroups];
     }
 
     @Override
     public boolean onCreate() {
         mStorageManager = new StorageManager();
-        DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
+        final DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
         deviceManager.setOnStorageChangedListener(new OnStorageChangedListener() {
             @Override
             public void onStorageChange() {
@@ -82,6 +88,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
                                 .buildRootsUri(AUTHORITY), null);
             }
         });
+
         return true;
     }
 
@@ -139,7 +146,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
                                 final String[] requestedProjection) throws FileNotFoundException {
         final String[] projection = resolveDocumentProjection(requestedProjection);
         final MatrixCursor result = new MatrixCursor(projection);
+
         addEntry(result, new Path(documentId), projection);
+
         return result;
     }
 
@@ -148,9 +157,9 @@ public class DocumentProviderImpl extends DocumentsProvider {
                                       String sortOrder) throws FileNotFoundException {
         final String[] projection = resolveDocumentProjection(requestedProjection);
         final MatrixCursor result = new MatrixCursor(projection);
+        final Path parent = new Path(parentDocumentId);
+        final FileSystemProvider provider = getProvider(parent);
 
-        Path parent = new Path(parentDocumentId);
-        FileSystemProvider provider = getProvider(parent);
         for (Path child : provider.getEntries(parent)) {
             addEntry(result, child, projection);
         }
@@ -162,22 +171,22 @@ public class DocumentProviderImpl extends DocumentsProvider {
     public ParcelFileDescriptor openDocument(final String documentId, final String mode,
                                              CancellationSignal signal) throws FileNotFoundException {
         try {
-            Path path = new Path(documentId);
-            String filename = FilenameHash.getHash(path);
-            File cacheDir = getContext().getCacheDir();
-            File tempFile = File.createTempFile(filename, null, cacheDir);
-            FileSystemProvider provider = getProvider(path);
+            final Path path = new Path(documentId);
+            final File tempFile = getTemporaryName(path);
+            writeToCacheFile(path, tempFile);
 
-            provider.retrieveFile(path, tempFile);
             return ParcelFileDescriptor.open(tempFile, ParcelFileDescriptor.MODE_READ_ONLY);
         } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return null;
     }
 
     private void addEntry(MatrixCursor cursor, Path path, String[] projection) {
-        MatrixCursor.RowBuilder row = cursor.newRow();
-        FileSystemProvider provider = getProvider(path);
+        final MatrixCursor.RowBuilder row = cursor.newRow();
+        final FileSystemProvider provider = getProvider(path);
+
         for (String column : projection) {
             switch (column) {
                 case Document.COLUMN_MIME_TYPE:
@@ -190,11 +199,11 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     row.add(Document.COLUMN_DISPLAY_NAME, path.getName());
                     break;
                 case Document.COLUMN_SIZE:
-                    long fileSize = (long) provider.getAttribute(path, FileAttribute.FILESIZE);
+                    final long fileSize = (long) provider.getAttribute(path, FileAttribute.FILESIZE);
                     row.add(Document.COLUMN_SIZE, fileSize);
                     break;
                 case Document.COLUMN_LAST_MODIFIED:
-                    long lastModified = (long) provider.getAttribute(path, FileAttribute.LAST_MODIFIED);
+                    final long lastModified = (long) provider.getAttribute(path, FileAttribute.LAST_MODIFIED);
                     if(lastModified != 0) {
                         row.add(Document.COLUMN_LAST_MODIFIED, lastModified);
                     }
@@ -209,12 +218,38 @@ public class DocumentProviderImpl extends DocumentsProvider {
         }
     }
 
+    private File getTemporaryName(Path path) throws IOException {
+        final String filename = FilenameHash.getHash(path);
+        final File cacheDir = getContext().getCacheDir();
+
+        return File.createTempFile(filename, null, cacheDir);
+    }
+
+    private void writeToCacheFile(Path path, File destination) {
+        final FileSystemProvider provider = getProvider(path);
+        final FileHandle handle = provider.openDocument(path);
+
+        FileOutputStream fos = null;
+        InputStream is = null;
+        try {
+            fos = new FileOutputStream(destination);
+            is = handle.readDocument();
+            IOUtils.copy(is, fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(fos);
+        }
+    }
+
     private FileSystemProvider getProvider(Path path) {
         return mStorageManager.getDevice(path).getProvider();
     }
 
     private String determineMimeType(Path path) {
-        FileSystemProvider provider = getProvider(path);
+        final FileSystemProvider provider = getProvider(path);
+
         if (provider.isDirectory(path)) {
             return Document.MIME_TYPE_DIR;
         }
