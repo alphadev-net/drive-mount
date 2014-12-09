@@ -15,14 +15,14 @@
  */
 package net.alphadev.fat32wrapper;
 
-import de.waldheinz.fs.fat.FatFile;
+import net.alphadev.usbstorage.api.FileHandle;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import net.alphadev.usbstorage.api.FileHandle;
+import de.waldheinz.fs.fat.FatFile;
 
 public class ReadingFileHandle implements FileHandle {
     private final FatFile file;
@@ -37,14 +37,12 @@ public class ReadingFileHandle implements FileHandle {
     }
 
     private static class BlaStream extends InputStream {
-        protected static final int MAX_TRANSFER = 512 * 1024;
-
         private FatFile file;
         private int totalFileSize;
         private int position;
 
         public BlaStream(FatFile file) {
-            if(file != null) {
+            if (file != null) {
                 totalFileSize = (int) file.getLength();
             }
         }
@@ -62,7 +60,7 @@ public class ReadingFileHandle implements FileHandle {
                 position += bytesRead;
             }
 
-            return shouldCallAgain?bytesRead:-1;
+            return shouldCallAgain ? bytesRead : -1;
         }
 
         @Override
@@ -72,7 +70,7 @@ public class ReadingFileHandle implements FileHandle {
 
         @Override
         public int read() throws IOException {
-            if(available() <= 0) {
+            if (available() <= 0) {
                 return -1;
             }
 

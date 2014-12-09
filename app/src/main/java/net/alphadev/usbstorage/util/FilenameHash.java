@@ -8,8 +8,8 @@ import java.security.NoSuchAlgorithmException;
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
-public class FilenameHash {
-    public static final String getHash(Path path) {
+public final class FilenameHash {
+    public static String getHash(Path path) {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");

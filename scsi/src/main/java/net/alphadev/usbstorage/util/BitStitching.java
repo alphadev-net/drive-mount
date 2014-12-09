@@ -22,7 +22,7 @@ import java.nio.ByteOrder;
  * @author Jan Seeger <jan@alphadev.net>
  */
 @SuppressWarnings("unused")
-public class BitStitching {
+public final class BitStitching {
     public static int convertToInt(byte[] byteArray, int offset, ByteOrder order) {
         ByteBuffer b = ByteBuffer.allocate(4);
         b.order(order);

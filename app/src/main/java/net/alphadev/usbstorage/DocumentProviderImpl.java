@@ -25,13 +25,6 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.text.DecimalFormat;
-
 import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileHandle;
 import net.alphadev.usbstorage.api.FileSystemProvider;
@@ -41,6 +34,13 @@ import net.alphadev.usbstorage.util.FilenameHash;
 import net.alphadev.usbstorage.util.MimeUtil;
 
 import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
 
 public class DocumentProviderImpl extends DocumentsProvider {
 
@@ -204,7 +204,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     break;
                 case Document.COLUMN_LAST_MODIFIED:
                     final long lastModified = (long) provider.getAttribute(path, FileAttribute.LAST_MODIFIED);
-                    if(lastModified != 0) {
+                    if (lastModified != 0) {
                         row.add(Document.COLUMN_LAST_MODIFIED, lastModified);
                     }
                     break;

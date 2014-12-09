@@ -15,9 +15,6 @@
  */
 package net.alphadev.usbstorage.api;
 
-import java.io.File;
-import java.io.FileDescriptor;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */

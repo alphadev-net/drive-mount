@@ -64,7 +64,7 @@ public class CommandBlockWrapper implements ScsiTransferable {
     }
 
     public byte[] asBytes() {
-        return (byte[]) cwbData.clone();
+        return cwbData.clone();
     }
 
     @Override

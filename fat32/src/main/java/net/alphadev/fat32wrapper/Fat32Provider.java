@@ -20,9 +20,7 @@ import net.alphadev.usbstorage.api.FileHandle;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,11 +133,12 @@ public class Fat32Provider implements FileSystemProvider {
     private FatLfnDirectory getDirectoryOrNull(FatLfnDirectoryEntry entry) {
         if (entry.isDirectory()) {
             try {
-                entry.getDirectory();
+                return entry.getDirectory();
             } catch (IOException e) {
-                return null;
+                // don't care just return null
             }
         }
+
         return null;
     }
 }
