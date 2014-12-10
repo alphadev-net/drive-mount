@@ -236,6 +236,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
             is = handle.readDocument();
             IOUtils.copy(is, fos);
         } catch (IOException e) {
+            destination.delete();
             e.printStackTrace();
         } finally {
             IOUtils.closeQuietly(is);
