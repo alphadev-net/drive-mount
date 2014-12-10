@@ -10,20 +10,26 @@ import java.security.NoSuchAlgorithmException;
  */
 public final class FilenameHash {
     public static String getHash(Path path) {
-        MessageDigest md = null;
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not find Algorithm", e);
         }
-        byte[] hash = md.digest(path.toAbsolute().getBytes());
+
+        String absolutePath = path.toAbsolute();
+        if(absolutePath == null) {
+            absolutePath = "";
+        }
+
+        final byte[] hash = md.digest(absolutePath.getBytes());
         return byteArrayToHexString(hash);
     }
 
     private static String byteArrayToHexString(byte[] b) {
         String result = "";
         for (byte element : b) {
-            int value = (element & 0xff) + 0x100;
+            final int value = (element & 0xff) + 0x100;
             result += Integer.toString(value, 16).substring(1);
         }
         return result;

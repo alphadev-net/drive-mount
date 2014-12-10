@@ -42,7 +42,7 @@ public class Fat32Provider implements FileSystemProvider {
 
     @Override
     public boolean isDirectory(Path path) {
-        FatLfnDirectoryEntry file = getEntry(path);
+        final FatLfnDirectoryEntry file = getEntry(path);
         return file != null && file.isDirectory();
     }
 
@@ -54,8 +54,7 @@ public class Fat32Provider implements FileSystemProvider {
         if (path.isRoot()) {
             directory = fs.getRoot();
         } else {
-            final FatLfnDirectoryEntry dirEntry = getEntry(path);
-            directory = getDirectoryOrNull(dirEntry);
+            directory = getDirectoryOrNull(getEntry(path));
         }
 
         if (directory != null) {
@@ -80,12 +79,12 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     private long getFileSize(Path path) {
-        FatFile file = getFileOrNull(path);
+        final FatFile file = getFileOrNull(path);
         return file != null ? file.getLength() : 0;
     }
 
     private long getLastModified(Path path) {
-        FatLfnDirectoryEntry entry = getEntry(path);
+        final FatLfnDirectoryEntry entry = getEntry(path);
         if (entry != null && entry.isFile()) {
             try {
                 return entry.getLastModified();
@@ -119,7 +118,8 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     private FatFile getFileOrNull(Path path) {
-        FatLfnDirectoryEntry entry = getEntry(path);
+        final FatLfnDirectoryEntry entry = getEntry(path);
+
         if (entry != null && entry.isFile()) {
             try {
                 return entry.getFile();
@@ -127,6 +127,7 @@ public class Fat32Provider implements FileSystemProvider {
                 // yeah, we already checked!
             }
         }
+
         return null;
     }
 

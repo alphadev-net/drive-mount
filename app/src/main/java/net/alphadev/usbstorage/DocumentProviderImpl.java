@@ -69,10 +69,13 @@ public class DocumentProviderImpl extends DocumentsProvider {
      * http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
      */
     private static String readableFileSize(long size) {
-        if (size <= 0) return "0B";
+        if (size <= 0) {
+            return "0B";
+        }
+
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
-        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        float roundedSize = (float) (size / Math.pow(1024, digitGroups));
+        final int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        final float roundedSize = (float) (size / Math.pow(1024, digitGroups));
 
         return new DecimalFormat("#,##0.#").format(roundedSize) + " " + units[digitGroups];
     }
@@ -237,6 +240,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
             is = handle.readDocument();
             IOUtils.copy(is, fos);
         } catch (IOException e) {
+            //noinspection ResultOfMethodCallIgnored
             destination.delete();
             e.printStackTrace();
         } finally {

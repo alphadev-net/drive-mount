@@ -25,6 +25,7 @@ import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public abstract class ScsiCommand implements ScsiTransferable {
+    @SuppressWarnings("SameReturnValue")
     public CommandBlockWrapper.Direction getDirection() {
         return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
     }

@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'eu.widgetlabs:gradle-android-svg:+'
+        classpath 'eu.widgetlabs:gradle-android-svg:0.1.1'
     }
 }
 

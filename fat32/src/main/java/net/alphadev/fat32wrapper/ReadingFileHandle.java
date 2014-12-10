@@ -17,6 +17,8 @@ package net.alphadev.fat32wrapper;
 
 import net.alphadev.usbstorage.api.FileHandle;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -48,7 +50,7 @@ public class ReadingFileHandle implements FileHandle {
         }
 
         @Override
-        public int read(byte[] buffer) throws IOException {
+        public int read(@NotNull byte[] buffer) throws IOException {
             final int bytesRemaining = available();
             final int bytesRead = Math.min(buffer.length, bytesRemaining);
             final boolean shouldCallAgain = (bytesRemaining - bytesRead > 0);
