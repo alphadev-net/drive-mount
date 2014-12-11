@@ -48,6 +48,7 @@ public class ReadingFileHandle extends InputStream {
         final int bytesRead = Math.min(buffer.length, bytesRemaining);
         final ByteBuffer bb = ByteBuffer.wrap(buffer);
         bb.order(ByteOrder.LITTLE_ENDIAN);
+        bb.limit(bytesRead);
 
         if (file != null) {
             file.read(position, bb);
