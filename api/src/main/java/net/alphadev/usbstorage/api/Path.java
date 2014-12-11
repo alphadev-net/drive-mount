@@ -26,7 +26,6 @@ import java.util.List;
  */
 public final class Path {
     private final List<String> paths;
-    private boolean root;
 
     public Path(String path) {
         this(Arrays.asList(path.split("/")));
@@ -36,7 +35,7 @@ public final class Path {
         this.paths = list;
     }
 
-    public static final Path createWithAppended(Path path, String... appendToPath) {
+    public static Path createWithAppended(Path path, String... appendToPath) {
         final List<String> paths = new ArrayList<>(path.paths);
         for (String appendix : appendToPath) {
             if (appendix.indexOf('/') != -1) {

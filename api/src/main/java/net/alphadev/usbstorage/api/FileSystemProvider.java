@@ -44,4 +44,5 @@ public interface FileSystemProvider {
      */
     Object getAttribute(Path path, FileAttribute attr);
 
+    FileHandle openDocument(Path path);
 }

@@ -16,10 +16,12 @@
 package net.alphadev.fat32wrapper;
 
 import net.alphadev.usbstorage.api.FileAttribute;
+import net.alphadev.usbstorage.api.FileHandle;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class Fat32Provider implements FileSystemProvider {
 
     @Override
     public boolean isDirectory(Path path) {
-        FatLfnDirectoryEntry file = getEntry(path);
+        final FatLfnDirectoryEntry file = getEntry(path);
         return file != null && file.isDirectory();
     }
 
@@ -53,8 +55,7 @@ public class Fat32Provider implements FileSystemProvider {
         if (path.isRoot()) {
             directory = fs.getRoot();
         } else {
-            final FatLfnDirectoryEntry dirEntry = getEntry(path);
-            directory = getDirectoryOrNull(dirEntry);
+            directory = getDirectoryOrNull(getEntry(path));
         }
 
         if (directory != null) {
@@ -79,12 +80,12 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     private long getFileSize(Path path) {
-        FatFile file = getFileOrNull(path);
+        final FatFile file = getFileOrNull(path);
         return file != null ? file.getLength() : 0;
     }
 
     private long getLastModified(Path path) {
-        FatLfnDirectoryEntry entry = getEntry(path);
+        final FatLfnDirectoryEntry entry = getEntry(path);
         if (entry != null && entry.isFile()) {
             try {
                 return entry.getLastModified();
@@ -94,6 +95,18 @@ public class Fat32Provider implements FileSystemProvider {
         }
 
         return 0;
+    }
+
+    @Override
+    public FileHandle openDocument(Path path) {
+        final FatFile fatFile = getFileOrNull(path);
+
+        return new FileHandle() {
+            @Override
+            public InputStream readDocument() {
+                return new ReadingFileHandle(fatFile);
+            }
+        };
     }
 
     private FatLfnDirectoryEntry getEntry(Path path) {
@@ -111,7 +124,8 @@ public class Fat32Provider implements FileSystemProvider {
     }
 
     private FatFile getFileOrNull(Path path) {
-        FatLfnDirectoryEntry entry = getEntry(path);
+        final FatLfnDirectoryEntry entry = getEntry(path);
+
         if (entry != null && entry.isFile()) {
             try {
                 return entry.getFile();
@@ -119,17 +133,19 @@ public class Fat32Provider implements FileSystemProvider {
                 // yeah, we already checked!
             }
         }
+
         return null;
     }
 
     private FatLfnDirectory getDirectoryOrNull(FatLfnDirectoryEntry entry) {
         if (entry.isDirectory()) {
             try {
-                entry.getDirectory();
+                return entry.getDirectory();
             } catch (IOException e) {
-                return null;
+                // don't care just return null
             }
         }
+
         return null;
     }
 }

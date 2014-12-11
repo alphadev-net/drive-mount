@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.alphadev.usbstorage.scsi.command;
+package net.alphadev.usbstorage.api;
 
-import net.alphadev.usbstorage.api.ScsiTransferable;
-import net.alphadev.usbstorage.scsi.CommandBlockWrapper;
+import java.io.InputStream;
 
-/**
- * Class that communicates using SCSI Transparent Command Set as specified by:
- * http://www.13thmonkey.org/documentation/SCSI/spc2r20.pdf
- *
- * @author Jan Seeger <jan@alphadev.net>
- */
-public abstract class ScsiCommand implements ScsiTransferable {
-    @SuppressWarnings("SameReturnValue")
-    public CommandBlockWrapper.Direction getDirection() {
-        return CommandBlockWrapper.Direction.DEVICE_TO_HOST;
-    }
+public interface FileHandle {
+    InputStream readDocument();
 }
