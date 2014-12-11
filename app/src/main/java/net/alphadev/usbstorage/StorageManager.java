@@ -15,6 +15,11 @@
  */
 package net.alphadev.usbstorage;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
+
 import net.alphadev.fat32wrapper.FatStorage;
 import net.alphadev.usbstorage.api.BlockDevice;
 import net.alphadev.usbstorage.api.BulkDevice;
@@ -30,7 +35,19 @@ import java.util.HashMap;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class StorageManager {
+    private static final String MOUNT_GROUP = "net.alphadev.drivemount";
+
     private final HashMap<String, StorageDevice> mMountedDevices = new HashMap<>();
+    private final NotificationManager mNotificationManager;
+    private final Context mContext;
+
+    private int lastMountId = 0;
+
+    public StorageManager(Context context) {
+        mContext = context;
+        mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    }
 
     public boolean tryMount(BulkDevice device) {
         BlockDevice blockDevice = new BulkBlockDevice(device);
@@ -55,10 +72,36 @@ public class StorageManager {
 
         if (storage != null) {
             mMountedDevices.put(device.getId(), storage);
+            postStorageNotification(storage);
             return true;
         }
 
         return false;
+    }
+
+    private void postStorageNotification(StorageDevice device) {
+        final String deviceName = mContext.getString(R.string.notification_title, device.getName());
+        final String deviceInfo = mContext.getString(R.string.notification_content,
+                device.getUnallocatedSpace(),
+                device.getTotalSpace(),
+                device.getType());
+        final String unmountInfo = mContext.getString(R.string.notification_subtext);
+
+        Notification.Builder notification = new Notification.Builder(mContext)
+                .setContentTitle(deviceName)
+                .setContentText(deviceInfo)
+                .setSubText(unmountInfo)
+                .setSmallIcon(R.drawable.drive_icon_gen)
+                .setOngoing(true);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            notification.setLocalOnly(true)
+                    .setGroup(MOUNT_GROUP);
+        }
+
+        // TODO: put pending intent for unmount here
+
+        mNotificationManager.notify(lastMountId++, notification.build());
     }
 
     private StorageDevice firstTry(Partition device) {
