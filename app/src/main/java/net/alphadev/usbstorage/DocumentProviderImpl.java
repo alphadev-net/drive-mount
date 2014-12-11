@@ -25,19 +25,15 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
+import com.commonsware.android.advservice.ParcelFileDescriptorUtil;
+
 import net.alphadev.usbstorage.api.FileAttribute;
-import net.alphadev.usbstorage.api.FileHandle;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
-import net.alphadev.usbstorage.util.FilenameHash;
 import net.alphadev.usbstorage.util.MimeUtil;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -55,7 +51,6 @@ public class DocumentProviderImpl extends DocumentsProvider {
             Document.COLUMN_LAST_MODIFIED, Document.COLUMN_FLAGS, Document.COLUMN_SIZE,
     };
     private StorageManager mStorageManager;
-    private File mCacheDir;
 
     private static String[] resolveRootProjection(String[] projection) {
         return projection != null ? projection : DEFAULT_ROOT_PROJECTION;
@@ -82,7 +77,6 @@ public class DocumentProviderImpl extends DocumentsProvider {
 
     @Override
     public boolean onCreate() {
-        mCacheDir = getContext().getCacheDir();
         mStorageManager = new StorageManager();
         final DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
         deviceManager.setOnStorageChangedListener(new OnStorageChangedListener() {
@@ -177,10 +171,10 @@ public class DocumentProviderImpl extends DocumentsProvider {
                                              CancellationSignal signal) throws FileNotFoundException {
         try {
             final Path path = new Path(documentId);
-            final File tempFile = getTemporaryName(path);
-            writeToCacheFile(path, tempFile);
+            final InputStream inputStream = getProvider(path)
+                    .openDocument(path).readDocument();
 
-            return ParcelFileDescriptor.open(tempFile, ParcelFileDescriptor.MODE_READ_ONLY);
+            return ParcelFileDescriptorUtil.pipeFrom(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -220,32 +214,6 @@ public class DocumentProviderImpl extends DocumentsProvider {
                 default:
                     Log.w("Drive Mount", "Couldn't satisfy " + column + " column.");
             }
-        }
-    }
-
-    private File getTemporaryName(Path path) throws IOException {
-        final String filename = FilenameHash.getHash(path);
-
-        return File.createTempFile(filename, null, mCacheDir);
-    }
-
-    private void writeToCacheFile(Path path, File destination) {
-        final FileSystemProvider provider = getProvider(path);
-        final FileHandle handle = provider.openDocument(path);
-
-        FileOutputStream fos = null;
-        InputStream is = null;
-        try {
-            fos = new FileOutputStream(destination);
-            is = handle.readDocument();
-            IOUtils.copy(is, fos);
-        } catch (IOException e) {
-            //noinspection ResultOfMethodCallIgnored
-            destination.delete();
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(fos);
         }
     }
 
