@@ -17,8 +17,13 @@ package net.alphadev.usbstorage;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
+import android.util.Log;
 
 import net.alphadev.fat32wrapper.FatStorage;
 import net.alphadev.usbstorage.api.BlockDevice;
@@ -35,7 +40,8 @@ import java.util.HashMap;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class StorageManager {
-    private static final String MOUNT_GROUP = "net.alphadev.drivemount";
+    private static final String MOUNT_GROUP = "net.alphadev.usbstorage";
+    private static final String ACTION_UNMOUNT_DEVICE = "net.alphadev.usbstorage.ACTION_UNMOUNT_DEVICE";
 
     private final HashMap<String, StorageDevice> mMountedDevices = new HashMap<>();
     private final NotificationManager mNotificationManager;
@@ -47,11 +53,20 @@ public class StorageManager {
         mContext = context;
         mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        final IntentFilter unmountFilter = new IntentFilter(ACTION_UNMOUNT_DEVICE);
+        final BroadcastReceiver unmountReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String devId = intent.getStringExtra("deviceId");
+                Log.d("asdyf", devId);
+            }
+        };
+        mContext.registerReceiver(unmountReceiver, unmountFilter);
     }
 
     public boolean tryMount(BulkDevice device) {
-        BlockDevice blockDevice = new BulkBlockDevice(device);
-        MasterBootRecord mbr = new MasterBootRecord(blockDevice);
+        final BlockDevice blockDevice = new BulkBlockDevice(device);
+        final MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
         for (Partition partition : mbr.getPartitions()) {
             if (tryMountPartition(partition)) {
@@ -94,12 +109,16 @@ public class StorageManager {
                 .setSmallIcon(R.drawable.drive_icon_gen)
                 .setOngoing(true);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             notification.setLocalOnly(true)
                     .setGroup(MOUNT_GROUP);
         }
 
-        // TODO: put pending intent for unmount here
+        final Intent intent = new Intent(ACTION_UNMOUNT_DEVICE);
+        intent.putExtra("deviceId", device.getId());
+
+        notification.setContentIntent(
+                PendingIntent.getBroadcast(mContext, 0, intent, 0));
 
         mNotificationManager.notify(lastMountId++, notification.build());
     }

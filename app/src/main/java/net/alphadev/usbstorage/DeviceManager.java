@@ -27,7 +27,7 @@ import net.alphadev.usbstorage.DocumentProviderImpl.OnStorageChangedListener;
 import net.alphadev.usbstorage.api.BulkDevice;
 
 public final class DeviceManager {
-    private static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "net.alphadev.usbstorage.ACTION_USB_PERMISSION";
     private static final String LOG_TAG = "Drive Mount";
     private final UsbManager mUsbManager;
     private final Context mContext;
