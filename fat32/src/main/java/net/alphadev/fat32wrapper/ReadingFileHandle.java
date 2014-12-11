@@ -15,8 +15,6 @@
  */
 package net.alphadev.fat32wrapper;
 
-import net.alphadev.usbstorage.api.FileHandle;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -26,74 +24,65 @@ import java.nio.ByteOrder;
 
 import de.waldheinz.fs.fat.FatFile;
 
-public class ReadingFileHandle implements FileHandle {
-    private final FatFile file;
+public class ReadingFileHandle extends InputStream {
+    private FatFile file;
+    private int totalFileSize;
+    private int position;
 
     public ReadingFileHandle(FatFile file) {
-        this.file = file;
+        if (file != null) {
+            totalFileSize = (int) file.getLength();
+        }
     }
 
     @Override
-    public InputStream readDocument() {
-        return new BlaStream(file);
+    public int read(@NotNull byte[] buffer) throws IOException {
+        final int bytesRemaining = available();
+
+        if (bytesRemaining <= 0) {
+            return -1;
+        }
+
+        final int bytesRead = Math.min(buffer.length, bytesRemaining);
+        final ByteBuffer bb = ByteBuffer.wrap(buffer);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
+
+        if (file != null) {
+            file.read(position, bb);
+            position += bytesRead;
+        }
+
+        return bytesRead;
     }
 
-    private static class BlaStream extends InputStream {
-        private FatFile file;
-        private int totalFileSize;
-        private int position;
+    @Override
+    public int available() {
+        return totalFileSize - position;
+    }
 
-        public BlaStream(FatFile file) {
-            if (file != null) {
-                totalFileSize = (int) file.getLength();
-            }
+    @Override
+    public int read() throws IOException {
+        if (available() <= 0) {
+            return -1;
         }
 
-        @Override
-        public int read(@NotNull byte[] buffer) throws IOException {
-            final int bytesRemaining = available();
-            final int bytesRead = Math.min(buffer.length, bytesRemaining);
-            final boolean shouldCallAgain = (bytesRemaining - bytesRead > 0);
-            final ByteBuffer bb = ByteBuffer.wrap(buffer);
-            bb.order(ByteOrder.LITTLE_ENDIAN);
+        final byte[] buffer = new byte[4];
+        final ByteBuffer bb = ByteBuffer.wrap(buffer);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
 
-            if (file != null) {
-                file.read(position, bb);
-                position += bytesRead;
-            }
+        file.read(position, bb);
+        position += 4;
 
-            return shouldCallAgain ? bytesRead : -1;
-        }
+        return bb.getInt(position);
+    }
 
-        @Override
-        public int available() {
-            return totalFileSize - position;
-        }
+    @Override
+    public boolean markSupported() {
+        return false;
+    }
 
-        @Override
-        public int read() throws IOException {
-            if (available() <= 0) {
-                return -1;
-            }
-
-            final byte[] buffer = new byte[4];
-            final ByteBuffer bb = ByteBuffer.wrap(buffer);
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-
-            file.read(position, bb);
-            position += 4;
-
-            return bb.getInt(position);
-        }
-
-        @Override
-        public boolean markSupported() {
-            return false;
-        }
-
-        @Override
-        public void close() {
-            this.file = null;
-        }
+    @Override
+    public void close() {
+        this.file = null;
     }
 }

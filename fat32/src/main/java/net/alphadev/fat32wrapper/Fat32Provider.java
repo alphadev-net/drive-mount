@@ -21,6 +21,7 @@ import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,9 +99,14 @@ public class Fat32Provider implements FileSystemProvider {
 
     @Override
     public FileHandle openDocument(Path path) {
-        System.out.println("Opening " + path.toAbsolute() + " for reading");
         final FatFile fatFile = getFileOrNull(path);
-        return new ReadingFileHandle(fatFile);
+
+        return new FileHandle() {
+            @Override
+            public InputStream readDocument() {
+                return new ReadingFileHandle(fatFile);
+            }
+        };
     }
 
     private FatLfnDirectoryEntry getEntry(Path path) {
