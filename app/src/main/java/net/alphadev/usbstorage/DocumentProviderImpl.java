@@ -31,7 +31,9 @@ import net.alphadev.usbstorage.api.FileAttribute;
 import net.alphadev.usbstorage.api.FileSystemProvider;
 import net.alphadev.usbstorage.api.Path;
 import net.alphadev.usbstorage.api.StorageDevice;
-import net.alphadev.usbstorage.util.MimeUtil;
+
+import org.apache.tika.Tika;
+import org.apache.tika.config.TikaConfig;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,9 +41,7 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 
 public class DocumentProviderImpl extends DocumentsProvider {
-
     private static final String AUTHORITY = "net.alphadev.usbstorage.documents";
-
     private static final String[] DEFAULT_ROOT_PROJECTION = new String[]{
             Root.COLUMN_ROOT_ID, Root.COLUMN_FLAGS, Root.COLUMN_ICON, Root.COLUMN_TITLE,
             Root.COLUMN_DOCUMENT_ID, Root.COLUMN_AVAILABLE_BYTES, Root.COLUMN_SUMMARY
@@ -228,6 +228,10 @@ public class DocumentProviderImpl extends DocumentsProvider {
             return Document.MIME_TYPE_DIR;
         }
 
-        return MimeUtil.guessMimeType(path);
+        return new Tika(TikaConfig.getDefaultConfig()).detect(path.getName());
+    }
+
+    public static interface OnStorageChangedListener {
+        public void onStorageChange();
     }
 }

@@ -25,6 +25,7 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import net.alphadev.usbstorage.DocumentProviderImpl.OnStorageChangedListener;
 import net.alphadev.usbstorage.api.BulkDevice;
 
 public final class DeviceManager {

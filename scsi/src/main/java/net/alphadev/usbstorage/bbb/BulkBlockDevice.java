@@ -175,7 +175,6 @@ public class BulkBlockDevice implements BlockDevice {
         while (remainingBytes > 0) {
             final int requestSize = Math.min(remainingBytes, mMaxTransferSize);
             final int requestedBlocks = (int) Math.ceil(requestSize / mBlockSize);
-            System.out.println(requestSize);
 
             final Read10 cmd = new Read10();
             cmd.setOffset(offsetBlocks);
