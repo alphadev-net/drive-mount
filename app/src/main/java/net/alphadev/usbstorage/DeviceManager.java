@@ -22,8 +22,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import net.alphadev.usbstorage.DocumentProviderImpl.OnStorageChangedListener;
 import net.alphadev.usbstorage.api.BulkDevice;
@@ -83,9 +81,7 @@ public final class DeviceManager {
     private void tryMount(UsbDevice device) {
         BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
         if (mStorageManager.tryMount(usbBulkDevice)) {
-
             notifyStorageChanged();
-            Toast.makeText(mContext, "Mounted USB Device", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -102,13 +98,11 @@ public final class DeviceManager {
     private void enumerateDevices() {
         for (UsbDevice device : mUsbManager.getDeviceList().values()) {
             if (!mUsbManager.hasPermission(device)) {
-                Log.d(LOG_TAG, "Requesting access to USB device");
                 PendingIntent intent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
                 mUsbManager.requestPermission(device, intent);
                 continue;
             }
 
-            Log.d(LOG_TAG, "App already has access to USB device");
             tryMount(device);
         }
     }

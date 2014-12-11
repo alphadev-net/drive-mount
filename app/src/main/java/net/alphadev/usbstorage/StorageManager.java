@@ -46,7 +46,7 @@ public class StorageManager {
     }
 
     private boolean tryMountPartition(Partition device) {
-        if (mMountedDevices.get(device.getId()) != null) {
+        if (mMountedDevices.containsKey(device.getId())) {
             // device seems already mounted… do nothing.
             return false;
         }
@@ -54,7 +54,6 @@ public class StorageManager {
         StorageDevice storage = firstTry(device);
 
         if (storage != null) {
-            System.out.println("Successfully mounted device: " + device.getId());
             mMountedDevices.put(device.getId(), storage);
             return true;
         }
