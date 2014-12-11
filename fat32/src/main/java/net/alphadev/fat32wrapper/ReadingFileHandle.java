@@ -30,6 +30,8 @@ public class ReadingFileHandle extends InputStream {
     private int position;
 
     public ReadingFileHandle(FatFile file) {
+        this.file = file;
+
         if (file != null) {
             totalFileSize = (int) file.getLength();
         }
