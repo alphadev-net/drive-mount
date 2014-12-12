@@ -3,13 +3,13 @@ package com.commonsware.android.advservice;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ParcelFileDescriptorUtil {
-    private static final int MAX_BUFFER = 4096;
-
     public static ParcelFileDescriptor pipeFrom(InputStream inputStream)
             throws IOException {
         final ParcelFileDescriptor[] pipe = ParcelFileDescriptor.createPipe();
@@ -44,28 +44,14 @@ public class ParcelFileDescriptorUtil {
 
         @Override
         public void run() {
-            byte[] buf = new byte[MAX_BUFFER];
-            int len;
-
             try {
-                while ((len = mIn.read(buf)) > 0) {
-                    mOut.write(buf, 0, len);
-                }
-                mOut.flush(); // just to be safe
+                IOUtils.copy(mIn, mOut);
             } catch (IOException e) {
                 Log.e("TransferThread", "writing failed");
                 e.printStackTrace();
             } finally {
-                try {
-                    mIn.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    mOut.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                IOUtils.closeQuietly(mIn);
+                IOUtils.closeQuietly(mOut);
             }
         }
     }
