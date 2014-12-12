@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.alphadev.usbstorage.api;
+package net.alphadev.usbstorage.api.filesystem;
 
-/**
- * @author Jan Seeger <jan@alphadev.net>
- */
-public interface ScsiTransferable extends Transmittable {
-    int getExpectedAnswerLength();
+import java.io.InputStream;
+
+public interface FileHandle {
+    InputStream readDocument();
 }

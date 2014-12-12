@@ -15,7 +15,7 @@
  */
 package net.alphadev.usbstorage.partition;
 
-import net.alphadev.usbstorage.api.BlockDevice;
+import net.alphadev.usbstorage.api.device.BlockDevice;
 import net.alphadev.usbstorage.util.BitStitching;
 
 import java.io.IOException;

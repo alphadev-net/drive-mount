@@ -15,7 +15,7 @@
  */
 package net.alphadev.fat32wrapper;
 
-import net.alphadev.usbstorage.api.BlockDevice;
+import net.alphadev.usbstorage.api.device.BlockDevice;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

@@ -23,7 +23,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 
-import net.alphadev.usbstorage.api.BulkDevice;
+import net.alphadev.usbstorage.api.device.BulkDevice;
 
 public final class DeviceManager {
     private static final String ACTION_USB_PERMISSION = "net.alphadev.usbstorage.ACTION_USB_PERMISSION";

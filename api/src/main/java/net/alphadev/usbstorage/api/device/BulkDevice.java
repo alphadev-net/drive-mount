@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.alphadev.usbstorage.api;
+package net.alphadev.usbstorage.api.device;
+
+import net.alphadev.usbstorage.api.Identifiable;
+import net.alphadev.usbstorage.api.scsi.Transmittable;
 
 import java.io.Closeable;
 

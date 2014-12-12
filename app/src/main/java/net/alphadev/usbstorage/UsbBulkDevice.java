@@ -23,8 +23,8 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 
-import net.alphadev.usbstorage.api.BulkDevice;
-import net.alphadev.usbstorage.api.Transmittable;
+import net.alphadev.usbstorage.api.device.BulkDevice;
+import net.alphadev.usbstorage.api.scsi.Transmittable;
 
 import java.io.IOException;
 

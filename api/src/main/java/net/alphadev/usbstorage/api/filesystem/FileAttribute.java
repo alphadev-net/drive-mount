@@ -1,4 +1,4 @@
-package net.alphadev.usbstorage.api;
+package net.alphadev.usbstorage.api.filesystem;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>

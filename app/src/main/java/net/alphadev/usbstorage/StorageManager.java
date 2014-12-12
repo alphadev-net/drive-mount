@@ -26,10 +26,10 @@ import android.os.Build;
 import android.provider.DocumentsContract;
 
 import net.alphadev.fat32wrapper.FatStorage;
-import net.alphadev.usbstorage.api.BlockDevice;
-import net.alphadev.usbstorage.api.BulkDevice;
-import net.alphadev.usbstorage.api.Path;
-import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.api.device.BlockDevice;
+import net.alphadev.usbstorage.api.device.BulkDevice;
+import net.alphadev.usbstorage.api.filesystem.Path;
+import net.alphadev.usbstorage.api.filesystem.StorageDevice;
 import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
 import net.alphadev.usbstorage.partition.Partition;

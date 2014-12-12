@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.alphadev.usbstorage.api;
+package net.alphadev.usbstorage.api.scsi;
 
 /**
- * Represents a payload that is transmitted between an USB device and its driver.
- *
  * @author Jan Seeger <jan@alphadev.net>
  */
-public interface Transmittable {
-    /**
-     * Returns the payload data as byte array.
-     *
-     * @return payload data
-     */
-    byte[] asBytes();
+public interface ScsiTransferable extends Transmittable {
+    int getExpectedAnswerLength();
 }

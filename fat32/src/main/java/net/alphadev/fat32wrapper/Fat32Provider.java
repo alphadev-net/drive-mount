@@ -15,10 +15,10 @@
  */
 package net.alphadev.fat32wrapper;
 
-import net.alphadev.usbstorage.api.FileAttribute;
-import net.alphadev.usbstorage.api.FileHandle;
-import net.alphadev.usbstorage.api.FileSystemProvider;
-import net.alphadev.usbstorage.api.Path;
+import net.alphadev.usbstorage.api.filesystem.FileAttribute;
+import net.alphadev.usbstorage.api.filesystem.FileHandle;
+import net.alphadev.usbstorage.api.filesystem.FileSystemProvider;
+import net.alphadev.usbstorage.api.filesystem.Path;
 
 import java.io.IOException;
 import java.io.InputStream;

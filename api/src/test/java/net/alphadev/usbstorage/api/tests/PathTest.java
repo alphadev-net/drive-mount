@@ -15,7 +15,7 @@
  */
 package net.alphadev.usbstorage.api.tests;
 
-import net.alphadev.usbstorage.api.Path;
+import net.alphadev.usbstorage.api.filesystem.Path;
 
 import org.junit.Assert;
 import org.junit.Test;

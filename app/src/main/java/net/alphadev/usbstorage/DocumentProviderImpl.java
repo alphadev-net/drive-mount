@@ -24,10 +24,10 @@ import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
 import android.util.Log;
 
-import net.alphadev.usbstorage.api.FileAttribute;
-import net.alphadev.usbstorage.api.FileSystemProvider;
-import net.alphadev.usbstorage.api.Path;
-import net.alphadev.usbstorage.api.StorageDevice;
+import net.alphadev.usbstorage.api.filesystem.FileAttribute;
+import net.alphadev.usbstorage.api.filesystem.FileSystemProvider;
+import net.alphadev.usbstorage.api.filesystem.Path;
+import net.alphadev.usbstorage.api.filesystem.StorageDevice;
 import net.alphadev.usbstorage.util.ParcelFileDescriptorUtil;
 
 import org.apache.tika.Tika;
