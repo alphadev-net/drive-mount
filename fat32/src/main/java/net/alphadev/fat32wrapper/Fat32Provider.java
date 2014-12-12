@@ -60,7 +60,12 @@ public class Fat32Provider implements FileSystemProvider {
 
         if (directory != null) {
             for (FsDirectoryEntry entry : directory) {
-                entries.add(Path.createWithAppended(path, entry.getName()));
+                if(entry.getName().equals(".") || entry.getName().equals("..")) {
+                    continue;
+                }
+
+                Path file= Path.createWithAppended(path, entry.getName());
+                entries.add(file);
             }
         }
 
