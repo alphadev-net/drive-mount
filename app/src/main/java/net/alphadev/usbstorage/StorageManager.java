@@ -164,7 +164,7 @@ public class StorageManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
-                    mMountedDevices.remove(set.getValue());
+                    mMountedDevices.remove(set.getKey());
                 }
             }
         }
