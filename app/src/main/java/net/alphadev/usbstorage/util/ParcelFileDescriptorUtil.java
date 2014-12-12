@@ -1,4 +1,4 @@
-package com.commonsware.android.advservice;
+package net.alphadev.usbstorage.util;
 
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * ParcelFileDescriptor Utility class.
+ * Based on CommonsWare's ParcelFileDescriptorUtil.
+ */
 public class ParcelFileDescriptorUtil {
     public static ParcelFileDescriptor pipeFrom(InputStream inputStream)
             throws IOException {

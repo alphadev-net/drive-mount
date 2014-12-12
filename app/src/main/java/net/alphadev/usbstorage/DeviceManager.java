@@ -22,19 +22,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.util.Log;
-import android.widget.Toast;
 
-import net.alphadev.usbstorage.DocumentProviderImpl.OnStorageChangedListener;
 import net.alphadev.usbstorage.api.BulkDevice;
 
 public final class DeviceManager {
-    private static final String ACTION_USB_PERMISSION = "ACTION_USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "net.alphadev.usbstorage.ACTION_USB_PERMISSION";
     private static final String LOG_TAG = "Drive Mount";
     private final UsbManager mUsbManager;
     private final Context mContext;
     private final StorageManager mStorageManager;
-    private OnStorageChangedListener mStorageChangedListener;
 
     public DeviceManager(Context context, StorageManager storageManager) {
         mUsbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
@@ -76,39 +72,29 @@ public final class DeviceManager {
 
     private void unmountRemovedDevices(UsbDevice device) {
         String deviceId = Integer.valueOf(device.getDeviceId()).toString();
-        mStorageManager.removeAll(deviceId);
+        mStorageManager.unmount(deviceId);
         notifyStorageChanged();
     }
 
     private void tryMount(UsbDevice device) {
         BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
         if (mStorageManager.tryMount(usbBulkDevice)) {
-
             notifyStorageChanged();
-            Toast.makeText(mContext, "Mounted USB Device", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void notifyStorageChanged() {
-        if (mStorageChangedListener != null) {
-            mStorageChangedListener.onStorageChange();
-        }
-    }
-
-    public void setOnStorageChangedListener(OnStorageChangedListener listener) {
-        mStorageChangedListener = listener;
+        mStorageManager.notifyStorageChanged();
     }
 
     private void enumerateDevices() {
         for (UsbDevice device : mUsbManager.getDeviceList().values()) {
             if (!mUsbManager.hasPermission(device)) {
-                Log.d(LOG_TAG, "Requesting access to USB device");
                 PendingIntent intent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
                 mUsbManager.requestPermission(device, intent);
                 continue;
             }
 
-            Log.d(LOG_TAG, "App already has access to USB device");
             tryMount(device);
         }
     }
