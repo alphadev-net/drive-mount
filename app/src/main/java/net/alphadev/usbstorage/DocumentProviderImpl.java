@@ -19,7 +19,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
-import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
@@ -40,7 +39,6 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 
 public class DocumentProviderImpl extends DocumentsProvider {
-    private static final String AUTHORITY = "net.alphadev.usbstorage.documents";
     private static final String[] DEFAULT_ROOT_PROJECTION = new String[]{
             Root.COLUMN_ROOT_ID, Root.COLUMN_FLAGS, Root.COLUMN_ICON, Root.COLUMN_TITLE,
             Root.COLUMN_DOCUMENT_ID, Root.COLUMN_AVAILABLE_BYTES, Root.COLUMN_SUMMARY
@@ -77,16 +75,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
     @Override
     public boolean onCreate() {
         mStorageManager = new StorageManager(getContext());
-        final DeviceManager deviceManager = new DeviceManager(getContext(), mStorageManager);
-        deviceManager.setOnStorageChangedListener(new OnStorageChangedListener() {
-            @Override
-            public void onStorageChange() {
-                getContext().getContentResolver()
-                        .notifyChange(DocumentsContract
-                                .buildRootsUri(AUTHORITY), null);
-            }
-        });
-
+        new DeviceManager(getContext(), mStorageManager);
         return true;
     }
 
@@ -228,9 +217,5 @@ public class DocumentProviderImpl extends DocumentsProvider {
         }
 
         return new Tika(TikaConfig.getDefaultConfig()).detect(path.getName());
-    }
-
-    public static interface OnStorageChangedListener {
-        public void onStorageChange();
     }
 }

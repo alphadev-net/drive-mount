@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.provider.DocumentsContract;
 
 import net.alphadev.fat32wrapper.FatStorage;
 import net.alphadev.usbstorage.api.BlockDevice;
@@ -41,7 +42,7 @@ import java.util.Map;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class StorageManager {
-    private static final String MOUNT_GROUP = "net.alphadev.usbstorage";
+    private static final String AUTHORITY = "net.alphadev.usbstorage.documents";
     private static final String ACTION_UNMOUNT_DEVICE = "net.alphadev.usbstorage.ACTION_UNMOUNT_DEVICE";
 
     private final HashMap<String, StorageDevice> mMountedDevices = new HashMap<>();
@@ -56,9 +57,7 @@ public class StorageManager {
         final IntentFilter unmountFilter = new IntentFilter(ACTION_UNMOUNT_DEVICE);
         final BroadcastReceiver unmountReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                String devId = intent.getStringExtra("deviceId");
-                unmount(devId);
-                mNotificationManager.cancel(devId, 0);
+                unmount(intent.getStringExtra("deviceId"));
             }
         };
         mContext.getApplicationContext().registerReceiver(unmountReceiver, unmountFilter);
@@ -94,6 +93,12 @@ public class StorageManager {
         return false;
     }
 
+    public void notifyStorageChanged() {
+        mContext.getContentResolver()
+                .notifyChange(DocumentsContract
+                        .buildRootsUri(AUTHORITY), null);
+    }
+
     private void postStorageNotification(StorageDevice device) {
         final String deviceName = mContext.getString(R.string.notification_title, device.getName());
         final String deviceInfo = mContext.getString(R.string.notification_content,
@@ -111,7 +116,7 @@ public class StorageManager {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             notification.setLocalOnly(true)
-                    .setGroup(MOUNT_GROUP);
+                    .setGroup(AUTHORITY);
         }
 
         final Intent intent = new Intent(ACTION_UNMOUNT_DEVICE);
@@ -165,8 +170,10 @@ public class StorageManager {
                     e.printStackTrace();
                 } finally {
                     mMountedDevices.remove(set.getKey());
+                    mNotificationManager.cancel(set.getKey(), 0);
                 }
             }
         }
+        notifyStorageChanged();
     }
 }

@@ -23,7 +23,6 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 
-import net.alphadev.usbstorage.DocumentProviderImpl.OnStorageChangedListener;
 import net.alphadev.usbstorage.api.BulkDevice;
 
 public final class DeviceManager {
@@ -32,7 +31,6 @@ public final class DeviceManager {
     private final UsbManager mUsbManager;
     private final Context mContext;
     private final StorageManager mStorageManager;
-    private OnStorageChangedListener mStorageChangedListener;
 
     public DeviceManager(Context context, StorageManager storageManager) {
         mUsbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
@@ -86,13 +84,7 @@ public final class DeviceManager {
     }
 
     private void notifyStorageChanged() {
-        if (mStorageChangedListener != null) {
-            mStorageChangedListener.onStorageChange();
-        }
-    }
-
-    public void setOnStorageChangedListener(OnStorageChangedListener listener) {
-        mStorageChangedListener = listener;
+        mStorageManager.notifyStorageChanged();
     }
 
     private void enumerateDevices() {
