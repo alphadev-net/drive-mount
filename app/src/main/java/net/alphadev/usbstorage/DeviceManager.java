@@ -74,7 +74,7 @@ public final class DeviceManager {
 
     private void unmountRemovedDevices(UsbDevice device) {
         String deviceId = Integer.valueOf(device.getDeviceId()).toString();
-        mStorageManager.removeAll(deviceId);
+        mStorageManager.unmount(deviceId);
         notifyStorageChanged();
     }
 

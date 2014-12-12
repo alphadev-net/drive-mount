@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.util.Log;
 
 import net.alphadev.fat32wrapper.FatStorage;
 import net.alphadev.usbstorage.api.BlockDevice;
@@ -36,6 +35,7 @@ import net.alphadev.usbstorage.partition.Partition;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
@@ -48,8 +48,6 @@ public class StorageManager {
     private final NotificationManager mNotificationManager;
     private final Context mContext;
 
-    private int lastMountId = 0;
-
     public StorageManager(Context context) {
         mContext = context;
         mNotificationManager =
@@ -59,10 +57,11 @@ public class StorageManager {
         final BroadcastReceiver unmountReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 String devId = intent.getStringExtra("deviceId");
-                Log.d("asdyf", devId);
+                unmount(devId);
+                mNotificationManager.cancel(devId, 0);
             }
         };
-        mContext.registerReceiver(unmountReceiver, unmountFilter);
+        mContext.getApplicationContext().registerReceiver(unmountReceiver, unmountFilter);
     }
 
     public boolean tryMount(BulkDevice device) {
@@ -121,7 +120,7 @@ public class StorageManager {
         notification.setContentIntent(
                 PendingIntent.getBroadcast(mContext, 0, intent, 0));
 
-        mNotificationManager.notify(lastMountId++, notification.build());
+        mNotificationManager.notify(device.getId(), 0, notification.build());
     }
 
     private StorageDevice firstTry(Partition device) {
@@ -157,20 +156,16 @@ public class StorageManager {
         return mMountedDevices.get(path.getDeviceId());
     }
 
-    public void unmount(StorageDevice device) {
-        try {
-            device.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            mMountedDevices.remove(device);
-        }
-    }
-
-    public void removeAll(String deviceId) {
-        for (String key : mMountedDevices.keySet()) {
-            if (key.startsWith(deviceId)) {
-                unmount(mMountedDevices.get(key));
+    public void unmount(String deviceId) {
+        for (Map.Entry<String, StorageDevice> set: mMountedDevices.entrySet()) {
+            if (set.getKey().startsWith(deviceId)) {
+                try {
+                    set.getValue().close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    mMountedDevices.remove(set.getValue());
+                }
             }
         }
     }
