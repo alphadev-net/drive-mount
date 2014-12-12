@@ -75,4 +75,10 @@ public class FatStorage implements StorageDevice {
     public String getType() {
         return fs.getFatType().name();
     }
+
+    @Override
+    public void close() throws IOException {
+        fs.flush();
+        fs.close();
+    }
 }

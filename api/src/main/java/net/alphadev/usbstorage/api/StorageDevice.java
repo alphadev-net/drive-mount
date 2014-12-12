@@ -15,11 +15,13 @@
  */
 package net.alphadev.usbstorage.api;
 
+import java.io.Closeable;
+
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
 @SuppressWarnings("unused")
-public interface StorageDevice extends Identifiable {
+public interface StorageDevice extends Identifiable, Closeable {
     /**
      * Returns the size, in bytes, of the file store.
      *

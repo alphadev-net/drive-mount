@@ -34,6 +34,7 @@ import net.alphadev.usbstorage.bbb.BulkBlockDevice;
 import net.alphadev.usbstorage.partition.MasterBootRecord;
 import net.alphadev.usbstorage.partition.Partition;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -156,14 +157,20 @@ public class StorageManager {
         return mMountedDevices.get(path.getDeviceId());
     }
 
-    public void removeAll(String deviceId) {
-        if (mMountedDevices.containsKey(deviceId)) {
-            mMountedDevices.remove(deviceId);
+    public void unmount(StorageDevice device) {
+        try {
+            device.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            mMountedDevices.remove(device);
         }
+    }
 
+    public void removeAll(String deviceId) {
         for (String key : mMountedDevices.keySet()) {
             if (key.startsWith(deviceId)) {
-                mMountedDevices.remove(key);
+                unmount(mMountedDevices.get(key));
             }
         }
     }
