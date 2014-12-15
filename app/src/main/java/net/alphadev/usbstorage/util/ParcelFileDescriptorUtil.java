@@ -50,6 +50,7 @@ public class ParcelFileDescriptorUtil {
         public void run() {
             try {
                 IOUtils.copy(mIn, mOut);
+                mOut.flush();
             } catch (IOException e) {
                 Log.e("TransferThread", "writing failed");
                 e.printStackTrace();
