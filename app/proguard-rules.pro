@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn org.apache.tika.config.TikaActivator
+-dontwarn org.apache.tika.package-info
+-dontwarn org.apache.tika.*.package-info
+-dontwarn org.apache.tika.*.*.package-info

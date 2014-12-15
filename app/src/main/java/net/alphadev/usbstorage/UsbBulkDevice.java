@@ -1,3 +1,18 @@
+/**
+ * Copyright © 2014 Jan Seeger
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.alphadev.usbstorage;
 
 import android.content.Context;
@@ -7,19 +22,17 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.util.Log;
 
-import net.alphadev.usbstorage.api.BulkDevice;
-import net.alphadev.usbstorage.api.Transmittable;
+import net.alphadev.usbstorage.api.device.BulkDevice;
+import net.alphadev.usbstorage.api.scsi.Transmittable;
 
 import java.io.IOException;
-
-import static net.alphadev.usbstorage.util.BitStitching.bytesToHex;
 
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class UsbBulkDevice implements BulkDevice {
+    @SuppressWarnings("unused")
     private static final String LOG_TAG = "Drive Mount";
     private static final int TIMEOUT = 20000;
 
@@ -30,7 +43,7 @@ public class UsbBulkDevice implements BulkDevice {
     private int mDeviceId;
     private boolean closed;
 
-    public UsbBulkDevice(Context ctx, UsbDevice device) throws IOException {
+    public UsbBulkDevice(Context ctx, UsbDevice device) {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
 
         if (!manager.hasPermission(device)) {
@@ -81,11 +94,10 @@ public class UsbBulkDevice implements BulkDevice {
     }
 
     @Override
-    public int write(Transmittable command) throws IOException {
+    public int write(Transmittable command) {
         checkClosed();
 
         byte[] payload = command.asBytes();
-        Log.d(LOG_TAG, "sending: " + bytesToHex(payload));
         return mConnection.bulkTransfer(mWriteEndpoint, payload, payload.length, TIMEOUT);
     }
 
@@ -95,7 +107,6 @@ public class UsbBulkDevice implements BulkDevice {
 
         byte[] buffer = new byte[expected_length];
         mConnection.bulkTransfer(mReadEndpoint, buffer, buffer.length, TIMEOUT);
-        Log.d(LOG_TAG, "receiving: " + bytesToHex(buffer));
         return buffer;
     }
 
@@ -120,9 +131,8 @@ public class UsbBulkDevice implements BulkDevice {
         closed = true;
     }
 
-
     @Override
-    public int getId() {
-        return mDeviceId;
+    public String getId() {
+        return Integer.valueOf(mDeviceId).toString();
     }
 }

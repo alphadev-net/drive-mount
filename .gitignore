@@ -146,3 +146,6 @@ tmp/
 /gradlew.bat
 /gradle/wrapper/gradle-wrapper.jar
 /gradle/wrapper/gradle-wrapper.properties
+
+# Cloud9
+.c9/

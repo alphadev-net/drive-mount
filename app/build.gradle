@@ -1,15 +1,28 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://dl.bintray.com/asdf/maven/"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'eu.widgetlabs:gradle-android-svg:0.1.1'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'eu.widgetlabs.gradle-android-svg'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.0.2"
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         applicationId "net.alphadev.usbstorage"
         minSdkVersion 19
         targetSdkVersion 21
-        versionCode 2
-        versionName "1.2"
+        versionCode 3
+        versionName "1.5"
     }
 
     compileOptions {
@@ -18,13 +31,23 @@ android {
     }
     buildTypes {
         release {
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
+svg {
+    densities = [
+            'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi'
+    ]
+    source = '../art'
+}
+
 dependencies {
-    compile project(':lib')
+    compile project(':scsi')
+    compile project(':fat32')
+    compile 'org.apache.tika:tika-core:1.6'
+    compile 'commons-io:commons-io:2.4'
 }

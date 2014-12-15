@@ -1,6 +1,0 @@
-apply plugin: 'java'
-
-dependencies {
-    compile 'de.waldheinz:fat32-lib:0.6.5'
-    testCompile 'junit:junit:4.+'
-}

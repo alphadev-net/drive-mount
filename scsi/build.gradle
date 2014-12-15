@@ -1,0 +1,6 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':api')
+    testCompile 'junit:junit:4.12'
+}
