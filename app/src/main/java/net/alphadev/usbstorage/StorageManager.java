@@ -162,7 +162,7 @@ public class StorageManager {
     }
 
     public void unmount(String deviceId) {
-        for (Map.Entry<String, StorageDevice> set: mMountedDevices.entrySet()) {
+        for (Map.Entry<String, StorageDevice> set : mMountedDevices.entrySet()) {
             if (set.getKey().startsWith(deviceId)) {
                 try {
                     set.getValue().close();

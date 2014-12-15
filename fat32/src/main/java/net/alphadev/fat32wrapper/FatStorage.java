@@ -78,7 +78,7 @@ public class FatStorage implements StorageDevice {
 
     @Override
     public void close() throws IOException {
-        if(!isReadOnly()) {
+        if (!isReadOnly()) {
             fs.flush();
         }
 
