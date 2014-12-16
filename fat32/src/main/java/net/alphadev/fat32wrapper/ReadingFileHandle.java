@@ -22,14 +22,14 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import de.waldheinz.fs.fat.FatFile;
+import de.waldheinz.fs.FsFile;
 
 public class ReadingFileHandle extends InputStream {
     private final int totalFileSize;
-    private FatFile file;
+    private FsFile file;
     private int position;
 
-    public ReadingFileHandle(FatFile file) {
+    public ReadingFileHandle(FsFile file) {
         this.file = file;
         totalFileSize = (file != null) ? (int) file.getLength() : 0;
     }
