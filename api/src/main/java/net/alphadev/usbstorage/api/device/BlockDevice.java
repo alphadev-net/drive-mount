@@ -95,4 +95,6 @@ public interface BlockDevice extends Identifiable, Closeable {
      * @return if this {@code BlockDevice} is read-only
      */
     public boolean isReadOnly();
+
+    void initialize();
 }

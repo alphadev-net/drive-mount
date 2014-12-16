@@ -53,13 +53,15 @@ public class BulkBlockDevice implements BlockDevice {
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
+        mLunToUse = 0;
+    }
 
+    public void initialize() {
         inquireDevice();
         testUnitReady();
         acquireDriveCapacity();
         senseMode();
         testUnitReady();
-        mLunToUse = 0;
     }
 
     private void senseMode() {
