@@ -46,10 +46,7 @@ public class BulkBlockDevice implements BlockDevice {
     private final byte mLunToUse;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
-    /**
-     * 512 KB max transfer unit.
-     */
-    private final int mMaxTransferSize = mBlockSize * 1024;
+    private int mMaxTransferSize = mBlockSize * 1024;
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
@@ -76,6 +73,22 @@ public class BulkBlockDevice implements BlockDevice {
         new ModeSenseResponse(data);
 
         assumeDeviceStatusOK();
+    }
+
+    public int getBlockSize() {
+        return mBlockSize;
+    }
+
+    public void setBlockSize(int mBlockSize) {
+        this.mBlockSize = mBlockSize;
+    }
+
+    public int getMaxTransferSize() {
+        return mMaxTransferSize;
+    }
+
+    public void setMaxTransferSize(int mMaxTransferSize) {
+        this.mMaxTransferSize = mMaxTransferSize;
     }
 
     private void testUnitReady() {
