@@ -200,9 +200,10 @@ public class BulkBlockDevice implements BlockDevice {
             send_mass_storage_command(cmd);
 
             for (int subRequest = 0; subRequest < requestedBlocks; subRequest++) {
-                final int overLength = requestSize % mBlockSize;
+                final int subRemaining = requestSize - subRequest * mBlockSize;
+                final int subLength = Math.min(mBlockSize, subRemaining);
                 final byte[] buf = mAbstractBulkDevice.read(mBlockSize);
-                buffer.put(buf, 0, mBlockSize - overLength);
+                buffer.put(buf, 0, subLength);
             }
 
             assumeDeviceStatusOK();
