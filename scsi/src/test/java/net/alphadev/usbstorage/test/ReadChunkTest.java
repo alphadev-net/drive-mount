@@ -8,7 +8,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.nio.ByteBuffer;
 
@@ -16,12 +18,15 @@ import java.nio.ByteBuffer;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class ReadChunkTest {
+    @Mock
     private BulkDevice probe;
+
     private BulkBlockDevice instance;
 
     @Before
     public void init() {
-        probe = Mockito.mock(BulkDevice.class);
+        MockitoAnnotations.initMocks(this);
+
         instance = new BulkBlockDevice(probe);
         instance.setBlockSize(2);
         instance.setMaxTransferSize(8);
