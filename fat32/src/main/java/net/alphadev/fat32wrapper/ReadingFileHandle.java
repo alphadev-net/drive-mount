@@ -22,19 +22,16 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import de.waldheinz.fs.fat.FatFile;
+import de.waldheinz.fs.FsFile;
 
 public class ReadingFileHandle extends InputStream {
-    private FatFile file;
-    private int totalFileSize;
+    private final int totalFileSize;
+    private FsFile file;
     private int position;
 
-    public ReadingFileHandle(FatFile file) {
+    public ReadingFileHandle(FsFile file) {
         this.file = file;
-
-        if (file != null) {
-            totalFileSize = (int) file.getLength();
-        }
+        totalFileSize = (file != null) ? (int) file.getLength() : 0;
     }
 
     @Override
@@ -73,8 +70,10 @@ public class ReadingFileHandle extends InputStream {
         final ByteBuffer bb = ByteBuffer.wrap(buffer);
         bb.order(ByteOrder.LITTLE_ENDIAN);
 
-        file.read(position, bb);
-        position += 4;
+        if (file != null) {
+            file.read(position, bb);
+            position += 4;
+        }
 
         return bb.getInt(position);
     }

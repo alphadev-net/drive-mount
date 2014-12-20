@@ -75,6 +75,11 @@ public class Partition implements BlockDevice {
         return mDevice.isReadOnly();
     }
 
+    @Override
+    public void initialize() {
+        // no need to initialize the partition
+    }
+
     public FileSystemDescriptor getType() {
         return mParameter.getDescriptor();
     }
