@@ -18,7 +18,7 @@ This is achieved in pure Java, which trades performance for portability.
 
 ## Roadmap
 
-At the moment I planned to support common USB drive file formats like FAT32 and NTFS. However I'd like to support HFS+ and Linux filesystems, sometime.
+At the moment, I have planned to support common USB drive file formats like FAT32 and NTFS. However I'd like to support HFS+ and Linux filesystems, sometime.
 
 Please refer to the [Milestones](https://github.com/alphaDev-net/drive-mount/milestones) for a more detailed look ahead.
 
