@@ -65,6 +65,7 @@ public class StorageManager {
 
     public boolean tryMount(BulkDevice device) {
         final BlockDevice blockDevice = new BulkBlockDevice(device);
+        blockDevice.initialize();
         final MasterBootRecord mbr = new MasterBootRecord(blockDevice);
 
         for (Partition partition : mbr.getPartitions()) {

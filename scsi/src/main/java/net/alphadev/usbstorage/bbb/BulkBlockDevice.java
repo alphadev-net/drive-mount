@@ -46,20 +46,19 @@ public class BulkBlockDevice implements BlockDevice {
     private final byte mLunToUse;
     private long mDeviceBoundaries;
     private int mBlockSize = 512;
-    /**
-     * 512 KB max transfer unit.
-     */
-    private final int mMaxTransferSize = mBlockSize * 1024;
+    private int mMaxTransferSize = mBlockSize * 1024;
 
     public BulkBlockDevice(BulkDevice usbBlockDevice) {
         mAbstractBulkDevice = usbBlockDevice;
+        mLunToUse = 0;
+    }
 
+    public void initialize() {
         inquireDevice();
         testUnitReady();
         acquireDriveCapacity();
         senseMode();
         testUnitReady();
-        mLunToUse = 0;
     }
 
     private void senseMode() {
@@ -74,6 +73,24 @@ public class BulkBlockDevice implements BlockDevice {
         new ModeSenseResponse(data);
 
         assumeDeviceStatusOK();
+    }
+
+    @SuppressWarnings("unused")
+    public int getBlockSize() {
+        return mBlockSize;
+    }
+
+    public void setBlockSize(int mBlockSize) {
+        this.mBlockSize = mBlockSize;
+    }
+
+    @SuppressWarnings("unused")
+    public int getMaxTransferSize() {
+        return mMaxTransferSize;
+    }
+
+    public void setMaxTransferSize(int mMaxTransferSize) {
+        this.mMaxTransferSize = mMaxTransferSize;
     }
 
     private void testUnitReady() {
@@ -169,27 +186,31 @@ public class BulkBlockDevice implements BlockDevice {
 
     @Override
     public void read(long offsetBytes, ByteBuffer buffer) {
-        int offsetBlocks = (int) (offsetBytes / mBlockSize);
-        int remainingBytes = buffer.limit();
+        final int blocksPerTransfer = mMaxTransferSize / mBlockSize;
 
-        while (remainingBytes > 0) {
-            final int requestSize = Math.min(remainingBytes, mMaxTransferSize);
-            final int requestedBlocks = (int) Math.ceil(requestSize / mBlockSize);
+        int offsetBlocks = (int) (offsetBytes / mBlockSize);
+        int blocksLeft = (short) Math.ceil((float) buffer.remaining() / mBlockSize);
+
+        while (blocksLeft > 0) {
+            final short requestedBlocks = (short) Math.min(blocksPerTransfer, blocksLeft);
+            final int requestedSize = requestedBlocks * mBlockSize;
 
             final Read10 cmd = new Read10();
             cmd.setOffset(offsetBlocks);
-            cmd.setTransferLength((short) requestedBlocks);
-            cmd.setExpectedAnswerLength(requestSize);
+            cmd.setTransferLength(requestedBlocks);
+            cmd.setExpectedAnswerLength(requestedSize);
             send_mass_storage_command(cmd);
 
             for (int subRequest = 0; subRequest < requestedBlocks; subRequest++) {
-                final int overLength = requestSize % mBlockSize;
                 final byte[] buf = mAbstractBulkDevice.read(mBlockSize);
-                buffer.put(buf, 0, mBlockSize - overLength);
+
+                if (blocksLeft-- > 0) {
+                    final int subLength = Math.min(mBlockSize, buffer.remaining());
+                    buffer.put(buf, 0, subLength);
+                }
             }
 
             assumeDeviceStatusOK();
-            remainingBytes -= requestSize;
             offsetBlocks += requestedBlocks;
         }
     }
