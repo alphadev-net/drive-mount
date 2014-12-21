@@ -27,7 +27,6 @@ import net.alphadev.usbstorage.api.device.BulkDevice;
 
 public final class DeviceManager {
     private static final String ACTION_USB_PERMISSION = "net.alphadev.usbstorage.ACTION_USB_PERMISSION";
-    private static final String LOG_TAG = "Drive Mount";
     private final UsbManager mUsbManager;
     private final Context mContext;
     private final StorageManager mStorageManager;
@@ -73,18 +72,14 @@ public final class DeviceManager {
     private void unmountRemovedDevices(UsbDevice device) {
         String deviceId = Integer.valueOf(device.getDeviceId()).toString();
         mStorageManager.unmount(deviceId);
-        notifyStorageChanged();
+        mStorageManager.notifyStorageChanged();
     }
 
     private void tryMount(UsbDevice device) {
         BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
         if (mStorageManager.tryMount(usbBulkDevice)) {
-            notifyStorageChanged();
+            mStorageManager.notifyStorageChanged();
         }
-    }
-
-    private void notifyStorageChanged() {
-        mStorageManager.notifyStorageChanged();
     }
 
     private void enumerateDevices() {
