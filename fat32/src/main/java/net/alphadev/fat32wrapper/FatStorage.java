@@ -1,5 +1,5 @@
 /**
- * Copyright © 2014 Jan Seeger
+ * Copyright © 2014-2015 Jan Seeger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public class FatStorage implements StorageDevice {
 
     @Override
     public void close() throws IOException {
-        if(!isReadOnly()) {
+        if (!isReadOnly()) {
             fs.flush();
         }
 

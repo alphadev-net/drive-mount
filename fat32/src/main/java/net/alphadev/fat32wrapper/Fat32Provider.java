@@ -1,5 +1,5 @@
 /**
- * Copyright © 2014 Jan Seeger
+ * Copyright © 2014-2015 Jan Seeger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,11 +60,11 @@ public class Fat32Provider implements FileSystemProvider {
 
         if (directory != null) {
             for (FsDirectoryEntry entry : directory) {
-                if(entry.getName().equals(".") || entry.getName().equals("..")) {
+                if (entry.getName().equals(".") || entry.getName().equals("..")) {
                     continue;
                 }
 
-                Path file= Path.createWithAppended(path, entry.getName());
+                Path file = Path.createWithAppended(path, entry.getName());
                 entries.add(file);
             }
         }
