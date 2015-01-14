@@ -43,7 +43,7 @@ public class UsbBulkDevice implements BulkDevice {
     private int mDeviceId;
     private boolean closed;
 
-    public UsbBulkDevice(Context ctx, UsbDevice device) {
+    private UsbBulkDevice(Context ctx, UsbDevice device) {
         final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
 
         if (!manager.hasPermission(device)) {
@@ -54,6 +54,10 @@ public class UsbBulkDevice implements BulkDevice {
         findUsableInterface(device);
         findUsableEndpoints();
         openAndLockDevice(device, manager);
+    }
+
+    public static UsbBulkDevice read(Context ctx, UsbDevice device) {
+        return new UsbBulkDevice(ctx, device);
     }
 
     private void openAndLockDevice(UsbDevice device, UsbManager manager) {
