@@ -108,7 +108,7 @@ public class StorageManager {
                 device.getType());
         final String unmountInfo = mContext.getString(R.string.notification_subtext);
 
-        Notification.Builder notification = new Notification.Builder(mContext)
+        Notification.Builder builder = new Notification.Builder(mContext)
                 .setContentTitle(deviceName)
                 .setContentText(deviceInfo)
                 .setSubText(unmountInfo)
@@ -116,17 +116,17 @@ public class StorageManager {
                 .setOngoing(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            notification.setLocalOnly(true)
+            builder.setLocalOnly(true)
                     .setGroup(AUTHORITY);
         }
 
         final Intent intent = new Intent(ACTION_UNMOUNT_DEVICE);
         intent.putExtra("deviceId", device.getId());
 
-        notification.setContentIntent(
+        builder.setContentIntent(
                 PendingIntent.getBroadcast(mContext, 0, intent, 0));
 
-        mNotificationManager.notify(device.getId(), 0, notification.build());
+        mNotificationManager.notify(device.getId(), 0, builder.build());
     }
 
     private StorageDevice firstTry(Partition device) {
