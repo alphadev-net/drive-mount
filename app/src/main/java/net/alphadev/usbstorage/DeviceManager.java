@@ -76,8 +76,8 @@ public final class DeviceManager {
     }
 
     private void tryMount(UsbDevice device) {
-        BulkDevice usbBulkDevice = new UsbBulkDevice(mContext, device);
-        if (mStorageManager.tryMount(usbBulkDevice)) {
+        final BulkDevice usbBulkDevice = UsbBulkDevice.read(mContext, device);
+        if (usbBulkDevice != null && mStorageManager.tryMount(usbBulkDevice)) {
             mStorageManager.notifyStorageChanged();
         }
     }
