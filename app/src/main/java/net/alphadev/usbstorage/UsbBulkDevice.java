@@ -43,58 +43,80 @@ public class UsbBulkDevice implements BulkDevice {
     private int mDeviceId;
     private boolean closed;
 
-    private UsbBulkDevice(Context ctx, UsbDevice device) {
-        final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
-
-        if (!manager.hasPermission(device)) {
-            throw new IllegalStateException("You don't have the permission to access this device!");
-        }
-
+    private UsbBulkDevice(UsbDevice device, UsbDeviceConnection connection,
+                          UsbInterface dataInterface, UsbEndpoint in, UsbEndpoint out) {
         mDeviceId = device.getDeviceId();
-        findUsableInterface(device);
-        findUsableEndpoints();
-        openAndLockDevice(device, manager);
+        mConnection = connection;
+        mDataInterface = dataInterface;
+        mReadEndpoint = in;
+        mWriteEndpoint = out;
+        closed = false;
     }
 
     public static UsbBulkDevice read(Context ctx, UsbDevice device) {
-        return new UsbBulkDevice(ctx, device);
-    }
-
-    private void openAndLockDevice(UsbDevice device, UsbManager manager) {
-        mConnection = manager.openDevice(device);
-        if (mConnection.claimInterface(mDataInterface, true)) {
-            closed = false;
+        final UsbManager manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
+        if (!manager.hasPermission(device)) {
+            return null;
         }
+
+        final UsbInterface dataInterface = findUsableInterface(device);
+        if (dataInterface == null) {
+            return null;
+        }
+
+        final UsbEndpoint in = findUsableEndpoints(dataInterface, UsbConstants.USB_DIR_IN);
+        if (in == null) {
+            return null;
+        }
+
+        final UsbEndpoint out = findUsableEndpoints(dataInterface, UsbConstants.USB_DIR_OUT);
+        if (out == null) {
+            return null;
+        }
+
+        final UsbDeviceConnection connection = openAndLockDevice(manager, device, dataInterface);
+        if (connection == null) {
+            return null;
+        }
+
+        return new UsbBulkDevice(device, connection, dataInterface, in, out);
     }
 
-    private void findUsableEndpoints() {
-        for (int i = 0; i < mDataInterface.getEndpointCount(); i++) {
-            UsbEndpoint endpointProbe = mDataInterface.getEndpoint(i);
+    private static UsbDeviceConnection openAndLockDevice(UsbManager manager, UsbDevice device, UsbInterface dataInterface) {
+        final UsbDeviceConnection connection = manager.openDevice(device);
+        if (connection.claimInterface(dataInterface, true)) {
+            return connection;
+        }
+
+        return null;
+    }
+
+    private static UsbEndpoint findUsableEndpoints(UsbInterface usbInterface, int direction) {
+        for (int i = 0; i < usbInterface.getEndpointCount(); i++) {
+            UsbEndpoint endpointProbe = usbInterface.getEndpoint(i);
             if (endpointProbe.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
-                if (endpointProbe.getDirection() == UsbConstants.USB_DIR_IN) {
-                    mReadEndpoint = endpointProbe;
-                } else {
-                    mWriteEndpoint = endpointProbe;
+                if (endpointProbe.getDirection() == direction) {
+                    return endpointProbe;
                 }
             }
         }
+
+        return null;
     }
 
-    private void findUsableInterface(UsbDevice device) {
+    private static UsbInterface findUsableInterface(UsbDevice device) {
         for (int i = 0; i < device.getInterfaceCount(); i++) {
             UsbInterface interfaceProbe = device.getInterface(i);
             if (interfaceProbe.getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
                 if (interfaceProbe.getInterfaceSubclass() == 0x6) {
                     if (interfaceProbe.getInterfaceProtocol() == 0x50) {
-                        mDataInterface = device.getInterface(i);
-                    } else {
-                        throw new UnsupportedOperationException("Cannot talk to this USB device!");
+                        return device.getInterface(i);
                     }
-                } else {
-                    throw new UnsupportedOperationException("Cannot talk to this USB device!");
                 }
             }
         }
+
+        return null;
     }
 
     @Override
