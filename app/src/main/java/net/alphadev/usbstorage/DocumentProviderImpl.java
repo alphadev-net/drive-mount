@@ -105,7 +105,7 @@ public class DocumentProviderImpl extends DocumentsProvider {
                     row.add(Root.COLUMN_TITLE, device.getName());
                     break;
                 case Root.COLUMN_ICON:
-                    row.add(Root.COLUMN_ICON, R.drawable.drive_icon_gen);
+                    row.add(Root.COLUMN_ICON, R.drawable.drive_icon);
                     break;
                 case Root.COLUMN_SUMMARY:
                     final String sizeUnit = readableFileSize(device.getUnallocatedSpace());
