@@ -112,7 +112,7 @@ public class StorageManager {
                 .setContentTitle(deviceName)
                 .setContentText(deviceInfo)
                 .setSubText(unmountInfo)
-                .setSmallIcon(R.drawable.drive_icon_gen)
+                .setSmallIcon(R.drawable.drive_icon)
                 .setOngoing(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
