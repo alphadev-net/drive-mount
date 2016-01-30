@@ -9,6 +9,7 @@ model {
             toolchain "clang"
             stl "c++_static"
             cppFlags.add "-std=c++11"
+            cppFlags.add "-fexceptions"
         }
     }
 }
