@@ -6,6 +6,9 @@ model {
         buildToolsVersion '23.0.2'
         ndk {
             moduleName "fat32"
+            toolchain "clang"
+            stl "c++_static"
+            cppFlags.add "-std=c++11"
         }
     }
 }
