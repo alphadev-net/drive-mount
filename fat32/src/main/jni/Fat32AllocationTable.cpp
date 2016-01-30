@@ -21,7 +21,7 @@ Fat32AllocationTable::~Fat32AllocationTable()
 FatCluster Fat32AllocationTable::read(FatCluster index)
 {
     if (index >= m_entryCount)
-        throw std::exception("FAT index out of range");
+        throw std::runtime_error("FAT index out of range");
 
     auto sector = getFatSector(index);
     auto offset = getFatSectorOffset(index);
@@ -40,7 +40,7 @@ FatCluster Fat32AllocationTable::read(FatCluster index)
 void Fat32AllocationTable::write(FatCluster index, FatCluster value)
 {
     if (index >= m_entryCount)
-        throw std::exception("FAT index out of range");
+        throw std::runtime_error("FAT index out of range");
 
     auto sector = getFatSector(index);
     auto offset = getFatSectorOffset(index);
@@ -83,7 +83,7 @@ FatCluster Fat32AllocationTable::findFree(FatCluster startCluster)
     while (true)
     {
         if (cluster >= lastCluster)
-            throw std::exception("disk is full");
+            throw std::runtime_error("disk is full");
 
         auto value = read(cluster);
         if (value == FatFree)

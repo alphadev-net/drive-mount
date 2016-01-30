@@ -29,7 +29,7 @@ void DirectoryEntry::save() const
 {
     auto &parent = m_parent.lock();
     if (!parent)
-        throw std::exception(FatDirectoryFreedError);
+        throw std::runtime_error(FatDirectoryFreedError);
 
     parent->update(*this);
 }

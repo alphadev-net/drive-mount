@@ -30,7 +30,7 @@ void IFat32Directory::checkInitialized()
 void IFat32Directory::initialize()
 {
     if (!m_entry)
-        throw std::exception("directory did not set entry");
+        throw std::runtime_error("directory did not set entry");
 
     m_entries.clear();
 
@@ -75,7 +75,7 @@ std::shared_ptr<IFat32Directory> IFat32Directory::up()
 
     auto &parent = m_entry->m_parent.lock();
     if (!parent)
-        throw std::exception(FatDirectoryFreedError);
+        throw std::runtime_error(FatDirectoryFreedError);
 
     return parent;
 }
@@ -86,10 +86,10 @@ std::shared_ptr<IFat32Directory> IFat32Directory::directory(const std::string &n
 
     auto item = m_entries.find(name);
     if (item == m_entries.end())
-        throw std::exception("entry doesn't exist");
+        throw std::runtime_error("entry doesn't exist");
 
     if ((item->second->getAttributes() & (char)FatAttrib::Directory) == 0)
-        throw std::exception("not a directory");
+        throw std::runtime_error("not a directory");
 
     auto firstCluster = item->second->m_entry.firstCluster;
 
@@ -102,10 +102,10 @@ Fat32File IFat32Directory::file(const std::string &name)
 
     auto item = m_entries.find(name);
     if (item == m_entries.end())
-        throw std::exception("entry doesn't exist");
+        throw std::runtime_error("entry doesn't exist");
 
     if ((item->second->getAttributes() & (char)FatAttrib::Directory) != 0)
-        throw std::exception("not a file");
+        throw std::runtime_error("not a file");
 
     return Fat32File(m_fat32, item->second);
 }

@@ -21,7 +21,7 @@ void Fat32Root::initialize()
 {
     auto &fat32Disk = m_fat32.lock();
     if (!fat32Disk)
-        throw std::exception(FatDiskFreedError);
+        throw std::runtime_error(FatDiskFreedError);
 
     Fat32DirectoryEntry dirEntry = {};
     dirEntry.firstCluster = fat32Disk->m_bpb.rootCluster;

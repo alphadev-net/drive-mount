@@ -13,7 +13,7 @@ Fat32Disk::Fat32Disk(std::shared_ptr<Disk> disk)
 
     auto name = std::string(m_bpb.fsysName, strnlen(m_bpb.fsysName, sizeof(Fat32Bpb::fsysName)));
     if (name != "NSFAT32")
-        throw std::exception("not a nsfat32 disk");
+        throw std::runtime_error("not a nsfat32 disk");
 
     m_zeroCluster = std::make_unique<char[]>(getClusterSize());
     std::memset(m_zeroCluster.get(), 0, getClusterSize());
@@ -46,7 +46,7 @@ size_t Fat32Disk::getClusterCount() const
 void Fat32Disk::readCluster(FatCluster cluster, char *buffer)
 {
     if (cluster < 0 || cluster >= getClusterCount())
-        throw std::exception("cluster out of range");
+        throw std::runtime_error("cluster out of range");
 
     int clusterOffset = m_bpb.reservedSectors + m_bpb.fatSize;
     int sector = clusterOffset + (cluster * m_bpb.sectorsPerCluster);
@@ -61,7 +61,7 @@ void Fat32Disk::readCluster(FatCluster cluster, char *buffer)
 void Fat32Disk::writeCluster(FatCluster cluster, char *buffer)
 {
     if (cluster < 0 || cluster >= getClusterCount())
-        throw std::exception("cluster out of range");
+        throw std::runtime_error("cluster out of range");
 
     int clusterOffset = m_bpb.reservedSectors + m_bpb.fatSize;
     int sector = clusterOffset + (cluster * m_bpb.sectorsPerCluster);
@@ -91,12 +91,12 @@ std::shared_ptr<IFat32Directory> Fat32Disk::root()
 void Fat32Disk::format(std::shared_ptr<Disk> disk, const std::string &volumeLabel, size_t sectorsPerCluster)
 {
     if (volumeLabel.length() > 16)
-        throw std::exception("invalid volume label");
+        throw std::runtime_error("invalid volume label");
 
     auto bytesPerCluster = disk->getSectorSize() * sectorsPerCluster;
 
     if (sectorsPerCluster < 1 || sectorsPerCluster > 255)
-        throw std::exception("invalid sectors per cluster");
+        throw std::runtime_error("invalid sectors per cluster");
 
     Fat32Bpb bpb = {};
 
