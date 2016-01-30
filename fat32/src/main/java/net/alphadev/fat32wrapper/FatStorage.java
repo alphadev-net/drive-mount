@@ -21,67 +21,73 @@ import net.alphadev.usbstorage.api.filesystem.StorageDevice;
 
 import java.io.IOException;
 
-import de.waldheinz.fs.fat.FatFileSystem;
-
 /**
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class FatStorage implements StorageDevice {
-    private final String mId;
-    private final FatFileSystem fs;
+    private final BlockDevice blockDevice;
+    @SuppressWarnings("unused")
+    private final boolean isReadOnly;
 
     public FatStorage(BlockDevice blockDevice, boolean readOnly) throws IOException {
-        this.mId = blockDevice.getId();
-        de.waldheinz.fs.BlockDevice wrapper = new FatBlockDeviceWrapper(blockDevice);
-        fs = FatFileSystem.read(wrapper, readOnly);
+        this.blockDevice = blockDevice;
+        this.isReadOnly = readOnly;
     }
 
     @Override
     public String getName() {
-        return fs.getVolumeLabel();
+        return jniGetName();
     }
 
     @Override
     public FileSystemProvider getProvider() {
-        return new Fat32Provider(fs);
+        return new Fat32Provider(blockDevice);
     }
 
     @Override
     public String getId() {
-        return mId;
+        return blockDevice.getId();
     }
 
     @Override
     public long getTotalSpace() {
-        return fs.getTotalSpace();
+        return jniGetTotalSpace();
     }
 
     @Override
     public long getUnallocatedSpace() {
-        return fs.getFreeSpace();
+        return jniGetFreeSpace();
     }
 
     @Override
     public long getUsableSpace() {
-        return fs.getUsableSpace();
+        return jniGetUsableSpace();
     }
 
     @Override
     public boolean isReadOnly() {
-        return fs.isReadOnly();
+        return isReadOnly;
     }
 
     @Override
     public String getType() {
-        return fs.getFatType().name();
+        return jniGetType();
     }
 
     @Override
     public void close() throws IOException {
-        if (!isReadOnly()) {
-            fs.flush();
-        }
-
-        fs.close();
+        jniClose();
     }
+
+    private native void jniClose();
+
+    private native long jniGetFreeSpace();
+
+    private native String jniGetName();
+
+    private native long jniGetTotalSpace();
+
+    private native String jniGetType();
+
+    private native long jniGetUsableSpace();
 }

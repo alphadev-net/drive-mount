@@ -1,27 +1,24 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion '23.0.2'
 
-    defaultConfig {
-        applicationId "net.alphadev.usbstorage"
-        minSdkVersion 19
-        targetSdkVersion 23
-        versionCode 6
-        versionName "1.5.2"
-    }
+        defaultConfig {
+            applicationId "net.alphadev.usbstorage"
+            minSdkVersion.apiLevel 19
+            targetSdkVersion.apiLevel 23
+            versionCode 6
+            versionName "1.5.2"
+        }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    buildTypes {
-        release {
-            shrinkResources false
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        buildTypes {
+            release {
+                shrinkResources false
+                minifyEnabled false
+                proguardFiles.add(file('proguard-rules.pro'))
+            }
         }
     }
 }
