@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/IFat32Directory.hpp"
+#include "IFat32Directory.hpp"
 #include "Fat32Common.hpp"
 
 #include <string>

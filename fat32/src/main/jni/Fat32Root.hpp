@@ -4,7 +4,7 @@
 #include "Fat32File.hpp"
 #include "Fat32Directory.hpp"
 #include "Fat32Disk.hpp"
-#include "Interface/IFat32Directory.hpp"
+#include "IFat32Directory.hpp"
 
 class Fat32Root : public IFat32Directory
 {

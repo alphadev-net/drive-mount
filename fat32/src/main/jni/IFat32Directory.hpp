@@ -4,8 +4,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "../Fat32Common.hpp"
-#include "../DirectoryEntry.hpp"
+#include "Fat32Common.hpp"
+#include "DirectoryEntry.hpp"
 
 extern const char *FatDirectoryFreedError;
 

@@ -1,9 +1,9 @@
 #include "IFat32Directory.hpp"
 
-#include "../Fat32Common.hpp"
-#include "../Fat32Directory.hpp"
-#include "../Fat32File.hpp"
-#include "../Fat32Disk.hpp"
+#include "Fat32Common.hpp"
+#include "Fat32Directory.hpp"
+#include "Fat32File.hpp"
+#include "Fat32Disk.hpp"
 
 const char *FatDirectoryFreedError = "IFat32Directory instance was freed";
 

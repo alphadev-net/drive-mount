@@ -1,5 +1,5 @@
 #include "DirectoryEntry.hpp"
-#include "Interface/IFat32Directory.hpp"
+#include "IFat32Directory.hpp"
 
 DirectoryEntry::DirectoryEntry(std::weak_ptr<Fat32Disk> fat32, std::weak_ptr<IFat32Directory> parent, int parentPosition, Fat32DirectoryEntry entry)
 {
