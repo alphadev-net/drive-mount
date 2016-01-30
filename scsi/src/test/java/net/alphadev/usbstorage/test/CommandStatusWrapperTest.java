@@ -40,7 +40,7 @@ public class CommandStatusWrapperTest {
 
     @Test
     public void testSignature() {
-        Assert.assertEquals("USBS", csw.getSignature());
+        Assert.assertEquals(CommandStatusWrapper.USB_STATUS_SIGNATURE, csw.getSignature());
     }
 
     @Test

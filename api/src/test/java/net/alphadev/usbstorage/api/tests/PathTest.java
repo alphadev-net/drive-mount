@@ -1,12 +1,12 @@
 /**
  * Copyright © 2014-2015 Jan Seeger
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,6 +55,7 @@ public class PathTest {
     public void subItemParentTest() {
         Path instance = new Path("driveId/test/abc");
         Assert.assertEquals("abc", instance.getName());
+        Assert.assertNotNull(instance.getParent());
         Assert.assertEquals("test", instance.getParent().getName());
         Assert.assertNull(instance.getParent().getParent());
     }
@@ -79,6 +80,7 @@ public class PathTest {
         Assert.assertEquals("first", first.getName());
 
         // but the second one is created correctly
+        Assert.assertNotNull(second.getParent());
         Assert.assertEquals("first", second.getParent().getName());
         Assert.assertEquals("second", second.getName());
     }
@@ -86,27 +88,33 @@ public class PathTest {
     @Test
     public void appendMultipleToPathTest() {
         Path first = new Path("driveId/first");
-        Assert.assertEquals("first", first.getName());
         Path fourth = Path.createWithAppended(first, "second/third/fourth");
-        Path third = fourth.getParent();
-        Path second = third.getParent();
 
-        Assert.assertEquals("fourth", fourth.getName());
-        Assert.assertEquals("third", third.getName());
+        Path third = fourth.getParent();
+        Assert.assertNotNull(third);
+        Path second = third.getParent();
+        Assert.assertNotNull(second);
+
+        Assert.assertEquals("first", first.getName());
         Assert.assertEquals("second", second.getName());
+        Assert.assertEquals("third", third.getName());
+        Assert.assertEquals("fourth", fourth.getName());
     }
 
     @Test
     public void appendMultipleToPathOtherTest() {
         Path first = new Path("driveId/first");
-        Assert.assertEquals("first", first.getName());
         Path fourth = Path.createWithAppended(first, "second", "third", "fourth");
-        Path third = fourth.getParent();
-        Path second = third.getParent();
 
-        Assert.assertEquals("fourth", fourth.getName());
-        Assert.assertEquals("third", third.getName());
+        Path third = fourth.getParent();
+        Assert.assertNotNull(third);
+        Path second = third.getParent();
+        Assert.assertNotNull(second);
+
+        Assert.assertEquals("first", first.getName());
         Assert.assertEquals("second", second.getName());
+        Assert.assertEquals("third", third.getName());
+        Assert.assertEquals("fourth", fourth.getName());
     }
 
     @Test

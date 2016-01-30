@@ -23,6 +23,8 @@ import java.nio.ByteOrder;
  * @author Jan Seeger <jan@alphadev.net>
  */
 public class CommandStatusWrapper {
+    public static final String USB_STATUS_SIGNATURE = "USBS";
+
     private byte[] mSignature;
     private int mTag;
     private int mDataResidue;
@@ -39,7 +41,7 @@ public class CommandStatusWrapper {
         mSignature[0x2] = data[0x2];
         mSignature[0x3] = data[0x3];
 
-        if (!"USBS".equals(getSignature())) {
+        if (!USB_STATUS_SIGNATURE.equals(getSignature())) {
             System.out.println(BitStitching.convertBytesToHex(data));
             throw new IllegalArgumentException("Invalid CSW header!");
         }
@@ -86,7 +88,7 @@ public class CommandStatusWrapper {
         }
     }
 
-    public static enum Status {
+    public enum Status {
         /**
          * This status indicates that the target has successfully completed the command.
          */
