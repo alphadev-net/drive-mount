@@ -2,6 +2,7 @@ apply plugin: 'com.android.model.library'
 
 model {
     android {
+        defaultPublishConfig "allRelease"
         compileSdkVersion 23
         buildToolsVersion '23.0.2'
         ndk {
@@ -10,6 +11,16 @@ model {
             stl "c++_static"
             cppFlags.add "-std=c++1y"
             cppFlags.add "-fexceptions"
+            ldFlags.add "-O2"
+        }
+
+        productFlavors {
+            create("all") {
+                ndk.abiFilters.add("armeabi-v7a")
+                ndk.abiFilters.add("arm64-v8a")
+                ndk.abiFilters.add("x86")
+                ndk.abiFilters.add("x86_64")
+            }
         }
     }
 }
