@@ -19,7 +19,7 @@ Fat32Root::Fat32Root(Fat32Root &&other)
 
 void Fat32Root::initialize()
 {
-    auto &fat32Disk = m_fat32.lock();
+    auto fat32Disk = m_fat32.lock();
     if (!fat32Disk)
         throw std::runtime_error(FatDiskFreedError);
 

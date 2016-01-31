@@ -13,6 +13,7 @@ extern const char *FatDiskFreedError;
 
 class DirectoryEntry;
 class Fat32File;
+class Fat32Root;
 class Disk;
 
 class Fat32Disk : public std::enable_shared_from_this<Fat32Disk>

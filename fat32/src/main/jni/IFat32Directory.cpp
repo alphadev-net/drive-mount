@@ -73,7 +73,7 @@ std::shared_ptr<IFat32Directory> IFat32Directory::up()
 {
     checkInitialized();
 
-    auto &parent = m_entry->m_parent.lock();
+    auto parent = m_entry->m_parent.lock();
     if (!parent)
         throw std::runtime_error(FatDirectoryFreedError);
 

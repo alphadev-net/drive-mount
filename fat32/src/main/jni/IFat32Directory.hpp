@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Fat32Common.hpp"
 #include "DirectoryEntry.hpp"

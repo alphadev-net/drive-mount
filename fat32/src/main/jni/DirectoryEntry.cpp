@@ -27,7 +27,7 @@ size_t DirectoryEntry::getSize() const
 
 void DirectoryEntry::save() const
 {
-    auto &parent = m_parent.lock();
+    auto parent = m_parent.lock();
     if (!parent)
         throw std::runtime_error(FatDirectoryFreedError);
 

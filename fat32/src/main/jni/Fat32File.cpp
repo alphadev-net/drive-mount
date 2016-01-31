@@ -15,7 +15,7 @@ Fat32File::Fat32File(std::weak_ptr<Fat32Disk> fat32, std::shared_ptr<DirectoryEn
         m_size = entry->getSize();
     }
 
-    auto &fat32Disk = m_fat32.lock();
+    auto fat32Disk = m_fat32.lock();
     if (!fat32Disk)
         throw std::runtime_error(FatDiskFreedError);
 
@@ -60,7 +60,7 @@ Fat32File::~Fat32File()
 
     if (m_size < m_originalSize)
     {
-        auto &fat32Disk = m_fat32.lock();
+        auto fat32Disk = m_fat32.lock();
         if (!fat32Disk)
             throw std::runtime_error(FatDiskFreedError);
 
@@ -122,7 +122,7 @@ void Fat32File::flush()
 {
     if (m_clusterDirty)
     {
-        auto &fat32Disk = m_fat32.lock();
+        auto fat32Disk = m_fat32.lock();
         if (!fat32Disk)
             throw std::runtime_error(FatDiskFreedError);
 
@@ -269,7 +269,7 @@ bool Fat32File::checkSeekToPosition(bool alloc)
         m_clusterOffset = m_position % m_clusterSize;
     }
 
-    auto &fat32Disk = m_fat32.lock();
+    auto fat32Disk = m_fat32.lock();
     if (!fat32Disk)
         throw std::runtime_error(FatDiskFreedError);
 
@@ -282,7 +282,7 @@ bool Fat32File::checkSeekToPosition(bool alloc)
 // returns false if eof && !alloc
 bool Fat32File::checkNextCluster(bool alloc, bool read)
 {
-    auto &fat32Disk = m_fat32.lock();
+    auto fat32Disk = m_fat32.lock();
     if (!fat32Disk)
         throw std::runtime_error(FatDiskFreedError);
 
@@ -347,7 +347,7 @@ bool Fat32File::checkHasCluster(bool alloc)
     if (!m_entry)
         throw std::runtime_error("tried to allocate on an empty entry-less file");
 
-    auto &fat32Disk = m_fat32.lock();
+    auto fat32Disk = m_fat32.lock();
     if (!fat32Disk)
         throw std::runtime_error(FatDiskFreedError);
 
