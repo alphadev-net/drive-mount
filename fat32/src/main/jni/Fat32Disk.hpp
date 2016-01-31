@@ -24,7 +24,7 @@ class Fat32Disk : public std::enable_shared_from_this<Fat32Disk>
 
 public:
 
-    Fat32Disk::Fat32Disk(std::shared_ptr<Disk> disk);
+    Fat32Disk(std::shared_ptr<Disk> disk);
 
     std::shared_ptr<Disk> getDisk() const;
 
@@ -52,7 +52,7 @@ private:
     Fat32Disk *loadBpbBeforeFat();
 
     template<typename T>
-    std::shared_ptr<IFat32Directory> Fat32Disk::getOrAddDirectory(FatCluster firstCluster, std::function<T()> ctor)
+    std::shared_ptr<IFat32Directory> getOrAddDirectory(FatCluster firstCluster, std::function<T()> ctor)
     {
         auto item = m_directories.find(firstCluster);
         std::shared_ptr<T> result;
@@ -64,8 +64,8 @@ private:
         }
         else
         {
-            std::shared_ptr<IFat32Directory> existing;
-            if (existing = item->second.lock())
+            std::shared_ptr<IFat32Directory> existing = item->second.lock();
+            if (existing)
             {
                 return existing;
             }
