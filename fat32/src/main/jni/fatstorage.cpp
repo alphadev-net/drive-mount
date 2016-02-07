@@ -15,6 +15,9 @@
  */
 #include <jni.h>
 
+JNIEXPORT void JNICALL Java_net_alphadev_fat32wrapper_FatStorage_jniOpen(JNIEnv* /*env*/, jobject /*instance*/, jobject /*blockDevice*/) {
+}
+
 JNIEXPORT jstring JNICALL Java_net_alphadev_fat32wrapper_FatStorage_jniGetName(JNIEnv* env, jobject /*instance*/) {
     return env->NewStringUTF("");
 }

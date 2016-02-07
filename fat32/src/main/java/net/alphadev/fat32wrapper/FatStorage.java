@@ -32,6 +32,7 @@ public class FatStorage implements StorageDevice {
     public FatStorage(BlockDevice blockDevice, boolean readOnly) throws IOException {
         this.blockDevice = blockDevice;
         this.isReadOnly = readOnly;
+        jniOpen(blockDevice);
     }
 
     @Override
@@ -78,6 +79,8 @@ public class FatStorage implements StorageDevice {
     public void close() throws IOException {
         jniClose();
     }
+
+    private native void jniOpen(BlockDevice blockDevice);
 
     private native void jniClose();
 
