@@ -1,7 +1,19 @@
-apply plugin: 'java'
+apply plugin: 'com.android.model.library'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion '23.0.2'
+        ndk {
+            moduleName "api"
+            toolchain "clang"
+            stl "c++_static"
+            cppFlags.add "-std=c++1y"
+            cppFlags.add "-fexceptions"
+            ldFlags.add "-O2"
+        }
+    }
+}
 
 dependencies {
     testCompile 'junit:junit:4.12'

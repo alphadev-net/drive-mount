@@ -22,6 +22,15 @@ model {
                 ndk.abiFilters.add("x86_64")
             }
         }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ":api"
+                    }
+                }
+            }
+        }
     }
 }
 
