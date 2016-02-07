@@ -1,12 +1,12 @@
 /**
  * Copyright © 2014-2015 Jan Seeger
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ public interface BlockDevice extends Identifiable, Closeable {
      * @return the total number of bytes on this device
      * @throws java.io.IOException on error getting the size of this device
      */
-    public abstract long getSize() throws IOException;
+    long getSize() throws IOException;
 
     /**
      * Read a block of data from this device.
@@ -40,8 +40,7 @@ public interface BlockDevice extends Identifiable, Closeable {
      * @param dest      the destination buffer where to store the data read
      * @throws IOException on read error
      */
-    public abstract void read(long devOffset, ByteBuffer dest)
-            throws IOException;
+    void read(long devOffset, ByteBuffer dest) throws IOException;
 
     /**
      * Writes a block of data to this device.
@@ -53,16 +52,14 @@ public interface BlockDevice extends Identifiable, Closeable {
      *                                  or the write would go beyond the end of the device
      * @see #isReadOnly()
      */
-    public abstract void write(long devOffset, ByteBuffer src)
-            throws IOException,
-            IllegalArgumentException;
+    void write(long devOffset, ByteBuffer src) throws IOException, IllegalArgumentException;
 
     /**
      * Flushes data in caches to the actual storage.
      *
      * @throws IOException on write error
      */
-    public abstract void flush() throws IOException;
+    void flush() throws IOException;
 
     /**
      * Returns the size of a sector on this device.
@@ -70,7 +67,7 @@ public interface BlockDevice extends Identifiable, Closeable {
      * @return the sector size in bytes
      * @throws IOException on error determining the sector size
      */
-    public int getSectorSize() throws IOException;
+    int getSectorSize() throws IOException;
 
     /**
      * Closes this {@code BlockDevice}. No methods of this device may be
@@ -79,7 +76,7 @@ public interface BlockDevice extends Identifiable, Closeable {
      * @throws IOException on error closing this device
      * @see #isClosed()
      */
-    public void close() throws IOException;
+    void close() throws IOException;
 
     /**
      * Checks if this device was already closed. No methods may be called
@@ -87,14 +84,14 @@ public interface BlockDevice extends Identifiable, Closeable {
      *
      * @return if this device is closed
      */
-    public boolean isClosed();
+    boolean isClosed();
 
     /**
      * Checks if this {@code BlockDevice} is read-only.
      *
      * @return if this {@code BlockDevice} is read-only
      */
-    public boolean isReadOnly();
+    boolean isReadOnly();
 
     void initialize();
 }
