@@ -8,7 +8,7 @@ model {
         ndk {
             moduleName "fat32"
             toolchain "clang"
-            stl "c++_static"
+            stl "c++_shared"
             cppFlags.add "-std=c++1y"
             cppFlags.add "-fexceptions"
             ldFlags.add "-O2"
