@@ -7,7 +7,7 @@ BlockDevice::BlockDevice(JNIEnv *jenv, jobject blockDevice) :
 
 void BlockDevice::read(char *buffer, long bufSize, long offset) {
     jobject jbuffer = jniEnv->NewDirectByteBuffer(buffer, bufSize);
-    jniEnv->CallVoidMethod(blockDevice, blockDevice_readMethod, bufSize, jbuffer);
+    jniEnv->CallVoidMethod(blockDevice, blockDevice_readMethod, offset, jbuffer);
 }
 
 void BlockDevice::flush() {
