@@ -2,6 +2,7 @@ apply plugin: 'com.android.model.application'
 
 model {
     android {
+        // Don't forget to update the travis build file!
         compileSdkVersion = 23
         buildToolsVersion = '23.0.3'
 
