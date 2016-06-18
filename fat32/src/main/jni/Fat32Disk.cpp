@@ -45,7 +45,7 @@ size_t Fat32Disk::getClusterCount() const
 
 void Fat32Disk::readCluster(FatCluster cluster, char *buffer)
 {
-    if (cluster < 0 || cluster >= getClusterCount())
+    if (cluster >= getClusterCount())
         throw std::runtime_error("cluster out of range");
 
     int clusterOffset = m_bpb.reservedSectors + m_bpb.fatSize;
@@ -60,7 +60,7 @@ void Fat32Disk::readCluster(FatCluster cluster, char *buffer)
 
 void Fat32Disk::writeCluster(FatCluster cluster, char *buffer)
 {
-    if (cluster < 0 || cluster >= getClusterCount())
+    if (cluster >= getClusterCount())
         throw std::runtime_error("cluster out of range");
 
     int clusterOffset = m_bpb.reservedSectors + m_bpb.fatSize;

@@ -1,7 +1,8 @@
-#include "Disk.hpp"
+#include "FileDisk.hpp"
 
-Disk::Disk(const std::string &filename, size_t sectorSize)
-    : m_file(filename, std::fstream::in | std::fstream::out | std::fstream::binary)
+FileDisk::FileDisk(const std::string &filename, size_t sectorSize)
+    : Disk(sectorSize)
+    , m_file(filename, std::fstream::in | std::fstream::out | std::fstream::binary)
 {
     if (!m_file.is_open())
         throw std::runtime_error("failed to open disk image");
@@ -21,26 +22,26 @@ Disk::Disk(const std::string &filename, size_t sectorSize)
     m_sectorSize = sectorSize;
 }
 
-Disk::Disk(std::fstream &file, size_t sectorCount, size_t sectorSize)
+FileDisk::FileDisk(std::fstream &file, size_t sectorCount, size_t sectorSize)
     : m_file(std::move(file))
 {
     m_sectorCount = sectorCount;
     m_sectorSize = sectorSize;
 }
 
-size_t Disk::getSectorSize() const
+size_t FileDisk::getSectorSize() const
 {
     return m_sectorSize;
 }
 
-size_t Disk::getSectorCount() const
+size_t FileDisk::getSectorCount() const
 {
     return m_sectorCount;
 }
 
-void Disk::readSector(size_t sector, void *buffer)
+void FileDisk::readSector(size_t sector, void *buffer)
 {
-    if (sector < 0 || sector >= m_sectorCount)
+    if (sector >= m_sectorCount)
         throw std::runtime_error("sector doesn't exist");
 
     auto offset = (std::streamoff)sector * (std::streamoff)m_sectorSize;
@@ -51,9 +52,9 @@ void Disk::readSector(size_t sector, void *buffer)
         throw std::runtime_error("failed to read sector");
 }
 
-void Disk::writeSector(size_t sector, void *buffer)
+void FileDisk::writeSector(size_t sector, void *buffer)
 {
-    if (sector < 0 || sector >= m_sectorCount)
+    if (sector >= m_sectorCount)
         throw std::runtime_error("sector doesn't exist");
 
     auto offset = (std::streamoff)sector * (std::streamoff)m_sectorSize;
@@ -64,7 +65,7 @@ void Disk::writeSector(size_t sector, void *buffer)
         throw std::runtime_error("failed to write sector");
 }
 
-std::shared_ptr<Disk> Disk::create(const std::string &filename, size_t sectorCount, size_t sectorSize)
+std::shared_ptr<Disk> FileDisk::create(const std::string &filename, size_t sectorCount, size_t sectorSize)
 {
     if (sectorCount < 100)
         throw std::runtime_error("invalid sector count");
@@ -85,5 +86,5 @@ std::shared_ptr<Disk> Disk::create(const std::string &filename, size_t sectorCou
     if (file.fail())
         throw std::runtime_error("failed to allocate disk space");
 
-    return std::make_shared<Disk>(file, sectorCount, sectorSize);
+    return std::make_shared<FileDisk>(file, sectorCount, sectorSize);
 }
