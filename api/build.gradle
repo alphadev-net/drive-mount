@@ -12,6 +12,15 @@ model {
             cppFlags.add "-fexceptions"
             ldFlags.add "-O2"
         }
+        sources {
+            main {
+                jni {
+                    exportedHeaders {
+                        srcDir "src/main/jni"
+                    }
+                }
+            }
+        }
     }
 }
 

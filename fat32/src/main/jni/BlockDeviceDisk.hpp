@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Disk.hpp"
-#include "../../../../api/src/main/jni/blockdevice.h"
+#include "blockdevice.h"
 #include <memory>
 
 class BlockDeviceDisk : Disk
