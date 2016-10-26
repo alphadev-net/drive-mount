@@ -189,8 +189,10 @@ public class BulkBlockDevice implements BlockDevice {
         final int blocksPerTransfer = mMaxTransferSize / mBlockSize;
 
         int offsetBlocks = (int) (offsetBytes / mBlockSize);
+        int blockOffset = (int) (offsetBytes % mBlockSize);
         int blocksLeft = (short) Math.ceil((float) buffer.remaining() / mBlockSize);
 
+        boolean isFirstBlock = true;
         while (blocksLeft > 0) {
             final short requestedBlocks = (short) Math.min(blocksPerTransfer, blocksLeft);
             final int requestedSize = requestedBlocks * mBlockSize;
@@ -205,8 +207,10 @@ public class BulkBlockDevice implements BlockDevice {
                 final byte[] buf = mAbstractBulkDevice.read(mBlockSize);
 
                 if (blocksLeft-- > 0) {
-                    final int subLength = Math.min(mBlockSize, buffer.remaining());
-                    buffer.put(buf, 0, subLength);
+                    final int subLength = Math.min(mBlockSize - (isFirstBlock ? blockOffset : 0), buffer.remaining());
+                    buffer.put(buf, (isFirstBlock ? blockOffset : 0), subLength);
+
+                    isFirstBlock = false;
                 }
             }
 
